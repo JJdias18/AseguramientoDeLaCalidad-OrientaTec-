@@ -1,5 +1,89 @@
 /*
- * Tokens de diseño — Brújula Vocacional.
- * Este archivo se puebla en la Fase 1.5 con la dirección de arte aprobada (ver DESIGN_BRIEF.md).
- * Regla del proyecto: ningún color, tamaño ni radio se hardcodea fuera de este archivo.
+ * Tokens de diseño — Brújula Vocacional · dirección "Huella".
+ * Fuente de verdad: DESIGN.md (raíz del repo). Fase 1.5.
+ * Regla del proyecto: ningún color, tamaño, radio ni duración se hardcodea
+ * fuera de este archivo. Lo nuevo entra por DESIGN.md §10 (Extensiones).
+ */
+
+:root {
+  /* ── Color: base e interfaz (contrastes documentados en DESIGN.md §2.1) ── */
+  --color-fondo: #ffffff;
+  --color-tinta: #1b211b;
+  --color-musgo: #576157;
+  --color-jade: #1d6835;
+  --color-jade-oscuro: #145228;
+  --color-brote: #eef6ef;
+  --color-hairline: #d2dfd4;
+  --color-borde: #6f7a6f;
+  --color-error: #b3261e;
+  --color-error-suave: #fcedeb;
+  --color-velo-modal: rgb(27 33 27 / 0.45);
+
+  /* ── Color: las seis tintas RIASEC (solo datos; orden fijo R-I-A-S-E-C) ── */
+  --tinta-r: #c7692c;
+  --tinta-i: #2e69b2;
+  --tinta-a: #db509c;
+  --tinta-s: #3b9555;
+  --tinta-e: #c38300;
+  --tinta-c: #564692;
+
+  /* ── Tipografía ── */
+  --fuente-display: 'Bricolage Grotesque', system-ui, sans-serif;
+  --fuente-cuerpo: 'Instrument Sans', system-ui, sans-serif;
+  --fs-xs: 0.78rem;
+  --fs-sm: 0.85rem;
+  --fs-base: 1rem;
+  --fs-md: 1.2rem;
+  --fs-lg: 1.5rem;
+  --fs-xl: 2rem;
+  --fs-display: clamp(2rem, 6.5vw, 3.2rem);
+  --interlineado-prosa: 1.6;
+  --interlineado-display: 1.05;
+  --tracking-display: -0.025em;
+  --medida-prosa: 65ch;
+
+  /* ── Espaciado (base 4px) ── */
+  --esp-1: 0.25rem;
+  --esp-2: 0.5rem;
+  --esp-3: 0.75rem;
+  --esp-4: 1rem;
+  --esp-5: 1.5rem;
+  --esp-6: 2rem;
+  --esp-7: 3rem;
+  --esp-8: 4rem;
+
+  /* ── Radios ── */
+  --radio-s: 8px;
+  --radio: 14px;
+  --radio-pill: 999px;
+
+  /* ── Capas (z-index semántico) ── */
+  --z-tabbar: 10;
+  --z-dropdown: 20;
+  --z-velo-modal: 30;
+  --z-modal: 40;
+  --z-toast: 50;
+
+  /* ── Movimiento ── */
+  --dur-rapida: 0.15s;
+  --dur-media: 0.3s;
+  --dur-entrada: 0.7s;
+  --curva-salida: cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* ── Componentes clave ── */
+  --alto-huella-hero: 112px;
+  --alto-huella-eco: 16px;
+  --alto-huella-progreso: 12px;
+  --alto-huella-estado: 40px;
+  --gap-huella: 3px;
+  --gap-huella-mini: 2px;
+  --target-tactil: 44px;
+  --foco-grosor: 2.5px;
+}
+
+/*
+ * Breakpoints (las media queries no aceptan custom properties; referencia fija):
+ *   ≥480px  — leyendas y grids a 2 columnas
+ *   ≥720px  — nav superior reemplaza a la tab bar; layouts a 2 columnas
+ * Mobile-first: el diseño base es 360px.
  */

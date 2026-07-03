@@ -1,5 +1,14 @@
 # Fase 1.5 · Direcciones de arte — Brújula Vocacional
 
+> **DECISIÓN (3 de julio de 2026): el equipo eligió la dirección 2 · "Huella".**
+> Tras la elección se le corrió `/impeccable critique` (26/40, 3×P1 + 2×P2, detector
+> limpio) y se corrigieron todos los hallazgos P1+P2+menores antes de congelarla:
+> escala visible (`23 / 25`), tab bar móvil, leyenda en el orden de la franja con
+> clave de dominantes accesible, ecos de 16px con rótulo, targets táctiles ≥44px,
+> borde de botón secundario ≥3:1, jerga ("reactivos"→"preguntas") y muestra de
+> estados (cargando / vacío / PDF deshabilitado). La fuente de verdad pasa a ser
+> **`DESIGN.md`** (raíz). Las direcciones 1 y 3 quedan como registro del proceso.
+
 > Tres direcciones distintas para la identidad visual, cada una con una preview HTML
 > de la **pantalla de resultados** con los mismos datos de muestra (Valeria, código
 > IAE, tres áreas afines). Abrí `docs/design/direcciones/index.html` para verlas

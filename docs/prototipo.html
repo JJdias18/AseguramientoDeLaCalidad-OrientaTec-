@@ -1,0 +1,1044 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Prototipo · Brújula Vocacional — dirección "Huella"</title>
+<!--
+  Fase 1.5 · Prototipo navegable (EDT 1.2.2.2). HTML/CSS estático, datos de muestra.
+  Navegación por anclas (:target, sin JS). Consume los tokens reales del sistema:
+  client/src/styles/tokens.css — si un valor no está ahí, no puede usarse acá.
+  Especificación completa: DESIGN.md (raíz).
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+  href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Instrument+Sans:ital,wght@0,400..700;1,400&display=swap"
+  rel="stylesheet"
+/>
+<link rel="stylesheet" href="../client/src/styles/tokens.css" />
+<style>
+  /* ═══ Base ═══ */
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: var(--fuente-cuerpo);
+    font-size: var(--fs-base);
+    line-height: var(--interlineado-prosa);
+    background: var(--color-fondo);
+    color: var(--color-tinta);
+  }
+  a { color: var(--color-jade); }
+  :focus-visible {
+    outline: var(--foco-grosor) solid var(--color-jade);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+  h1, h2, h3 {
+    font-family: var(--fuente-display);
+    letter-spacing: var(--tracking-display);
+    text-wrap: balance;
+    line-height: var(--interlineado-display);
+  }
+  h1 { font-size: var(--fs-display); font-weight: 780; }
+  h2 { font-size: var(--fs-lg); font-weight: 720; line-height: 1.2; }
+  h3 { font-size: var(--fs-md); font-weight: 700; line-height: 1.25; }
+  p { max-width: var(--medida-prosa); }
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  /* ═══ Chrome del prototipo (revisión, no producto) ═══ */
+  .proto-bar {
+    background: var(--color-tinta);
+    color: var(--color-fondo);
+    font-size: var(--fs-sm);
+    padding: var(--esp-2) var(--esp-4);
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--esp-1) var(--esp-4);
+    align-items: baseline;
+  }
+  .proto-bar b { font-family: var(--fuente-display); }
+  .proto-bar a { color: var(--color-fondo); text-underline-offset: 3px; }
+
+  /* ═══ Navegación de la app ═══ */
+  .nav {
+    display: flex;
+    align-items: center;
+    gap: var(--esp-5);
+    padding: var(--esp-3) var(--esp-4);
+    border-bottom: 1px solid var(--color-hairline);
+  }
+  .nav__logo {
+    font-family: var(--fuente-display);
+    font-weight: 750;
+    font-size: var(--fs-md);
+    letter-spacing: -0.02em;
+    color: var(--color-tinta);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: var(--esp-2);
+  }
+  .huella-mini {
+    display: inline-flex;
+    width: 26px;
+    height: 18px;
+    border-radius: 5px;
+    overflow: hidden;
+    gap: var(--gap-huella-mini);
+  }
+  .huella-mini i { flex: 1; }
+  .nav__links { display: none; gap: var(--esp-5); margin-left: auto; list-style: none; }
+  .nav__links a {
+    color: var(--color-musgo);
+    text-decoration: none;
+    font-weight: 500;
+    font-size: var(--fs-sm);
+    transition: color var(--dur-rapida) ease;
+  }
+  .nav__links a:hover { color: var(--color-tinta); }
+  .nav__avatar {
+    margin-left: auto;
+    width: var(--target-tactil);
+    height: var(--target-tactil);
+    border-radius: var(--radio-pill);
+    background: var(--color-brote);
+    border: 1.5px solid var(--color-borde);
+    color: var(--color-jade);
+    font: 700 var(--fs-sm) var(--fuente-cuerpo);
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+  }
+  @media (min-width: 720px) {
+    .nav { padding: var(--esp-3) var(--esp-6); }
+    .nav__links { display: flex; }
+    .nav__avatar { margin-left: 0; }
+  }
+  .tabbar {
+    position: fixed;
+    inset: auto 0 0 0;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    background: var(--color-fondo);
+    border-top: 1px solid var(--color-hairline);
+    padding: var(--esp-1) var(--esp-2) calc(var(--esp-1) + env(safe-area-inset-bottom));
+    z-index: var(--z-tabbar);
+  }
+  .tabbar a {
+    display: grid;
+    justify-items: center;
+    gap: 2px;
+    padding: var(--esp-1) 0;
+    font-size: var(--fs-xs);
+    font-weight: 600;
+    color: var(--color-musgo);
+    text-decoration: none;
+    border-radius: var(--radio-s);
+  }
+  .tabbar svg { display: block; }
+  @media (min-width: 720px) { .tabbar { display: none; } }
+  /* pestaña activa según la pantalla visible */
+  body:has(#cuestionario:target) .tabbar a[href='#cuestionario'],
+  body:has(#huella:target) .tabbar a[href='#huella'],
+  body:has(#carreras:target) .tabbar a[href='#carreras'],
+  body:has(#ficha:target) .tabbar a[href='#carreras'],
+  body:has(#comparar:target) .tabbar a[href='#comparar'] { color: var(--color-jade); }
+
+  /* ═══ Conmutador de pantallas (sin JS) ═══ */
+  .pantalla { display: none; }
+  .pantalla:target { display: block; }
+  body:not(:has(.pantalla:target)) #portada { display: block; }
+
+  .pagina {
+    max-width: 60rem;
+    margin: 0 auto;
+    padding: var(--esp-6) var(--esp-4) calc(var(--esp-8) + 4.5rem);
+  }
+  @media (min-width: 720px) {
+    .pagina { padding: var(--esp-7) var(--esp-6) var(--esp-8); }
+  }
+  .estrecha { max-width: 26rem; }
+
+  /* ═══ Componentes (DESIGN.md §5) ═══ */
+  .btn {
+    font: 600 var(--fs-base) var(--fuente-cuerpo);
+    padding: 0.9rem 1.7rem;
+    border-radius: var(--radio-pill);
+    border: none;
+    cursor: pointer;
+    text-align: center;
+    white-space: nowrap;
+    flex-shrink: 0;
+    min-height: var(--target-tactil);
+    transition: background-color var(--dur-rapida) ease, border-color var(--dur-rapida) ease;
+  }
+  .btn:not(:disabled):active { transform: translateY(1px); }
+  .btn--primario { background: var(--color-jade); color: var(--color-fondo); }
+  .btn--primario:hover { background: var(--color-jade-oscuro); }
+  .btn--secundario {
+    background: transparent;
+    color: var(--color-jade);
+    border: 1.5px solid var(--color-borde);
+  }
+  .btn--secundario:hover { border-color: var(--color-jade); }
+  .btn--peligro { background: var(--color-error); color: var(--color-fondo); }
+  .btn:disabled { background: var(--color-brote); color: var(--color-musgo); cursor: not-allowed; }
+  .btn--bloque { display: block; width: 100%; }
+
+  .campo { display: grid; gap: var(--esp-1); margin-bottom: var(--esp-4); }
+  .campo label { font-weight: 600; font-size: var(--fs-sm); }
+  .campo input, .campo select {
+    font: 400 var(--fs-base) var(--fuente-cuerpo);
+    color: var(--color-tinta);
+    padding: var(--esp-3) 0.9rem;
+    border: 1.5px solid var(--color-borde);
+    border-radius: var(--radio-s);
+    background: var(--color-fondo);
+    width: 100%;
+  }
+  .campo .ayuda { font-size: var(--fs-sm); color: var(--color-musgo); }
+  .campo--error input, .campo--error select { border-color: var(--color-error); }
+  .campo--error .mensaje { font-size: var(--fs-sm); color: var(--color-error); font-weight: 600; }
+  .campo--clave { position: relative; }
+  .campo--clave input { padding-right: 5.2rem; }
+  .campo--clave .mostrar {
+    position: absolute;
+    right: var(--esp-2);
+    bottom: 7px;
+    font: 600 var(--fs-sm) var(--fuente-cuerpo);
+    color: var(--color-jade);
+    background: none;
+    border: none;
+    padding: var(--esp-2) var(--esp-2);
+    cursor: pointer;
+  }
+
+  .panel {
+    background: var(--color-brote);
+    border-radius: var(--radio-s);
+    padding: var(--esp-4) var(--esp-4);
+    max-width: var(--medida-prosa);
+  }
+  .panel--error { background: var(--color-error-suave); }
+  .panel--error b { color: var(--color-error); }
+
+  .card {
+    border: 1.5px solid var(--color-hairline);
+    border-radius: var(--radio);
+    padding: var(--esp-5) var(--esp-4);
+    display: grid;
+    gap: var(--esp-2);
+  }
+  .card--principal { border: 2px solid var(--color-jade); }
+  .card__cabecera {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: baseline;
+    gap: var(--esp-1) var(--esp-3);
+  }
+  .card__titulo { font-family: var(--fuente-display); font-weight: 700; font-size: var(--fs-md); letter-spacing: -0.02em; }
+  .card__cifra {
+    font-family: var(--fuente-display);
+    font-weight: 780;
+    font-size: var(--fs-lg);
+    letter-spacing: -0.02em;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+  .card--principal .card__cifra { color: var(--color-jade); }
+  .card p { color: var(--color-musgo); }
+  .enlace-accion {
+    justify-self: start;
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--target-tactil);
+    font-weight: 600;
+    color: var(--color-jade);
+    text-decoration: none;
+  }
+  .enlace-accion:hover { text-decoration: underline; text-underline-offset: 3px; }
+  .enlace-accion::after { content: '→'; margin-left: 0.35rem; }
+
+  /* la huella y sus variantes (DESIGN.md §4) */
+  .huella { display: flex; gap: var(--gap-huella); border-radius: var(--radio); overflow: hidden; }
+  .huella > i { min-width: 0; }
+  .huella--hero { height: var(--alto-huella-hero); }
+  @media (prefers-reduced-motion: no-preference) {
+    .huella--hero { animation: asentar var(--dur-entrada) var(--curva-salida); }
+    @keyframes asentar { from { opacity: 0.35; transform: translateY(10px); } }
+  }
+  .huella--eco { height: var(--alto-huella-eco); border-radius: 6px; max-width: 240px; }
+  .huella--progreso { height: var(--alto-huella-progreso); border-radius: 6px; }
+  .huella--esqueleto, .huella--vacia { height: var(--alto-huella-estado); border-radius: var(--radio-s); }
+  .huella--esqueleto i { background: var(--color-hairline); }
+  @media (prefers-reduced-motion: no-preference) {
+    .huella--esqueleto i { animation: latir 1.4s ease-in-out infinite alternate; }
+    .huella--esqueleto i:nth-child(odd) { animation-delay: 0.35s; }
+    @keyframes latir { to { opacity: 0.45; } }
+  }
+  .huella--vacia i { border: 1.5px dashed var(--color-borde); border-radius: 4px; }
+  .eco-rotulo { font-size: var(--fs-xs); font-weight: 600; color: var(--color-musgo); margin-bottom: var(--esp-1); }
+  .t-r { background: var(--tinta-r); } .t-i { background: var(--tinta-i); }
+  .t-a { background: var(--tinta-a); } .t-s { background: var(--tinta-s); }
+  .t-e { background: var(--tinta-e); } .t-c { background: var(--tinta-c); }
+
+  /* escala 1–5 del cuestionario */
+  .escala { border: none; display: grid; gap: var(--esp-2); }
+  .escala legend { font-weight: 600; font-size: var(--fs-sm); color: var(--color-musgo); margin-bottom: var(--esp-2); }
+  .escala__opciones { display: grid; grid-template-columns: repeat(5, 1fr); gap: var(--esp-2); }
+  .escala__opciones label {
+    display: grid;
+    place-items: center;
+    min-height: 48px;
+    border: 1.5px solid var(--color-borde);
+    border-radius: var(--radio-s);
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color var(--dur-rapida) ease, border-color var(--dur-rapida) ease,
+      color var(--dur-rapida) ease;
+  }
+  .escala__opciones label:hover { border-color: var(--color-jade); }
+  .escala__opciones input:checked + span { color: var(--color-fondo); }
+  .escala__opciones label:has(input:checked) { background: var(--color-jade); border-color: var(--color-jade); color: var(--color-fondo); }
+  .escala__opciones label:has(input:focus-visible) {
+    outline: var(--foco-grosor) solid var(--color-jade);
+    outline-offset: 2px;
+  }
+  .escala__extremos { display: flex; justify-content: space-between; font-size: var(--fs-xs); color: var(--color-musgo); }
+
+  /* tabla comparador */
+  .comparacion { display: grid; gap: var(--esp-4); }
+  .comparacion__fila { display: grid; gap: var(--esp-1); padding-bottom: var(--esp-3); border-bottom: 1px solid var(--color-hairline); }
+  .comparacion__atributo { font-size: var(--fs-sm); font-weight: 700; color: var(--color-musgo); }
+  .comparacion__valores { display: grid; grid-template-columns: 1fr 1fr; gap: var(--esp-4); }
+  .comparacion__valores p { font-size: var(--fs-sm); color: var(--color-tinta); }
+  .comparacion__nombres { display: grid; grid-template-columns: 1fr 1fr; gap: var(--esp-4); }
+  .comparacion__nombres h3 { color: var(--color-jade); }
+
+  /* tabla admin */
+  .tabla { width: 100%; border-collapse: collapse; font-size: var(--fs-sm); }
+  .tabla th {
+    text-align: left;
+    font-size: var(--fs-xs);
+    text-transform: none;
+    color: var(--color-musgo);
+    font-weight: 700;
+    padding: var(--esp-2) var(--esp-3) var(--esp-2) 0;
+    border-bottom: 1.5px solid var(--color-borde);
+  }
+  .tabla td { padding: var(--esp-3) var(--esp-3) var(--esp-3) 0; border-bottom: 1px solid var(--color-hairline); vertical-align: top; }
+  .tabla .inactivo td { color: var(--color-musgo); }
+  .chip {
+    display: inline-block;
+    font-size: var(--fs-xs);
+    font-weight: 700;
+    padding: 2px 10px;
+    border-radius: var(--radio-pill);
+    background: var(--color-brote);
+    color: var(--color-jade);
+  }
+  .chip--gris { background: var(--color-fondo); border: 1px solid var(--color-borde); color: var(--color-musgo); }
+  .punto-tinta { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 6px; vertical-align: baseline; }
+
+  /* modal (specimen estático) */
+  .velo-specimen {
+    background: var(--color-velo-modal);
+    border-radius: var(--radio);
+    padding: var(--esp-6) var(--esp-4);
+    display: grid;
+    place-items: center;
+  }
+  .modal {
+    background: var(--color-fondo);
+    border-radius: var(--radio);
+    padding: var(--esp-5);
+    max-width: 28rem;
+    display: grid;
+    gap: var(--esp-3);
+  }
+  .modal p { color: var(--color-musgo); font-size: var(--fs-sm); }
+  .modal__acciones { display: flex; gap: var(--esp-3); flex-wrap: wrap; }
+
+  /* utilidades de layout */
+  .seccion { margin-top: var(--esp-7); }
+  .sub { color: var(--color-musgo); }
+  .fila-acciones { display: flex; flex-direction: column; gap: var(--esp-3); margin-top: var(--esp-6); }
+  @media (min-width: 720px) { .fila-acciones { flex-direction: row; align-items: center; } }
+  .specimen {
+    margin-top: var(--esp-6);
+    border-top: 1px dashed var(--color-borde);
+    padding-top: var(--esp-4);
+  }
+  .specimen > h3 { font-size: var(--fs-sm); color: var(--color-musgo); font-family: var(--fuente-cuerpo); font-weight: 700; margin-bottom: var(--esp-3); }
+  .lista-cards { list-style: none; display: grid; gap: var(--esp-4); }
+  .chips { display: flex; gap: var(--esp-2); flex-wrap: wrap; list-style: none; }
+  .chips a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 40px;
+    padding: 0 var(--esp-4);
+    border: 1.5px solid var(--color-borde);
+    border-radius: var(--radio-pill);
+    font-size: var(--fs-sm);
+    font-weight: 600;
+    color: var(--color-tinta);
+    text-decoration: none;
+  }
+  .chips a[aria-current='true'] { background: var(--color-jade); border-color: var(--color-jade); color: var(--color-fondo); }
+
+  /* leyenda RIASEC */
+  .leyenda { list-style: none; display: grid; grid-template-columns: 1fr; gap: var(--esp-2) var(--esp-5); margin-top: var(--esp-4); max-width: 24rem; }
+  @media (min-width: 480px) { .leyenda { grid-template-columns: repeat(2, 1fr); max-width: none; } }
+  @media (min-width: 720px) { .leyenda { grid-template-columns: repeat(3, 1fr); } }
+  .leyenda li { display: grid; grid-template-columns: 14px 1fr auto; align-items: baseline; gap: 0.55rem; font-size: var(--fs-sm); }
+  .leyenda i { width: 14px; height: 14px; border-radius: 4px; align-self: center; }
+  .leyenda .valor { font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .leyenda .valor small { font-weight: 400; color: var(--color-musgo); font-size: var(--fs-xs); }
+  .leyenda .dominante { font-weight: 700; }
+  .leyenda .dominante::after { content: ' ●'; color: var(--color-jade); font-size: 0.55rem; vertical-align: 0.25em; }
+  .leyenda-clave { margin-top: var(--esp-2); font-size: var(--fs-sm); color: var(--color-musgo); }
+  .leyenda-clave b { color: var(--color-jade); font-size: 0.65rem; vertical-align: 0.2em; }
+
+  .progreso-cabecera { display: flex; justify-content: space-between; align-items: baseline; gap: var(--esp-3); margin-bottom: var(--esp-2); }
+  .progreso-cabecera .contador { font-weight: 700; font-variant-numeric: tabular-nums; }
+  .guardado { font-size: var(--fs-xs); color: var(--color-musgo); }
+</style>
+</head>
+<body>
+  <!-- Chrome del prototipo: índice de pantallas (no es parte del producto) -->
+  <nav class="proto-bar" aria-label="Índice del prototipo">
+    <b>Prototipo</b>
+    <a href="#login">Inicio de sesión</a>
+    <a href="#registro">Registro</a>
+    <a href="#cuestionario">Cuestionario</a>
+    <a href="#huella">Mi huella</a>
+    <a href="#carreras">Carreras</a>
+    <a href="#ficha">Ficha</a>
+    <a href="#comparar">Comparar</a>
+    <a href="#admin">Admin</a>
+  </nav>
+
+  <!-- Chrome de la app, compartido -->
+  <nav class="nav" aria-label="Principal">
+    <a class="nav__logo" href="#portada">
+      <span class="huella-mini" aria-hidden="true"><i class="t-r"></i><i class="t-i"></i><i
+        class="t-a"></i><i class="t-s"></i><i class="t-e"></i><i class="t-c"></i></span>
+      Brújula
+    </a>
+    <ul class="nav__links">
+      <li><a href="#cuestionario">Cuestionario</a></li>
+      <li><a href="#huella">Mi huella</a></li>
+      <li><a href="#carreras">Carreras</a></li>
+      <li><a href="#comparar">Comparar</a></li>
+    </ul>
+    <button class="nav__avatar" type="button" aria-label="Cuenta de Valeria Mora">VM</button>
+  </nav>
+
+  <main>
+    <!-- ══════════ PORTADA DEL PROTOTIPO ══════════ -->
+    <section class="pantalla" id="portada" aria-label="Portada del prototipo">
+      <div class="pagina">
+        <h1>Prototipo — dirección "Huella"</h1>
+        <p class="sub" style="margin-top: var(--esp-3)">
+          Pantallas clave con datos de muestra (Valeria, código I–A–E). Navegá con la
+          barra oscura de arriba. Cada pantalla incluye sus estados (vacío, cargando,
+          error) como muestras rotuladas. Especificación completa en
+          <strong>DESIGN.md</strong>; tokens en
+          <strong>client/src/styles/tokens.css</strong> (este archivo los consume
+          directamente).
+        </p>
+        <div class="seccion" style="max-width: 40rem">
+          <div class="huella huella--hero" role="img"
+            aria-label="Huella vocacional de muestra: Realista 11, Investigativo 23, Artístico 20, Social 13, Emprendedor 17, Convencional 8, de un máximo de 25.">
+            <i class="t-r" style="flex: 11"></i><i class="t-i" style="flex: 23"></i><i
+              class="t-a" style="flex: 20"></i><i class="t-s" style="flex: 13"></i><i
+              class="t-e" style="flex: 17"></i><i class="t-c" style="flex: 8"></i>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════ HU-01 · INICIO DE SESIÓN ══════════ -->
+    <section class="pantalla" id="login" aria-label="Inicio de sesión">
+      <div class="pagina estrecha">
+        <h2>Entrá a tu cuenta</h2>
+        <p class="sub" style="margin: var(--esp-2) 0 var(--esp-5)">
+          ¿Todavía no tenés cuenta? <a href="#registro">Registrate</a>.
+        </p>
+        <form>
+          <div class="campo">
+            <label for="li-correo">Correo electrónico</label>
+            <input id="li-correo" type="email" autocomplete="email" required />
+          </div>
+          <div class="campo campo--clave">
+            <label for="li-clave">Contraseña</label>
+            <input id="li-clave" type="password" autocomplete="current-password" required />
+            <button class="mostrar" type="button" aria-pressed="false">Mostrar</button>
+          </div>
+          <button class="btn btn--primario btn--bloque" type="submit">Entrar</button>
+        </form>
+
+        <div class="specimen">
+          <h3>Estado: credenciales incorrectas (mensaje genérico, HU-01)</h3>
+          <div class="panel panel--error" role="alert">
+            <b>Correo o contraseña incorrectos.</b> Revisá los datos e intentá de nuevo.
+          </div>
+        </div>
+        <div class="specimen">
+          <h3>Estado: enviando</h3>
+          <button class="btn btn--primario btn--bloque" type="button" disabled aria-busy="true">
+            Entrando…
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════ HU-01 · REGISTRO ══════════ -->
+    <section class="pantalla" id="registro" aria-label="Registro">
+      <div class="pagina estrecha">
+        <h2>Creá tu cuenta</h2>
+        <p class="sub" style="margin: var(--esp-2) 0 var(--esp-5)">
+          En un par de minutos vas a estar respondiendo el cuestionario.
+        </p>
+        <form>
+          <div class="campo">
+            <label for="re-nombre">Nombre completo</label>
+            <input id="re-nombre" type="text" autocomplete="name" required />
+          </div>
+          <div class="campo">
+            <label for="re-correo">Correo electrónico</label>
+            <input id="re-correo" type="email" autocomplete="email" required />
+          </div>
+          <div class="campo campo--clave">
+            <label for="re-clave">Contraseña</label>
+            <input id="re-clave" type="password" autocomplete="new-password" required />
+            <button class="mostrar" type="button" aria-pressed="false">Mostrar</button>
+            <p class="ayuda">Mínimo 8 caracteres, con letras y números.</p>
+          </div>
+          <button class="btn btn--primario btn--bloque" type="submit">Crear cuenta</button>
+        </form>
+
+        <div class="specimen">
+          <h3>Estado: correo ya registrado</h3>
+          <div class="campo campo--error">
+            <label for="re-correo2">Correo electrónico</label>
+            <input id="re-correo2" type="email" value="valeria@ejemplo.cr"
+              aria-describedby="re-correo2-msg" />
+            <p class="mensaje" id="re-correo2-msg">
+              Ese correo ya tiene cuenta. <a href="#login">Iniciá sesión</a> o usá otro correo.
+            </p>
+          </div>
+        </div>
+        <div class="specimen">
+          <h3>Estado: contraseña débil</h3>
+          <div class="campo campo--error campo--clave">
+            <label for="re-clave2">Contraseña</label>
+            <input id="re-clave2" type="password" value="abc" aria-describedby="re-clave2-msg" />
+            <button class="mostrar" type="button" aria-pressed="false">Mostrar</button>
+            <p class="mensaje" id="re-clave2-msg">
+              Le faltan caracteres: usá al menos 8, mezclando letras y números.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════ HU-02 · CUESTIONARIO ══════════ -->
+    <section class="pantalla" id="cuestionario" aria-label="Cuestionario">
+      <div class="pagina" style="max-width: 40rem">
+        <div class="panel" style="margin-bottom: var(--esp-5)">
+          Retomaste donde quedaste: <strong>pregunta 12 de 30</strong>. Tus respuestas
+          se guardan solas.
+        </div>
+
+        <div class="progreso-cabecera">
+          <span class="contador" aria-live="polite">Pregunta 12 de 30</span>
+          <span class="guardado">Guardado ✓</span>
+        </div>
+        <!-- la huella se construye: cada banda crece al responder su dimensión -->
+        <div class="huella huella--progreso" role="img"
+          aria-label="Avance: 11 de 30 preguntas respondidas. Tu huella se va formando con cada respuesta.">
+          <i class="t-r" style="flex: 8"></i><i class="t-i" style="flex: 15"></i><i
+            class="t-a" style="flex: 11"></i><i class="t-s" style="flex: 6"></i><i
+            class="t-e" style="flex: 9"></i><i class="t-c" style="flex: 4"></i>
+        </div>
+
+        <div class="seccion" style="margin-top: var(--esp-6)">
+          <h2 style="font-size: var(--fs-xl); max-width: 22ch">
+            Me divierte descubrir cómo funcionan las cosas por dentro
+          </h2>
+          <form style="margin-top: var(--esp-5)">
+            <fieldset class="escala">
+              <legend>¿Qué tanto te identifica?</legend>
+              <div class="escala__opciones">
+                <label><input class="sr-only" type="radio" name="p12" value="1" /><span>1</span></label>
+                <label><input class="sr-only" type="radio" name="p12" value="2" /><span>2</span></label>
+                <label><input class="sr-only" type="radio" name="p12" value="3" /><span>3</span></label>
+                <label><input class="sr-only" type="radio" name="p12" value="4" checked /><span>4</span></label>
+                <label><input class="sr-only" type="radio" name="p12" value="5" /><span>5</span></label>
+              </div>
+              <div class="escala__extremos" aria-hidden="true">
+                <span>1 · Nada que ver conmigo</span>
+                <span>5 · Totalmente yo</span>
+              </div>
+            </fieldset>
+            <div class="fila-acciones">
+              <button class="btn btn--secundario" type="button">Anterior</button>
+              <button class="btn btn--primario" type="button">Siguiente</button>
+            </div>
+          </form>
+        </div>
+
+        <div class="specimen">
+          <h3>Estado: intento de envío con preguntas pendientes (HU-02)</h3>
+          <div class="panel panel--error" role="alert">
+            <b>Te faltan 3 preguntas:</b> la <a href="#cuestionario">7</a>, la
+            <a href="#cuestionario">19</a> y la <a href="#cuestionario">24</a>.
+            Te llevamos a la primera pendiente.
+          </div>
+        </div>
+        <div class="specimen">
+          <h3>Estado: calculando el perfil (tras enviar)</h3>
+          <div class="huella huella--esqueleto" aria-hidden="true">
+            <i style="flex: 14"></i><i style="flex: 20"></i><i style="flex: 17"></i><i
+              style="flex: 15"></i><i style="flex: 18"></i><i style="flex: 12"></i>
+          </div>
+          <p class="sub" style="margin-top: var(--esp-2); font-size: var(--fs-sm)">
+            Calculando tu huella… Estamos comparando tus respuestas con las seis
+            dimensiones. Tarda unos segundos.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════ HU-03 + HU-06 · MI HUELLA (RESULTADOS) ══════════ -->
+    <section class="pantalla" id="huella" aria-label="Mi huella">
+      <div class="pagina">
+        <p class="sub" style="font-size: var(--fs-sm)">Valeria · resultados del 2 de julio de 2026</p>
+        <h1 style="margin: var(--esp-1) 0 var(--esp-3)">
+          Esta huella es <em style="font-style: normal; color: var(--color-jade)">solo tuya</em>
+        </h1>
+        <p class="sub">
+          Terminaste las 30 preguntas. Así se mezclan tus seis intereses: nadie más
+          los combina en estas proporciones. Tus tres tintas dominantes marcan el rumbo.
+        </p>
+
+        <div class="seccion" style="margin-top: var(--esp-6)">
+          <div class="huella huella--hero" role="img"
+            aria-label="Huella vocacional: Realista 11, Investigativo 23, Artístico 20, Social 13, Emprendedor 17, Convencional 8, de un máximo de 25 por dimensión.">
+            <i class="t-r" style="flex: 11"></i><i class="t-i" style="flex: 23"></i><i
+              class="t-a" style="flex: 20"></i><i class="t-s" style="flex: 13"></i><i
+              class="t-e" style="flex: 17"></i><i class="t-c" style="flex: 8"></i>
+          </div>
+          <ul class="leyenda">
+            <li><i class="t-r"></i><span>Realista</span><span class="valor">11 <small>/ 25</small></span></li>
+            <li><i class="t-i"></i><span class="dominante">Investigativo<span class="sr-only"> (dominante)</span></span><span class="valor">23 <small>/ 25</small></span></li>
+            <li><i class="t-a"></i><span class="dominante">Artístico<span class="sr-only"> (dominante)</span></span><span class="valor">20 <small>/ 25</small></span></li>
+            <li><i class="t-s"></i><span>Social</span><span class="valor">13 <small>/ 25</small></span></li>
+            <li><i class="t-e"></i><span class="dominante">Emprendedor<span class="sr-only"> (dominante)</span></span><span class="valor">17 <small>/ 25</small></span></li>
+            <li><i class="t-c"></i><span>Convencional</span><span class="valor">8 <small>/ 25</small></span></li>
+          </ul>
+          <p class="leyenda-clave" aria-hidden="true"><b>●</b> tus tres tintas dominantes · en el mismo orden que la franja</p>
+          <div class="panel" style="margin-top: var(--esp-4)">
+            Tu código Holland es <strong>I–A–E</strong>: primero investigás, después
+            creás, y cuando la idea está lista, la echás a andar.
+          </div>
+        </div>
+
+        <div class="seccion">
+          <h2>Tus áreas más afines</h2>
+          <p class="sub" style="margin: var(--esp-2) 0 var(--esp-5)">
+            Comparamos tu huella con la de cada área académica. Cuanto más se parecen,
+            más alta la afinidad.
+          </p>
+          <ol class="lista-cards">
+            <li class="card card--principal">
+              <div class="card__cabecera">
+                <span class="card__titulo">Ciencia y Tecnología</span>
+                <span class="card__cifra">87 %</span>
+              </div>
+              <div aria-hidden="true">
+                <p class="eco-rotulo">La huella del área:</p>
+                <div class="huella huella--eco">
+                  <i class="t-r" style="flex: 10"></i><i class="t-i" style="flex: 24"></i><i
+                    class="t-a" style="flex: 14"></i><i class="t-s" style="flex: 8"></i><i
+                    class="t-e" style="flex: 12"></i><i class="t-c" style="flex: 10"></i>
+                </div>
+              </div>
+              <p>
+                La huella del área se parece a la tuya donde más pesás: curiosidad
+                investigativa y gusto por resolver problemas.
+              </p>
+              <a class="enlace-accion" href="#carreras">Ver 8 carreras del área</a>
+            </li>
+            <li class="card">
+              <div class="card__cabecera">
+                <span class="card__titulo">Arte, Diseño y Comunicación</span>
+                <span class="card__cifra">74 %</span>
+              </div>
+              <div aria-hidden="true">
+                <p class="eco-rotulo">La huella del área:</p>
+                <div class="huella huella--eco">
+                  <i class="t-r" style="flex: 6"></i><i class="t-i" style="flex: 12"></i><i
+                    class="t-a" style="flex: 26"></i><i class="t-s" style="flex: 12"></i><i
+                    class="t-e" style="flex: 14"></i><i class="t-c" style="flex: 5"></i>
+                </div>
+              </div>
+              <p>
+                Tu tinta artística es la segunda más fuerte: acá hay espacio para
+                crear, comunicar y darle forma propia a las ideas.
+              </p>
+              <a class="enlace-accion" href="#carreras">Ver 6 carreras del área</a>
+            </li>
+            <li class="card">
+              <div class="card__cabecera">
+                <span class="card__titulo">Negocios y Emprendimiento</span>
+                <span class="card__cifra">66 %</span>
+              </div>
+              <div aria-hidden="true">
+                <p class="eco-rotulo">La huella del área:</p>
+                <div class="huella huella--eco">
+                  <i class="t-r" style="flex: 8"></i><i class="t-i" style="flex: 10"></i><i
+                    class="t-a" style="flex: 10"></i><i class="t-s" style="flex: 14"></i><i
+                    class="t-e" style="flex: 28"></i><i class="t-c" style="flex: 12"></i>
+                </div>
+              </div>
+              <p>Tu vena emprendedora disfruta liderar, convencer y echar a andar proyectos nuevos.</p>
+              <a class="enlace-accion" href="#carreras">Ver 5 carreras del área</a>
+            </li>
+          </ol>
+        </div>
+
+        <div class="fila-acciones">
+          <button class="btn btn--primario" type="button">Descargá tu huella en PDF</button>
+          <button class="btn btn--secundario" type="button">Repetir el cuestionario</button>
+          <p class="sub" style="font-size: var(--fs-sm)">
+            Modelo RIASEC de Holland · 30 preguntas · escala 1–5 · <a href="#huella">¿Cómo se calcula?</a>
+          </p>
+        </div>
+
+        <div class="specimen">
+          <h3>Estado: sin perfil todavía (HU-03) — y descarga deshabilitada (HU-06)</h3>
+          <div class="card" style="max-width: 26rem">
+            <h3 style="font-family: var(--fuente-display)">Aún no tenés tu huella</h3>
+            <div class="huella huella--vacia" aria-hidden="true">
+              <i style="flex: 14"></i><i style="flex: 20"></i><i style="flex: 17"></i><i
+                style="flex: 15"></i><i style="flex: 18"></i><i style="flex: 12"></i>
+            </div>
+            <p>Respondé el cuestionario de 30 preguntas y acá va a aparecer tu combinación única.</p>
+            <button class="btn btn--primario" type="button" style="justify-self: start">
+              Empezar el cuestionario
+            </button>
+            <button class="btn" type="button" disabled>Descargá tu huella en PDF</button>
+            <p style="font-size: var(--fs-sm)">
+              Necesitás completar el cuestionario para poder descargar tu huella.
+            </p>
+          </div>
+        </div>
+        <div class="specimen">
+          <h3>Estado: error al cargar el perfil</h3>
+          <div class="panel panel--error" role="alert">
+            <b>No pudimos cargar tu huella.</b> Revisá tu conexión y
+            <a href="#huella">volvé a intentarlo</a>. Tus respuestas están guardadas.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════ HU-04 · CARRERAS (CATÁLOGO) ══════════ -->
+    <section class="pantalla" id="carreras" aria-label="Carreras">
+      <div class="pagina" style="max-width: 46rem">
+        <h2>Explorá las carreras</h2>
+        <p class="sub" style="margin: var(--esp-2) 0 var(--esp-5)">
+          Buscá por nombre o filtrá por área. La búsqueda no distingue tildes ni mayúsculas.
+        </p>
+        <form>
+          <div class="campo">
+            <label for="ca-busqueda">Buscá una carrera</label>
+            <input id="ca-busqueda" type="search" placeholder="p. ej. ingeniería" />
+          </div>
+          <ul class="chips" style="margin-bottom: var(--esp-5)" aria-label="Filtrar por área">
+            <li><a href="#carreras" aria-current="true">Todas</a></li>
+            <li><a href="#carreras">Ciencia y Tecnología</a></li>
+            <li><a href="#carreras">Arte y Diseño</a></li>
+            <li><a href="#carreras">Negocios</a></li>
+          </ul>
+        </form>
+        <ul class="lista-cards">
+          <li class="card">
+            <div class="card__cabecera">
+              <span class="card__titulo">Ingeniería en Computación</span>
+            </div>
+            <p style="font-size: var(--fs-sm)">
+              <span class="punto-tinta t-i" aria-hidden="true"></span>Ciencia y Tecnología · 4 años
+            </p>
+            <p>Diseñá y construí el software que usa la gente: de apps a sistemas completos.</p>
+            <a class="enlace-accion" href="#ficha">Ver la ficha</a>
+          </li>
+          <li class="card">
+            <div class="card__cabecera">
+              <span class="card__titulo">Biotecnología</span>
+            </div>
+            <p style="font-size: var(--fs-sm)">
+              <span class="punto-tinta t-i" aria-hidden="true"></span>Ciencia y Tecnología · 4 años
+            </p>
+            <p>Investigá organismos y procesos biológicos para resolver problemas reales.</p>
+            <a class="enlace-accion" href="#ficha">Ver la ficha</a>
+          </li>
+          <li class="card">
+            <div class="card__cabecera">
+              <span class="card__titulo">Diseño Gráfico</span>
+            </div>
+            <p style="font-size: var(--fs-sm)">
+              <span class="punto-tinta t-a" aria-hidden="true"></span>Arte, Diseño y Comunicación · 4 años
+            </p>
+            <p>Convertí ideas en piezas visuales: identidad, editorial, digital.</p>
+            <a class="enlace-accion" href="#ficha">Ver la ficha</a>
+          </li>
+        </ul>
+
+        <div class="specimen">
+          <h3>Estado: sin resultados (HU-04)</h3>
+          <div class="card" style="max-width: 30rem">
+            <h3 style="font-family: var(--fuente-display)">No se encontraron carreras para «panaderia»</h3>
+            <p>Probá con otro nombre o quitá el filtro de área.</p>
+            <a class="enlace-accion" href="#carreras">Limpiar la búsqueda</a>
+          </div>
+        </div>
+        <div class="specimen">
+          <h3>Estado: cargando</h3>
+          <div class="huella huella--esqueleto" aria-hidden="true" style="max-width: 30rem">
+            <i style="flex: 1"></i><i style="flex: 1"></i><i style="flex: 1"></i>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════ HU-04 · FICHA DE CARRERA ══════════ -->
+    <section class="pantalla" id="ficha" aria-label="Ficha de carrera">
+      <div class="pagina" style="max-width: 42rem">
+        <p style="font-size: var(--fs-sm)"><a href="#carreras">← Volver al catálogo</a></p>
+        <h1 style="font-size: var(--fs-xl); margin: var(--esp-3) 0 var(--esp-1)">
+          Ingeniería en Computación
+        </h1>
+        <p class="sub" style="font-size: var(--fs-sm)">
+          <span class="punto-tinta t-i" aria-hidden="true"></span>Ciencia y Tecnología · 4 años
+        </p>
+        <div class="seccion" style="margin-top: var(--esp-5)" aria-hidden="true">
+          <p class="eco-rotulo">La huella del área:</p>
+          <div class="huella huella--eco">
+            <i class="t-r" style="flex: 10"></i><i class="t-i" style="flex: 24"></i><i
+              class="t-a" style="flex: 14"></i><i class="t-s" style="flex: 8"></i><i
+              class="t-e" style="flex: 12"></i><i class="t-c" style="flex: 10"></i>
+          </div>
+        </div>
+        <div class="seccion" style="margin-top: var(--esp-5)">
+          <h3>Descripción</h3>
+          <p class="sub" style="margin-top: var(--esp-2)">
+            Diseñá, construí y mantené software: aplicaciones, sistemas y servicios que
+            usan miles de personas. Combina lógica, matemática y mucha resolución de
+            problemas en equipo.
+          </p>
+        </div>
+        <div class="seccion" style="margin-top: var(--esp-5)">
+          <h3>Campo laboral</h3>
+          <p class="sub" style="margin-top: var(--esp-2)">
+            Desarrollo de software, ciencia de datos, ciberseguridad, infraestructura en
+            la nube, empresas de todos los sectores y emprendimiento propio.
+          </p>
+        </div>
+        <div class="seccion" style="margin-top: var(--esp-5)">
+          <h3>Perfil del estudiante</h3>
+          <p class="sub" style="margin-top: var(--esp-2)">
+            Te va a encantar si disfrutás entender cómo funcionan las cosas, desarmar
+            problemas grandes en pasos chicos y ver tus ideas funcionando.
+          </p>
+        </div>
+        <div class="fila-acciones">
+          <a class="btn btn--secundario" href="#comparar" style="text-decoration: none">
+            Comparar esta carrera
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════ HU-05 · COMPARADOR ══════════ -->
+    <section class="pantalla" id="comparar" aria-label="Comparar carreras">
+      <div class="pagina" style="max-width: 46rem">
+        <h2>Comparar carreras</h2>
+        <p class="sub" style="margin: var(--esp-2) 0 var(--esp-5)">
+          Elegí dos carreras distintas y las ponemos lado a lado.
+        </p>
+        <form style="display: grid; gap: 0; grid-template-columns: 1fr 1fr; column-gap: var(--esp-4)">
+          <div class="campo">
+            <label for="co-a">Carrera A</label>
+            <select id="co-a"><option>Ingeniería en Computación</option></select>
+          </div>
+          <div class="campo">
+            <label for="co-b">Carrera B</label>
+            <select id="co-b"><option>Diseño Gráfico</option></select>
+          </div>
+        </form>
+
+        <div class="comparacion" style="margin-top: var(--esp-4)">
+          <div class="comparacion__nombres">
+            <h3>Ingeniería en Computación</h3>
+            <h3>Diseño Gráfico</h3>
+          </div>
+          <div class="comparacion__fila">
+            <span class="comparacion__atributo">Área</span>
+            <div class="comparacion__valores">
+              <p>Ciencia y Tecnología</p>
+              <p>Arte, Diseño y Comunicación</p>
+            </div>
+          </div>
+          <div class="comparacion__fila">
+            <span class="comparacion__atributo">Duración</span>
+            <div class="comparacion__valores"><p>4 años</p><p>4 años</p></div>
+          </div>
+          <div class="comparacion__fila">
+            <span class="comparacion__atributo">Campo laboral</span>
+            <div class="comparacion__valores">
+              <p>Software, datos, ciberseguridad, nube.</p>
+              <p>Identidad, editorial, producto digital, publicidad.</p>
+            </div>
+          </div>
+          <div class="comparacion__fila">
+            <span class="comparacion__atributo">Perfil del estudiante</span>
+            <div class="comparacion__valores">
+              <p>Lógica, método y gusto por desarmar problemas.</p>
+              <p>Ojo visual, sensibilidad y ganas de comunicar.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="specimen">
+          <h3>Estado: misma carrera dos veces (HU-05)</h3>
+          <div class="campo campo--error" style="max-width: 22rem">
+            <label for="co-b2">Carrera B</label>
+            <select id="co-b2" aria-describedby="co-b2-msg"><option>Ingeniería en Computación</option></select>
+            <p class="mensaje" id="co-b2-msg">
+              Elegiste la misma carrera dos veces. Cambiá una para poder comparar.
+            </p>
+          </div>
+        </div>
+        <div class="specimen">
+          <h3>Estado: falta elegir una</h3>
+          <button class="btn" type="button" disabled>Comparar</button>
+          <p class="sub" style="font-size: var(--fs-sm); margin-top: var(--esp-2)">
+            Elegí la segunda carrera para ver la comparación.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════ HU-07 · ADMIN · BANCO DE REACTIVOS ══════════ -->
+    <section class="pantalla" id="admin" aria-label="Administración de reactivos">
+      <div class="pagina" style="max-width: 52rem">
+        <h2>Banco de reactivos</h2>
+        <p class="sub" style="margin: var(--esp-2) 0 var(--esp-5)">
+          Los cambios se reflejan de inmediato en el cuestionario de los estudiantes.
+        </p>
+        <div class="fila-acciones" style="margin: 0 0 var(--esp-5)">
+          <button class="btn btn--primario" type="button">Crear reactivo</button>
+        </div>
+        <div style="overflow-x: auto">
+          <table class="tabla">
+            <thead>
+              <tr><th>Reactivo</th><th>Dimensión</th><th>Estado</th><th>Acciones</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Me divierte descubrir cómo funcionan las cosas por dentro</td>
+                <td><span class="punto-tinta t-i" aria-hidden="true"></span>Investigativo</td>
+                <td><span class="chip">Activo</span></td>
+                <td><a href="#admin">Editar</a> · <a href="#admin">Desactivar</a></td>
+              </tr>
+              <tr>
+                <td>Disfruto dibujar, escribir o inventar cosas nuevas</td>
+                <td><span class="punto-tinta t-a" aria-hidden="true"></span>Artístico</td>
+                <td><span class="chip">Activo</span></td>
+                <td><a href="#admin">Editar</a> · <a href="#admin">Desactivar</a></td>
+              </tr>
+              <tr class="inactivo">
+                <td>Me gusta armar y reparar objetos con mis manos</td>
+                <td><span class="punto-tinta t-r" aria-hidden="true"></span>Realista</td>
+                <td><span class="chip chip--gris">Inactivo</span></td>
+                <td><a href="#admin">Editar</a> · <a href="#admin">Reactivar</a></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="specimen">
+          <h3>Estado: confirmación de desactivar (HU-07 — soft delete, nunca se borra)</h3>
+          <div class="velo-specimen">
+            <div class="modal" role="dialog" aria-labelledby="mo-titulo" aria-modal="true">
+              <h3 id="mo-titulo">¿Desactivar este reactivo?</h3>
+              <p>
+                "Me divierte descubrir cómo funcionan las cosas por dentro" dejará de
+                aparecer en el cuestionario <strong>de inmediato</strong>. Las
+                respuestas ya registradas se conservan. Podés reactivarlo cuando querás.
+              </p>
+              <div class="modal__acciones">
+                <button class="btn btn--peligro" type="button">Desactivar</button>
+                <button class="btn btn--secundario" type="button">Cancelar</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="specimen">
+          <h3>Estado: acceso denegado a estudiantes (HU-07)</h3>
+          <div class="panel panel--error" role="alert" style="max-width: 30rem">
+            <b>No tenés permiso para entrar acá.</b> Esta sección es solo para el
+            equipo administrador. <a href="#huella">Volver a mi huella</a>.
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Tab bar móvil (chrome de la app, compartido) -->
+  <nav class="tabbar" aria-label="Principal (móvil)">
+    <a href="#cuestionario">
+      <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor"
+        stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+        <path d="M4 5.5h9M4 11h14M4 16.5h11" />
+      </svg>
+      Cuestionario
+    </a>
+    <a href="#huella">
+      <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true">
+        <rect x="3" y="5" width="3.4" height="12" rx="1.4" fill="currentColor" />
+        <rect x="7.6" y="3" width="3.4" height="16" rx="1.4" fill="currentColor" />
+        <rect x="12.2" y="6.5" width="3.4" height="9" rx="1.4" fill="currentColor" />
+        <rect x="16.8" y="8" width="2.6" height="6" rx="1.3" fill="currentColor" />
+      </svg>
+      Mi huella
+    </a>
+    <a href="#carreras">
+      <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor"
+        stroke-width="1.8" stroke-linejoin="round" aria-hidden="true">
+        <path d="M4 6.5 11 3l7 3.5-7 3.5z" />
+        <path d="M7 8.9v4.3c0 1.2 1.8 2.3 4 2.3s4-1.1 4-2.3V8.9" />
+      </svg>
+      Carreras
+    </a>
+    <a href="#comparar">
+      <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor"
+        stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+        <rect x="3.5" y="4" width="6.2" height="14" rx="1.6" />
+        <rect x="12.3" y="4" width="6.2" height="14" rx="1.6" />
+      </svg>
+      Comparar
+    </a>
+  </nav>
+</body>
+</html>

@@ -113,12 +113,15 @@ Regido por **DESIGN_BRIEF.md**. Cargar la skill `frontend-design` antes de empez
 - [x] Proponer **2–3 direcciones de arte** (concepto, paleta, tipografías, elemento
       firma) con una preview HTML de la pantalla de resultados en cada una.
       → `docs/design/DIRECCIONES.md` + `docs/design/direcciones/index.html`.
-- [ ] **PAUSA** — el equipo elige la dirección. ← **ESTAMOS ACÁ**
-- [ ] Con la dirección elegida: `DESIGN.md` (concepto, tokens, componentes,
+- [x] **PAUSA** — el equipo eligió la dirección **2 · "Huella"** (3/7). Se le corrió
+      `/impeccable critique` (26/40, 3×P1 + 2×P2) y se corrigieron todos los
+      hallazgos P1+P2+menores + polish antes de congelarla (ver
+      `docs/design/DIRECCIONES.md`).
+- [x] Con la dirección elegida: `DESIGN.md` (concepto, tokens, componentes,
       especificación por pantalla), `client/src/styles/tokens.css` y
-      `docs/prototipo.html` navegable.
+      `docs/prototipo.html` navegable (8 pantallas + estados, consume tokens.css).
 - [ ] **PAUSA** — aprobación del equipo. Solo entonces se habilita el frontend de
-      las fases 2–8.
+      las fases 2–8. ← **ESTAMOS ACÁ**
 
 **DoD:** dirección aprobada por el equipo; tokens implementados; ningún valor visual
 hardcodeado fuera de `tokens.css`.
