@@ -30,6 +30,8 @@
 | 18 | ESLint `react/require-default-props` (HU-01) | Override a `{ functions: 'defaultArguments' }` | Airbnb asume `defaultProps`, deprecado en componentes función desde React 18.3; se acepta el valor por defecto en la desestructuración |
 | 19 | ESLint `jsx-a11y/label-has-associated-control` (HU-01) | Override a `{ assert: 'htmlFor' }` | DESIGN.md fija el patrón `<label for>` + `<input id>` como hermanos (nunca label envolviendo el control); el default de la regla exige ambos (anidar y `htmlFor`) |
 | 20 | CORS (HU-01, corrección) | Paquete **cors**, origen desde `CLIENT_ORIGIN` (fallback `http://localhost:5173`), validado con función (`callback(null, !origin \|\| origin === allowedOrigin)`) en vez de string estático | El cliente Vite (puerto 5173) no podía llamar al backend (puerto 3000); la validación por función deja el header ausente ante orígenes no permitidos, en vez de reflejar siempre el mismo valor |
+| 21 | `GET /profile` (HU-02) | Se implementa ya en Fase 3 devolviendo el perfil **más reciente** (scores + holland + dominantes); **sin** recomendaciones de áreas | HU-02 exige "calcula el perfil y lo muestra": la pantalla "Mi huella" necesita leerlo tras el envío y al recargar. La afinidad con áreas (HU-03) queda para la Fase 4; no se adelanta |
+| 22 | Formato de error con detalle (HU-02) | `AppError` gana un 4º parámetro opcional `details`; el middleware lo incluye como `{ error: { code, message, details } }` solo cuando existe | El envío incompleto debe indicar **cuáles** reactivos faltan (`details.missing`/`missingPositions`) sin romper el formato uniforme de error del proyecto |
 
 (Claude Code: si tomás una decisión nueva, agregala a esta tabla.)
 
@@ -152,16 +154,24 @@ Cronograma: Módulo de Autenticación **27/6 – 4/7**.
 ## FASE 3 — Cuestionario vocacional · HU-02 (Alta)
 Cronograma: **5/7 – 12/7**.
 
-- [ ] `GET /questions` (solo activos), ciclo de `attempts`, `PATCH .../answers` con
+- [x] `GET /questions` (solo activos), ciclo de `attempts`, `PATCH .../answers` con
       **autosave**.
-- [ ] `POST .../submit` → invoca el **motor de scoring** (sección B) y crea `profile`.
-- [ ] Bloqueo de envío si quedan reactivos sin responder.
-- [ ] **Retomar** desde el último reactivo respondido.
-- [ ] Frontend: instrucciones + total de preguntas, cuestionario (uno por uno o por
+- [x] `POST .../submit` → invoca el **motor de scoring** (sección B) y crea `profile`.
+- [x] Bloqueo de envío si quedan reactivos sin responder.
+- [x] **Retomar** desde el último reactivo respondido.
+- [x] Frontend: instrucciones + total de preguntas, cuestionario (uno por uno o por
       bloques), barra de progreso, escala 1–5, reanudar avance.
-- [ ] **Pruebas** de los 4 escenarios de HU-02, con foco en el cálculo del perfil
+- [x] **Pruebas** de los 4 escenarios de HU-02, con foco en el cálculo del perfil
       (unitarias del `scoringService`).
-- [ ] Postman actualizado.
+- [x] Postman actualizado.
+
+**Cerrada 3/7.** `npm run lint` y `npm test` en verde en `client` y `server`
+(57 + 61 pruebas). Motor `scoringService` puro con 17 unitarias (incluye casos borde:
+respuestas iguales, empates RIASEC, extremos de la escala). Endpoints nuevos:
+`GET /questions`, `POST /attempts`, `GET /attempts/current`, `PATCH /attempts/:id/answers`,
+`POST /attempts/:id/submit`, `GET /profile`. Frontend: intro + cuestionario con huella de
+progreso, escala 1–5 accesible, autosave, retomar y pantalla "Mi huella". Traza CP-016…CP-026
+en `docs/trazabilidad.md` (26 casos, supera la meta de 25). Decisiones nuevas: #21, #22.
 
 ## FASE 4 — Recomendación de áreas · HU-03 (Alta)
 Cronograma: **13/7 – 20/7**.

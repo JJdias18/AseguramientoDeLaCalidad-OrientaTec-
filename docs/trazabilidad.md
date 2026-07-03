@@ -29,3 +29,26 @@
 | CP-015 | Ruta protegida redirige a inicio de sesión sin sesión activa; ruta de invitado redirige a "/" con sesión activa | `client/src/__tests__/components/ProtectedRoute.test.jsx`, `client/src/__tests__/components/GuestRoute.test.jsx` | ✅ Pasa   |
 
 **Total de casos documentados hasta la Fase 2: 15** (5 de aceptación + 10 complementarios).
+
+## HU-02 — Responder el cuestionario vocacional (Fase 3)
+
+| Caso   | Escenario (criterio de aceptación)        | Dado / Cuando / Entonces                                                                                                                     | Caso de prueba automatizado                                                                                            | Resultado |
+| ------ | ------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- | --------- |
+| CP-016 | Escenario 1: Cuestionario completo         | Dado un cuestionario de 30 reactivos, cuando el estudiante responde los 30 y presiona "Enviar", entonces el sistema genera el perfil y lo muestra. | `server/tests/routes/questionnaireRoutes.test.js` → "Escenario 1: … genera el perfil vocacional"; `client/src/__tests__/pages/CuestionarioPage.test.jsx` → "escenario 1: … navega a /mi-huella" | ✅ Pasa   |
+| CP-017 | Escenario 2: Cuestionario incompleto       | Dado que el estudiante dejó preguntas sin responder, cuando intenta enviar, entonces el sistema señala las faltantes y no permite enviarlo.        | `server/tests/routes/questionnaireRoutes.test.js` → "Escenario 2: bloquea el envío…"; `client/src/__tests__/pages/CuestionarioPage.test.jsx` → "escenario 2: bloquea el envío incompleto" | ✅ Pasa   |
+| CP-018 | Escenario 3: Retomar el avance             | Dado que respondió 15 de 30 y cerró la sesión, cuando vuelve a entrar, entonces lo ubica en la pregunta 16 conservando sus respuestas.             | `server/tests/routes/questionnaireRoutes.test.js` → "Escenario 3: … lo ubica en la pregunta 16"; `client/src/__tests__/pages/CuestionarioPage.test.jsx` → "escenario 3: al retomar…" | ✅ Pasa   |
+| CP-019 | Escenario 4: Cálculo del perfil            | Dado respuestas altas en reactivos investigativo y artístico, cuando el sistema calcula el perfil, entonces destaca esas dos áreas como predominantes. | `server/tests/services/scoringService.test.js` → "escenario 4 (HU-02)…"; `server/tests/routes/questionnaireRoutes.test.js` → "Escenario 4: … destacan esas dos áreas" | ✅ Pasa   |
+
+### Cobertura complementaria de HU-02 (motor de scoring y validaciones)
+
+| Caso   | Qué cubre                                                                                          | Ubicación                                                                     | Resultado |
+| ------ | -------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------ | --------- |
+| CP-020 | Motor de scoring puro: suma por tipo, código Holland, determinismo y casos borde (todas iguales, empates, extremos de la escala) | `server/tests/services/scoringService.test.js` (17 pruebas)                    | ✅ Pasa   |
+| CP-021 | `GET /questions` exige sesión y devuelve solo reactivos activos (30, 5 por tipo)                    | `server/tests/routes/questionnaireRoutes.test.js`                              | ✅ Pasa   |
+| CP-022 | Autosave (`PATCH …/answers`): reemplaza la respuesta previa del mismo reactivo                      | `server/tests/routes/questionnaireRoutes.test.js`                              | ✅ Pasa   |
+| CP-023 | Validaciones del intento: reactivo ajeno (404), valor fuera de la escala 1–5 (400), reenvío de intento ya completado (409) | `server/tests/routes/questionnaireRoutes.test.js`                              | ✅ Pasa   |
+| CP-024 | Escala 1–5 accesible (radiogroup, extremos rotulados, selección por número)                        | `client/src/__tests__/components/EscalaRespuesta.test.jsx`                      | ✅ Pasa   |
+| CP-025 | Cliente del cuestionario: contrato de los endpoints (`getQuestions`/`startAttempt`/`saveAnswer`/`submit`/`getProfile`) | `client/src/__tests__/services/questionnaireService.test.js`                   | ✅ Pasa   |
+| CP-026 | Resultado ("Mi huella"): muestra huella hero, leyenda con valores y código Holland; estado vacío sin perfil | `client/src/__tests__/pages/ResultadoPage.test.jsx`                            | ✅ Pasa   |
+
+**Total de casos documentados hasta la Fase 3: 26** (9 de aceptación + 17 complementarios) — se supera la meta global de ≥ 25 casos (`CLAUDE.md` §7.6).

@@ -28,23 +28,36 @@ describe('AppHeader', () => {
     expect(screen.getByRole('link', { name: /brújula/i })).toHaveAttribute('href', '/');
   });
 
-  it('no muestra el botón de cuenta si no hay sesión iniciada', () => {
+  it('no muestra controles de cuenta si no hay sesión iniciada', () => {
     useAuth.mockReturnValue({ user: null, logout: jest.fn() });
     renderHeader();
 
     expect(screen.queryByRole('button')).not.toBeInTheDocument();
+    expect(screen.queryByRole('link', { name: /mi huella/i })).not.toBeInTheDocument();
   });
 
-  it('muestra un botón con las iniciales del usuario y cierra sesión al presionarlo', async () => {
+  it('la burbuja de perfil lleva a "Mi huella" y NO cierra la sesión', async () => {
     const user = userEvent.setup();
     const logout = jest.fn();
     useAuth.mockReturnValue({ user: { fullName: 'Valeria Mora' }, logout });
     renderHeader();
 
-    const boton = screen.getByRole('button', { name: 'Cerrar sesión de Valeria Mora' });
-    expect(boton).toHaveTextContent('VM');
+    const burbuja = screen.getByRole('link', { name: /mi huella/i });
+    expect(burbuja).toHaveTextContent('VM');
+    expect(burbuja).toHaveAttribute('href', '/mi-huella');
 
-    await user.click(boton);
+    await user.click(burbuja);
+    // Ver el perfil no debe terminar la sesión (regresión: burbuja == logout).
+    expect(logout).not.toHaveBeenCalled();
+  });
+
+  it('ofrece un botón explícito para cerrar sesión', async () => {
+    const user = userEvent.setup();
+    const logout = jest.fn();
+    useAuth.mockReturnValue({ user: { fullName: 'Valeria Mora' }, logout });
+    renderHeader();
+
+    await user.click(screen.getByRole('button', { name: /cerrar sesión/i }));
 
     expect(logout).toHaveBeenCalledTimes(1);
   });

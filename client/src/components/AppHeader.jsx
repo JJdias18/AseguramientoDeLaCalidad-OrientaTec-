@@ -27,14 +27,18 @@ function AppHeader() {
         Brújula
       </Link>
       {user && (
-        <button
-          type="button"
-          className="nav__avatar"
-          aria-label={`Cerrar sesión de ${user.fullName}`}
-          onClick={logout}
-        >
-          {initials(user.fullName)}
-        </button>
+        <div className="nav__cuenta">
+          <Link
+            className="nav__avatar"
+            to="/mi-huella"
+            aria-label={`Mi huella de ${user.fullName}`}
+          >
+            {initials(user.fullName)}
+          </Link>
+          <button type="button" className="enlace" onClick={logout}>
+            Cerrar sesión
+          </button>
+        </div>
       )}
     </header>
   );

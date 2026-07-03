@@ -7,6 +7,8 @@ import GuestRoute from './components/GuestRoute';
 import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
+import CuestionarioPage from './pages/CuestionarioPage';
+import ResultadoPage from './pages/ResultadoPage';
 import NotFoundPage from './pages/NotFoundPage';
 
 function App() {
@@ -18,6 +20,8 @@ function App() {
           <Routes>
             <Route element={<ProtectedRoute />}>
               <Route path="/" element={<HomePage />} />
+              <Route path="/cuestionario" element={<CuestionarioPage />} />
+              <Route path="/mi-huella" element={<ResultadoPage />} />
             </Route>
             <Route element={<GuestRoute />}>
               <Route path="/iniciar-sesion" element={<LoginPage />} />

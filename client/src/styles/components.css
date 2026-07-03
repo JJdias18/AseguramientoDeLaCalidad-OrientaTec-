@@ -38,8 +38,14 @@
   flex: 1;
 }
 
-.nav__avatar {
+.nav__cuenta {
   margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: var(--esp-4);
+}
+
+.nav__avatar {
   width: var(--target-tactil);
   height: var(--target-tactil);
   border-radius: var(--radio-pill);
@@ -50,6 +56,7 @@
   display: grid;
   place-items: center;
   cursor: pointer;
+  text-decoration: none;
 }
 
 @media (min-width: 720px) {
@@ -227,4 +234,196 @@
 }
 .t-c {
   background: var(--tinta-c);
+}
+
+/* ── Huella con datos: bandas que se llenan por dimensión (DESIGN.md §4) ── */
+.huella__banda {
+  position: relative;
+  background: var(--color-brote);
+  overflow: hidden;
+}
+
+.huella__relleno {
+  position: absolute;
+  inset: 0;
+  transform-origin: bottom;
+}
+
+.huella--progreso {
+  height: var(--alto-huella-progreso);
+  border-radius: var(--radio-s);
+}
+
+.huella--hero {
+  height: var(--alto-huella-hero);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .huella--hero {
+    animation: asentar var(--dur-entrada) var(--curva-salida);
+  }
+
+  .huella--progreso .huella__relleno {
+    transition: transform var(--dur-media) var(--curva-salida);
+  }
+
+  .cargando i {
+    animation: pulso 1.4s ease-in-out infinite;
+  }
+}
+
+@keyframes asentar {
+  from {
+    opacity: 0.35;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulso {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.45;
+  }
+}
+
+/* ── Enlace de acción (botón con apariencia de enlace, DESIGN.md §5) ── */
+.enlace {
+  font: 600 var(--fs-base) var(--fuente-cuerpo);
+  color: var(--color-jade);
+  background: none;
+  border: none;
+  padding: var(--esp-2) 0;
+  min-height: var(--target-tactil);
+  cursor: pointer;
+}
+
+.enlace:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.enlace:disabled {
+  color: var(--color-musgo);
+  cursor: not-allowed;
+  text-decoration: none;
+}
+
+/* ── Escala 1–5 (radiogroup, DESIGN.md §5) ── */
+.escala__opciones {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: var(--esp-2);
+}
+
+.escala__op {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-height: 48px;
+  border: 1.5px solid var(--color-borde);
+  border-radius: var(--radio-s);
+  font: 700 var(--fs-md) var(--fuente-cuerpo);
+  color: var(--color-tinta);
+  cursor: pointer;
+}
+
+.escala__op input {
+  position: absolute;
+  opacity: 0;
+  inset: 0;
+  margin: 0;
+  cursor: pointer;
+}
+
+.escala__op:has(input:checked) {
+  background: var(--color-jade);
+  border-color: var(--color-jade);
+  color: var(--color-fondo);
+}
+
+.escala__op:has(input:focus-visible) {
+  outline: var(--foco-grosor) solid var(--color-jade);
+  outline-offset: 2px;
+}
+
+.escala__extremos {
+  display: flex;
+  justify-content: space-between;
+  margin-top: var(--esp-2);
+  font-size: var(--fs-xs);
+  color: var(--color-musgo);
+}
+
+/* ── Pantalla del cuestionario (DESIGN.md §7.3) ── */
+.cuestionario__contador {
+  margin: var(--esp-3) 0 var(--esp-5);
+  font-size: var(--fs-sm);
+  color: var(--color-musgo);
+  font-variant-numeric: tabular-nums;
+}
+
+.cuestionario__pregunta {
+  border: none;
+  padding: 0;
+  margin: 0 0 var(--esp-4);
+}
+
+.cuestionario__texto {
+  font-family: var(--fuente-display);
+  font-size: var(--fs-md);
+  font-weight: 600;
+  line-height: 1.25;
+  padding: 0;
+  margin-bottom: var(--esp-5);
+}
+
+.cuestionario__autosave {
+  min-height: 1.6rem;
+  font-size: var(--fs-sm);
+}
+
+.cuestionario__nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--esp-4);
+  margin-top: var(--esp-5);
+}
+
+/* ── Leyenda del resultado (DESIGN.md §7.4) ── */
+.leyenda {
+  list-style: none;
+  display: grid;
+  gap: var(--esp-3);
+}
+
+.leyenda__item {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: var(--esp-3);
+  padding-bottom: var(--esp-3);
+  border-bottom: 1px solid var(--color-hairline);
+}
+
+.leyenda__punto {
+  width: var(--esp-3);
+  height: var(--esp-3);
+  border-radius: var(--radio-pill);
+}
+
+.leyenda__dominante {
+  color: var(--color-jade);
+}
+
+.leyenda__valor {
+  font-variant-numeric: tabular-nums;
+  color: var(--color-musgo);
 }

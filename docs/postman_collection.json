@@ -222,6 +222,190 @@
           }
         }
       ]
+    },
+    {
+      "name": "Cuestionario (HU-02)",
+      "description": "Reactivos, ciclo de intentos, autosave de respuestas y cálculo del perfil. Requiere haber corrido antes un request de Auth que deja {{token}}.",
+      "item": [
+        {
+          "name": "Reactivos activos (GET /questions)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));",
+                  "pm.test('30 reactivos activos', () => {",
+                  "  pm.expect(pm.response.json().questions).to.have.lengthOf(30);",
+                  "});",
+                  "if (pm.response.code === 200) {",
+                  "  pm.collectionVariables.set('questionId', pm.response.json().questions[0].id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/questions",
+              "host": ["{{baseUrl}}"],
+              "path": ["questions"]
+            }
+          }
+        },
+        {
+          "name": "Iniciar o retomar intento (POST /attempts)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));",
+                  "pm.test('devuelve intento en curso, reactivos y avance', () => {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body.attempt.status).to.eql('in_progress');",
+                  "  pm.expect(body.questions).to.have.lengthOf(30);",
+                  "  pm.expect(body.progress.total).to.eql(30);",
+                  "});",
+                  "if (pm.response.code === 200) {",
+                  "  pm.collectionVariables.set('attemptId', pm.response.json().attempt.id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/attempts",
+              "host": ["{{baseUrl}}"],
+              "path": ["attempts"]
+            }
+          }
+        },
+        {
+          "name": "Autosave de una respuesta (PATCH /attempts/:id/answers)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));",
+                  "pm.test('guarda la respuesta y actualiza el avance', () => {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body.answer.value).to.eql(4);",
+                  "  pm.expect(body.progress.answered).to.be.at.least(1);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"questionId\": {{questionId}},\n  \"value\": 4\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/attempts/{{attemptId}}/answers",
+              "host": ["{{baseUrl}}"],
+              "path": ["attempts", "{{attemptId}}", "answers"]
+            }
+          }
+        },
+        {
+          "name": "Intento en curso (GET /attempts/current)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));",
+                  "pm.test('conserva las respuestas guardadas (retomar)', () => {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body.attempt.id).to.eql(Number(pm.collectionVariables.get('attemptId')));",
+                  "  pm.expect(body.progress.answered).to.be.at.least(1);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/attempts/current",
+              "host": ["{{baseUrl}}"],
+              "path": ["attempts", "current"]
+            }
+          }
+        },
+        {
+          "name": "Envío incompleto bloqueado (POST /attempts/:id/submit)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('409 Conflict', () => pm.response.to.have.status(409));",
+                  "pm.test('código INCOMPLETE_QUESTIONNAIRE con las preguntas faltantes', () => {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body.error.code).to.eql('INCOMPLETE_QUESTIONNAIRE');",
+                  "  pm.expect(body.error.details.missing.length).to.be.above(0);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/attempts/{{attemptId}}/submit",
+              "host": ["{{baseUrl}}"],
+              "path": ["attempts", "{{attemptId}}", "submit"]
+            }
+          }
+        },
+        {
+          "name": "Perfil sin completar (GET /profile)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('404 Not Found mientras no haya perfil', () => pm.response.to.have.status(404));",
+                  "pm.test('código PROFILE_NOT_FOUND', () => {",
+                  "  pm.expect(pm.response.json().error.code).to.eql('PROFILE_NOT_FOUND');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/profile",
+              "host": ["{{baseUrl}}"],
+              "path": ["profile"]
+            }
+          }
+        }
+      ]
     }
   ],
   "variable": [
@@ -232,6 +416,16 @@
     },
     {
       "key": "token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "attemptId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "questionId",
       "value": "",
       "type": "string"
     }

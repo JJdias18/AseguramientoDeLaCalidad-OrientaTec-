@@ -2,6 +2,9 @@ const express = require('express');
 const cors = require('cors');
 
 const authRoutes = require('./routes/authRoutes');
+const questionRoutes = require('./routes/questionRoutes');
+const attemptRoutes = require('./routes/attemptRoutes');
+const profileRoutes = require('./routes/profileRoutes');
 
 const app = express();
 
@@ -19,6 +22,9 @@ app.get('/api/v1/health', (req, res) => {
 });
 
 app.use('/api/v1/auth', authRoutes);
+app.use('/api/v1/questions', questionRoutes);
+app.use('/api/v1/attempts', attemptRoutes);
+app.use('/api/v1/profile', profileRoutes);
 
 // 404 con el formato de error uniforme del proyecto.
 app.use((req, res) => {
@@ -34,12 +40,14 @@ app.use((req, res) => {
 // eslint-disable-next-line no-unused-vars
 app.use((err, req, res, next) => {
   const status = err.status || 500;
-  res.status(status).json({
-    error: {
-      code: err.code || 'INTERNAL_ERROR',
-      message: err.message || 'Error interno del servidor.',
-    },
-  });
+  const error = {
+    code: err.code || 'INTERNAL_ERROR',
+    message: err.message || 'Error interno del servidor.',
+  };
+  if (err.details !== undefined) {
+    error.details = err.details;
+  }
+  res.status(status).json({ error });
 });
 
 module.exports = app;
