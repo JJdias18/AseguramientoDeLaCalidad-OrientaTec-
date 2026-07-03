@@ -21,6 +21,7 @@
 | 9 | Tests del cliente | **Jest + jsdom + Testing Library + babel-jest** | El estándar del proyecto exige Jest (no Vitest) pese a Vite ESM |
 | 10 | Push en Fase 0 | **Solo git local** (`main` + `develop`), sin remoto | No hay remoto/credenciales configurados localmente; el push se hará cuando el equipo lo indique |
 | 11 | Scaffold del cliente | **Manual con React fijado en 18.3** (sin `npm create vite`) | La plantilla actual de Vite trae React 19 + ESLint 9 flat, incompatibles con el stack fijo |
+| 12 | Entregables de la Fase 1.5 (propuestas) | Previews en `docs/design/direcciones/` + propuesta en `docs/design/DIRECCIONES.md`; los 6 colores RIASEC de la dirección "Huella" validados para daltonismo (CVD ΔE adyacente ≥ 12) y todo texto verificado WCAG AA por cálculo | El brief exige comparación lado a lado y accesibilidad AA como DoD |
 
 (Claude Code: si tomás una decisión nueva, agregala a esta tabla.)
 
@@ -109,9 +110,10 @@ Objetivo: esquema + seeds. (EDT 1.2.2.1 · cronograma: diseño de modelo 19–20
 Objetivo: identidad y prototipo aprobados antes de escribir React. (EDT 1.2.2.2)
 Regido por **DESIGN_BRIEF.md**. Cargar la skill `frontend-design` antes de empezar.
 
-- [ ] Proponer **2–3 direcciones de arte** (concepto, paleta, tipografías, elemento
+- [x] Proponer **2–3 direcciones de arte** (concepto, paleta, tipografías, elemento
       firma) con una preview HTML de la pantalla de resultados en cada una.
-- [ ] **PAUSA** — el equipo elige la dirección.
+      → `docs/design/DIRECCIONES.md` + `docs/design/direcciones/index.html`.
+- [ ] **PAUSA** — el equipo elige la dirección. ← **ESTAMOS ACÁ**
 - [ ] Con la dirección elegida: `DESIGN.md` (concepto, tokens, componentes,
       especificación por pantalla), `client/src/styles/tokens.css` y
       `docs/prototipo.html` navegable.

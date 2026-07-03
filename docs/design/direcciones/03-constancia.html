@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Dirección 3 · Constancia — Brújula Vocacional</title>
+<!--
+  Fase 1.5 · Dirección de arte 3: "Constancia"
+  Concepto: tu resultado merece el peso de un documento — una constancia editorial
+  que da orgullo imprimir, con tu código Holland como monograma personal.
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+  href="https://fonts.googleapis.com/css2?family=Ibarra+Real+Nova:ital,wght@0,400..700;1,400..700&family=Public+Sans:ital,wght@0,400..700;1,400&display=swap"
+  rel="stylesheet"
+/>
+<style>
+  :root {
+    --papel: #ffffff;
+    --tinta: #1b1b1b;
+    --gris: #5b5b5b;
+    --ciruela: #871459;
+    --ciruela-oscuro: #6a0e45;
+    --senalador: #fcea7f;
+    --wash: #f5f5f5;
+    --hairline: #d4d4d4;
+    --radio: 2px;
+    /* Ibarra Real Nova: serif de la Imprenta Real española — registro de documento */
+    --display: 'Ibarra Real Nova', serif;
+    --cuerpo: 'Public Sans', system-ui, sans-serif;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: var(--cuerpo);
+    background: var(--papel);
+    color: var(--tinta);
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+  a { color: var(--ciruela); }
+  :focus-visible {
+    outline: 2px solid var(--ciruela);
+    outline-offset: 2px;
+  }
+  mark {
+    background: var(--senalador);
+    color: var(--tinta);
+    padding: 0 0.15em;
+  }
+
+  /* ── Chrome ── */
+  .nav {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 0.9rem 1.25rem;
+    border-bottom: 2px solid var(--tinta);
+  }
+  .nav__logo {
+    font-family: var(--display);
+    font-weight: 650;
+    font-size: 1.2rem;
+    letter-spacing: -0.01em;
+    color: var(--tinta);
+    text-decoration: none;
+  }
+  .nav__logo b { color: var(--ciruela); font-weight: 650; }
+  .nav__links { display: none; gap: 1.5rem; margin-left: auto; list-style: none; }
+  .nav__links a {
+    color: var(--gris);
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.95rem;
+  }
+  .nav__links a[aria-current='page'] {
+    color: var(--tinta);
+    font-weight: 600;
+    text-decoration: underline;
+    text-decoration-color: var(--ciruela);
+    text-decoration-thickness: 2px;
+    text-underline-offset: 6px;
+  }
+  .nav__avatar {
+    margin-left: auto;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: var(--tinta);
+    color: var(--papel);
+    font-weight: 600;
+    font-size: 0.8rem;
+    display: grid;
+    place-items: center;
+  }
+  @media (min-width: 720px) {
+    .nav { padding: 0.9rem 2.5rem; }
+    .nav__links { display: flex; }
+    .nav__avatar { margin-left: 0; }
+  }
+
+  .documento { max-width: 56rem; margin: 0 auto; padding: 0 1.25rem 4rem; }
+  @media (min-width: 720px) { .documento { padding: 0 2.5rem 5rem; } }
+
+  /* ── Masthead del documento ── */
+  .masthead {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem 2rem;
+    padding: 0.8rem 0;
+    border-bottom: 1px solid var(--hairline);
+    font-size: 0.8rem;
+    color: var(--gris);
+    font-variant-numeric: tabular-nums;
+  }
+  .masthead b { color: var(--tinta); font-weight: 600; }
+
+  /* ── Monograma ── */
+  .portada {
+    display: grid;
+    gap: 1.5rem;
+    padding: 2.5rem 0 2.75rem;
+    border-bottom: 1px solid var(--hairline);
+  }
+  @media (min-width: 720px) {
+    .portada { grid-template-columns: auto 1fr; gap: 3.5rem; align-items: center; }
+  }
+  .monograma {
+    font-family: var(--display);
+    font-size: clamp(4.5rem, 16vw, 6rem);
+    font-weight: 650;
+    letter-spacing: -0.02em;
+    line-height: 0.95;
+    color: var(--ciruela);
+  }
+  .monograma small {
+    display: block;
+    font-family: var(--cuerpo);
+    font-size: 0.8rem;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    color: var(--gris);
+    margin-top: 0.5rem;
+  }
+  h1 {
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: clamp(1.7rem, 5vw, 2.5rem);
+    letter-spacing: -0.02em;
+    line-height: 1.12;
+    text-wrap: balance;
+    margin-bottom: 0.75rem;
+  }
+  .portada__texto p { color: var(--gris); max-width: 56ch; }
+  .portada__texto p strong { color: var(--tinta); }
+
+  /* ── Matriz de puntos ── */
+  h2 {
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: 1.5rem;
+    letter-spacing: -0.015em;
+    margin-bottom: 0.35rem;
+  }
+  .seccion { padding: 2.25rem 0; border-bottom: 1px solid var(--hairline); }
+  .seccion-sub { color: var(--gris); margin-bottom: 1.5rem; max-width: 56ch; }
+  .matriz { list-style: none; display: grid; gap: 0.9rem; }
+  .matriz li { display: grid; gap: 0.3rem; }
+  @media (min-width: 720px) {
+    .matriz li {
+      grid-template-columns: 11rem 1fr auto;
+      align-items: center;
+      gap: 1.25rem;
+    }
+  }
+  .matriz .nombre { font-weight: 600; font-size: 0.95rem; }
+  .matriz .nombre small {
+    font-weight: 500;
+    color: var(--gris);
+    font-size: 0.8rem;
+    margin-left: 0.3rem;
+  }
+  .fila-mobile { display: flex; align-items: baseline; justify-content: space-between; }
+  @media (min-width: 720px) { .fila-mobile { display: contents; } }
+  /* 25 celdas de 12px; los puntos llenos se recortan al puntaje */
+  .puntos {
+    position: relative;
+    height: 12px;
+    width: 300px;
+    max-width: 100%;
+    background-image: radial-gradient(circle 3.5px at 6px 50%, var(--hairline) 100%, transparent);
+    background-size: 12px 12px;
+    background-repeat: repeat-x;
+  }
+  .puntos i {
+    position: absolute;
+    inset: 0;
+    width: calc(var(--n) * 12px);
+    background-image: radial-gradient(circle 3.5px at 6px 50%, var(--gris) 100%, transparent);
+    background-size: 12px 12px;
+    background-repeat: repeat-x;
+  }
+  .dominante .puntos i {
+    background-image: radial-gradient(circle 3.5px at 6px 50%, var(--ciruela) 100%, transparent);
+  }
+  .matriz .valor {
+    font-family: var(--display);
+    font-size: 1.15rem;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+  }
+  .matriz .valor small {
+    font-family: var(--cuerpo);
+    font-size: 0.8rem;
+    font-weight: 400;
+    color: var(--gris);
+  }
+  .dominante .valor { color: var(--ciruela); }
+
+  /* ── Áreas: índice con puntos conductores ── */
+  .areas { list-style: none; display: grid; gap: 2rem; margin-top: 1.75rem; }
+  .area__fila {
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+  }
+  .area__rango {
+    font-family: var(--display);
+    font-size: 2.1rem;
+    font-weight: 600;
+    line-height: 1;
+    color: var(--ciruela);
+    min-width: 1.4rem;
+  }
+  .area__nombre {
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: 1.3rem;
+    letter-spacing: -0.015em;
+  }
+  .area__leader {
+    flex: 1;
+    border-bottom: 2px dotted var(--hairline);
+    transform: translateY(-0.3em);
+    min-width: 2rem;
+  }
+  .area__afinidad {
+    font-family: var(--display);
+    font-size: 1.6rem;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+  .area__cuerpo { margin-left: 0; margin-top: 0.4rem; }
+  @media (min-width: 720px) { .area__cuerpo { margin-left: 2.15rem; } }
+  .area__porque { color: var(--gris); max-width: 58ch; }
+  .area__link {
+    display: inline-block;
+    margin-top: 0.4rem;
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--ciruela);
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    text-decoration-thickness: 1.5px;
+  }
+  .area__link:hover { color: var(--ciruela-oscuro); }
+
+  /* ── Acciones ── */
+  .acciones {
+    margin-top: 2.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+  }
+  @media (min-width: 720px) { .acciones { flex-direction: row; align-items: center; } }
+  .btn {
+    font: 600 1rem var(--cuerpo);
+    padding: 0.9rem 1.7rem;
+    border-radius: var(--radio);
+    border: none;
+    cursor: pointer;
+    text-align: center;
+  }
+  .btn--primario { background: var(--ciruela); color: #fff; }
+  .btn--primario:hover { background: var(--ciruela-oscuro); }
+  .btn--secundario {
+    background: transparent;
+    color: var(--tinta);
+    border: 1.5px solid var(--tinta);
+  }
+  .btn--secundario:hover { background: var(--wash); }
+  .nota { font-size: 0.85rem; color: var(--gris); }
+  @media (min-width: 720px) { .nota { margin-left: auto; } }
+</style>
+</head>
+<body>
+  <nav class="nav" aria-label="Principal">
+    <a class="nav__logo" href="#">Brújula<b>.</b></a>
+    <ul class="nav__links">
+      <li><a href="#">Cuestionario</a></li>
+      <li><a href="#" aria-current="page">Mi perfil</a></li>
+      <li><a href="#">Carreras</a></li>
+      <li><a href="#">Comparar</a></li>
+    </ul>
+    <span class="nav__avatar" aria-hidden="true">VM</span>
+  </nav>
+
+  <main class="documento">
+    <p class="masthead">
+      <span>Constancia de perfil vocacional</span>
+      <span><b>Valeria Mora</b></span>
+      <span>2 de julio de 2026</span>
+      <span>30 de 30 reactivos</span>
+    </p>
+
+    <header class="portada">
+      <p class="monograma">
+        IAE
+        <small>tu código Holland</small>
+      </p>
+      <div class="portada__texto">
+        <h1>Investigativa, artística y con empuje emprendedor</h1>
+        <p>
+          Tu perfil se lee así: primero <strong>investigás</strong> a fondo, después
+          le das <mark>forma creativa</mark> a lo que descubrís, y tenés la
+          iniciativa para llevarlo a la práctica. Este documento es tuyo: usalo para
+          explorar carreras con criterio propio.
+        </p>
+      </div>
+    </header>
+
+    <section class="seccion" aria-labelledby="perfil-titulo">
+      <h2 id="perfil-titulo">Tu puntaje, dimensión por dimensión</h2>
+      <p class="seccion-sub">
+        Cada punto es un punto de tu puntaje, sobre un máximo de 25. Las tres
+        dimensiones en color forman tu código.
+      </p>
+      <ul class="matriz">
+        <li class="dominante">
+          <div class="fila-mobile">
+            <span class="nombre">Investigativo <small>I</small></span>
+            <span class="valor">23 <small>/ 25</small></span>
+          </div>
+          <div class="puntos" role="img" aria-label="Investigativo: 23 de 25"><i style="--n: 23"></i></div>
+        </li>
+        <li class="dominante">
+          <div class="fila-mobile">
+            <span class="nombre">Artístico <small>A</small></span>
+            <span class="valor">20 <small>/ 25</small></span>
+          </div>
+          <div class="puntos" role="img" aria-label="Artístico: 20 de 25"><i style="--n: 20"></i></div>
+        </li>
+        <li class="dominante">
+          <div class="fila-mobile">
+            <span class="nombre">Emprendedor <small>E</small></span>
+            <span class="valor">17 <small>/ 25</small></span>
+          </div>
+          <div class="puntos" role="img" aria-label="Emprendedor: 17 de 25"><i style="--n: 17"></i></div>
+        </li>
+        <li>
+          <div class="fila-mobile">
+            <span class="nombre">Social <small>S</small></span>
+            <span class="valor">13 <small>/ 25</small></span>
+          </div>
+          <div class="puntos" role="img" aria-label="Social: 13 de 25"><i style="--n: 13"></i></div>
+        </li>
+        <li>
+          <div class="fila-mobile">
+            <span class="nombre">Realista <small>R</small></span>
+            <span class="valor">11 <small>/ 25</small></span>
+          </div>
+          <div class="puntos" role="img" aria-label="Realista: 11 de 25"><i style="--n: 11"></i></div>
+        </li>
+        <li>
+          <div class="fila-mobile">
+            <span class="nombre">Convencional <small>C</small></span>
+            <span class="valor">8 <small>/ 25</small></span>
+          </div>
+          <div class="puntos" role="img" aria-label="Convencional: 8 de 25"><i style="--n: 8"></i></div>
+        </li>
+      </ul>
+    </section>
+
+    <section class="seccion" aria-labelledby="areas-titulo">
+      <h2 id="areas-titulo">Áreas afines, en orden</h2>
+      <p class="seccion-sub">
+        Las tres áreas académicas que más se parecen a tu perfil, ordenadas por
+        afinidad.
+      </p>
+      <ol class="areas">
+        <li>
+          <div class="area__fila">
+            <span class="area__rango" aria-hidden="true">1</span>
+            <span class="area__nombre">Ciencia y Tecnología</span>
+            <span class="area__leader" aria-hidden="true"></span>
+            <span class="area__afinidad">87 %</span>
+          </div>
+          <div class="area__cuerpo">
+            <p class="area__porque">
+              Coincide con tu interés investigativo: entender cómo funcionan las
+              cosas y resolver problemas con método es lo tuyo.
+            </p>
+            <a class="area__link" href="#">Ver las 8 carreras del área</a>
+          </div>
+        </li>
+        <li>
+          <div class="area__fila">
+            <span class="area__rango" aria-hidden="true">2</span>
+            <span class="area__nombre">Arte, Diseño y Comunicación</span>
+            <span class="area__leader" aria-hidden="true"></span>
+            <span class="area__afinidad">74 %</span>
+          </div>
+          <div class="area__cuerpo">
+            <p class="area__porque">
+              Tu lado artístico pide espacio para crear, comunicar y darle forma
+              propia a las ideas.
+            </p>
+            <a class="area__link" href="#">Ver las 6 carreras del área</a>
+          </div>
+        </li>
+        <li>
+          <div class="area__fila">
+            <span class="area__rango" aria-hidden="true">3</span>
+            <span class="area__nombre">Negocios y Emprendimiento</span>
+            <span class="area__leader" aria-hidden="true"></span>
+            <span class="area__afinidad">66 %</span>
+          </div>
+          <div class="area__cuerpo">
+            <p class="area__porque">
+              Tu vena emprendedora disfruta liderar proyectos, convencer y echar a
+              andar ideas nuevas.
+            </p>
+            <a class="area__link" href="#">Ver las 5 carreras del área</a>
+          </div>
+        </li>
+      </ol>
+    </section>
+
+    <div class="acciones">
+      <button class="btn btn--primario" type="button">Descargá tu constancia en PDF</button>
+      <button class="btn btn--secundario" type="button">Repetir el cuestionario</button>
+      <p class="nota">Modelo RIASEC de Holland · escala 1–5</p>
+    </div>
+  </main>
+</body>
+</html>

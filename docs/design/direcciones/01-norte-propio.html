@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Dirección 1 · Norte propio — Brújula Vocacional</title>
+<!--
+  Fase 1.5 · Dirección de arte 1: "Norte propio"
+  Concepto: la orientación vocacional como cartografía personal — la app es un
+  instrumento de precisión que te ayuda a trazar tu propio norte.
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+  href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62.5..125,100..900&family=IBM+Plex+Mono:wght@400;500;600&display=swap"
+  rel="stylesheet"
+/>
+<style>
+  :root {
+    --papel: #ffffff;
+    --tinta: #142234;
+    --gris-carta: #556272;
+    --vermellon: #b63613;
+    --meridiano: #284e7d;
+    --milimetrado: #f1f7fb;
+    --hairline: #d0d8e1;
+    --radio: 4px;
+    --fuente: 'Archivo', system-ui, sans-serif;
+    --mono: 'IBM Plex Mono', ui-monospace, monospace;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: var(--fuente);
+    background: var(--papel);
+    color: var(--tinta);
+    font-size: 1rem;
+    line-height: 1.55;
+    /* papel milimetrado: retícula sutil, solo en el lienzo de fondo */
+    background-image:
+      linear-gradient(var(--milimetrado) 1px, transparent 1px),
+      linear-gradient(90deg, var(--milimetrado) 1px, transparent 1px);
+    background-size: 24px 24px;
+  }
+  a { color: var(--meridiano); }
+  :focus-visible {
+    outline: 2px solid var(--vermellon);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+
+  /* ── Chrome ── */
+  .nav {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 0.9rem 1.25rem;
+    background: var(--papel);
+    border-bottom: 1px solid var(--hairline);
+  }
+  .nav__logo {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-stretch: 115%;
+    font-weight: 800;
+    font-size: 1.05rem;
+    letter-spacing: -0.01em;
+    color: var(--tinta);
+    text-decoration: none;
+  }
+  .nav__logo svg { display: block; }
+  .nav__links {
+    display: none;
+    gap: 1.25rem;
+    margin-left: auto;
+    list-style: none;
+  }
+  .nav__links a {
+    color: var(--gris-carta);
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.95rem;
+  }
+  .nav__links a[aria-current='page'] {
+    color: var(--tinta);
+    font-weight: 600;
+    border-bottom: 2px solid var(--vermellon);
+    padding-bottom: 2px;
+  }
+  .nav__avatar {
+    margin-left: auto;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: var(--meridiano);
+    color: #fff;
+    font-weight: 600;
+    font-size: 0.85rem;
+    display: grid;
+    place-items: center;
+  }
+  @media (min-width: 720px) {
+    .nav { padding: 0.9rem 2.5rem; }
+    .nav__links { display: flex; }
+    .nav__avatar { margin-left: 0; }
+  }
+
+  .lienzo {
+    max-width: 62rem;
+    margin: 0 auto;
+    padding: 2rem 1.25rem 4rem;
+  }
+  @media (min-width: 720px) { .lienzo { padding: 3rem 2.5rem 5rem; } }
+
+  /* ── Encabezado ── */
+  .meta {
+    font-family: var(--mono);
+    font-size: 0.8rem;
+    color: var(--gris-carta);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--hairline);
+  }
+  h1 {
+    font-stretch: 122%;
+    font-weight: 850;
+    font-size: clamp(1.9rem, 6vw, 3rem);
+    letter-spacing: -0.02em;
+    line-height: 1.05;
+    text-wrap: balance;
+    margin: 1.5rem 0 0.75rem;
+  }
+  .intro {
+    color: var(--gris-carta);
+    max-width: 52ch;
+  }
+  .intro strong { color: var(--tinta); }
+
+  /* ── Perfil: rosa RIASEC + rumbos ── */
+  .perfil {
+    display: grid;
+    gap: 2rem;
+    margin: 2.5rem 0 3rem;
+  }
+  @media (min-width: 720px) {
+    .perfil { grid-template-columns: minmax(0, 5fr) minmax(0, 4fr); align-items: center; gap: 3rem; }
+  }
+  .rosa { position: relative; }
+  .rosa svg { width: 100%; height: auto; display: block; max-width: 26rem; margin: 0 auto; }
+  .rosa__grid { stroke: var(--hairline); fill: none; stroke-width: 1; }
+  .rosa__eje { stroke: var(--hairline); stroke-width: 1; }
+  .rosa__area {
+    fill: rgb(182 54 19 / 0.09);
+    stroke: var(--vermellon);
+    stroke-width: 2;
+    stroke-linejoin: round;
+  }
+  .rosa__punto { fill: var(--papel); stroke: var(--vermellon); stroke-width: 2; }
+  .rosa__aguja { stroke: var(--tinta); stroke-width: 1.5; }
+  .rosa__aguja-punta { fill: var(--vermellon); }
+  .rosa__centro { fill: var(--tinta); }
+  .rosa__letra { font: 700 15px var(--fuente); fill: var(--tinta); }
+  .rosa__letra--dom { fill: var(--vermellon); }
+  .rosa__valor { font: 500 10px var(--mono); fill: var(--gris-carta); }
+  @media (prefers-reduced-motion: no-preference) {
+    .rosa__area, .rosa__punto {
+      transform-origin: 130px 120px;
+      animation: desplegar 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    @keyframes desplegar { from { transform: scale(0.6); opacity: 0.4; } }
+  }
+
+  .rumbos { list-style: none; }
+  .rumbos li {
+    display: grid;
+    grid-template-columns: 2rem 1fr auto;
+    align-items: baseline;
+    gap: 0.75rem;
+    padding: 0.55rem 0;
+    border-bottom: 1px dashed var(--hairline);
+  }
+  .rumbos .letra {
+    font-family: var(--mono);
+    font-weight: 600;
+    color: var(--gris-carta);
+  }
+  .rumbos .dominante .letra, .rumbos .dominante .nombre { color: var(--vermellon); }
+  .rumbos .nombre { font-weight: 600; }
+  .rumbos .dominante .nombre::after {
+    content: ' · dominante';
+    font-family: var(--mono);
+    font-weight: 400;
+    font-size: 0.72rem;
+    color: var(--gris-carta);
+  }
+  .rumbos .valor {
+    font-family: var(--mono);
+    font-size: 0.9rem;
+    font-variant-numeric: tabular-nums;
+  }
+  .codigo {
+    margin-top: 1.25rem;
+    font-family: var(--mono);
+    font-size: 0.85rem;
+    color: var(--gris-carta);
+  }
+  .codigo b {
+    color: var(--tinta);
+    font-size: 1.15rem;
+    letter-spacing: 0.35em;
+    font-weight: 600;
+  }
+
+  /* ── Áreas afines ── */
+  h2 {
+    font-stretch: 118%;
+    font-weight: 800;
+    font-size: 1.45rem;
+    letter-spacing: -0.015em;
+    margin-bottom: 0.35rem;
+  }
+  .seccion-sub { color: var(--gris-carta); margin-bottom: 1.5rem; max-width: 52ch; }
+  .areas { list-style: none; counter-reset: area; }
+  .area {
+    padding: 1.4rem 0;
+    border-top: 1px solid var(--hairline);
+    display: grid;
+    gap: 0.5rem;
+  }
+  .area__cabecera {
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+  }
+  .area__nombre { font-weight: 700; font-size: 1.15rem; letter-spacing: -0.01em; }
+  .area__afinidad {
+    margin-left: auto;
+    font-family: var(--mono);
+    font-weight: 600;
+    font-size: 1.05rem;
+    font-variant-numeric: tabular-nums;
+  }
+  .area--principal .area__afinidad { color: var(--vermellon); }
+  /* la ruta: track punteado con marcador de posición, como un trayecto en el mapa */
+  .ruta {
+    position: relative;
+    height: 10px;
+    border-bottom: 2px dotted var(--hairline);
+  }
+  .ruta i {
+    position: absolute;
+    top: 2px;
+    width: 12px;
+    height: 12px;
+    transform: translateX(-50%) rotate(45deg);
+    background: var(--vermellon);
+    border-radius: 1px;
+  }
+  .area:not(.area--principal) .ruta i { background: var(--meridiano); }
+  .area__porque { color: var(--gris-carta); max-width: 60ch; }
+  .area__link {
+    justify-self: start;
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--meridiano);
+    text-decoration: none;
+    border-bottom: 1.5px solid currentColor;
+    padding-bottom: 1px;
+  }
+  .area__link:hover { color: var(--vermellon); }
+
+  /* ── Acciones ── */
+  .acciones {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--hairline);
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+  }
+  @media (min-width: 720px) { .acciones { flex-direction: row; align-items: center; } }
+  .btn {
+    font: 600 1rem var(--fuente);
+    padding: 0.85rem 1.6rem;
+    border-radius: var(--radio);
+    border: none;
+    cursor: pointer;
+    text-align: center;
+  }
+  .btn--primario { background: var(--vermellon); color: #fff; }
+  .btn--primario:hover { background: #9c2e10; }
+  .btn--secundario {
+    background: transparent;
+    color: var(--meridiano);
+    border: 1.5px solid var(--hairline);
+  }
+  .btn--secundario:hover { border-color: var(--meridiano); }
+  .nota {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    color: var(--gris-carta);
+  }
+  @media (min-width: 720px) { .nota { margin-left: auto; } }
+</style>
+</head>
+<body>
+  <nav class="nav" aria-label="Principal">
+    <a class="nav__logo" href="#">
+      <svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true">
+        <circle cx="11" cy="11" r="10" fill="none" stroke="#142234" stroke-width="1.5" />
+        <path d="M11 3 L13 11 L11 19 L9 11 Z" fill="#b63613" />
+        <circle cx="11" cy="11" r="1.6" fill="#142234" />
+      </svg>
+      Brújula
+    </a>
+    <ul class="nav__links">
+      <li><a href="#">Cuestionario</a></li>
+      <li><a href="#" aria-current="page">Mi perfil</a></li>
+      <li><a href="#">Carreras</a></li>
+      <li><a href="#">Comparar</a></li>
+    </ul>
+    <span class="nav__avatar" aria-hidden="true">VM</span>
+  </nav>
+
+  <main class="lienzo">
+    <p class="meta">
+      <span>PERFIL · VALERIA MORA</span>
+      <span>2 JUL 2026</span>
+      <span>30/30 REACTIVOS</span>
+    </p>
+
+    <h1>Tu norte apunta a lo investigativo</h1>
+    <p class="intro">
+      Respondiste los 30 reactivos. Tu perfil combina la curiosidad
+      <strong>investigativa</strong> con una vena <strong>artística</strong> y empuje
+      <strong>emprendedor</strong>. Estas coordenadas son tuyas: usalas para explorar,
+      no como sentencia.
+    </p>
+
+    <section class="perfil" aria-label="Perfil RIASEC">
+      <figure class="rosa">
+        <svg viewBox="0 0 260 244" role="img"
+          aria-label="Rosa RIASEC: Investigativo 23, Artístico 20, Emprendedor 17, Social 13, Realista 11, Convencional 8, de un máximo de 25 por dimensión.">
+          <!-- graticulado -->
+          <polygon class="rosa__grid" points="130,36 202.7,78 202.7,162 130,204 57.3,162 57.3,78" />
+          <polygon class="rosa__grid" points="130,57 184.6,88.5 184.6,151.5 130,183 75.4,151.5 75.4,88.5" />
+          <polygon class="rosa__grid" points="130,78 166.4,99 166.4,141 130,162 93.6,141 93.6,99" />
+          <polygon class="rosa__grid" points="130,99 148.2,109.5 148.2,130.5 130,141 111.8,130.5 111.8,109.5" />
+          <line class="rosa__eje" x1="130" y1="120" x2="130" y2="36" />
+          <line class="rosa__eje" x1="130" y1="120" x2="202.7" y2="78" />
+          <line class="rosa__eje" x1="130" y1="120" x2="202.7" y2="162" />
+          <line class="rosa__eje" x1="130" y1="120" x2="130" y2="204" />
+          <line class="rosa__eje" x1="130" y1="120" x2="57.3" y2="162" />
+          <line class="rosa__eje" x1="130" y1="120" x2="57.3" y2="78" />
+          <!-- perfil -->
+          <polygon class="rosa__area"
+            points="130,83 196.9,81.4 188.2,153.6 130,163.7 80.5,148.6 106.7,106.6" />
+          <!-- aguja hacia el tipo dominante (I) -->
+          <line class="rosa__aguja" x1="130" y1="120" x2="188" y2="86.5" />
+          <path class="rosa__aguja-punta" d="M196.9 81.4 L186 92 L184 84 Z" />
+          <circle class="rosa__centro" cx="130" cy="120" r="3" />
+          <circle class="rosa__punto" cx="130" cy="83" r="3.5" />
+          <circle class="rosa__punto" cx="196.9" cy="81.4" r="3.5" />
+          <circle class="rosa__punto" cx="188.2" cy="153.6" r="3.5" />
+          <circle class="rosa__punto" cx="130" cy="163.7" r="3.5" />
+          <circle class="rosa__punto" cx="80.5" cy="148.6" r="3.5" />
+          <circle class="rosa__punto" cx="106.7" cy="106.6" r="3.5" />
+          <!-- letras y valores -->
+          <text class="rosa__letra" x="130" y="24" text-anchor="middle">R</text>
+          <text class="rosa__valor" x="142" y="24">11</text>
+          <text class="rosa__letra rosa__letra--dom" x="212" y="74" text-anchor="start">I</text>
+          <text class="rosa__valor" x="222" y="74">23</text>
+          <text class="rosa__letra rosa__letra--dom" x="212" y="172" text-anchor="start">A</text>
+          <text class="rosa__valor" x="224" y="172">20</text>
+          <text class="rosa__letra" x="130" y="222" text-anchor="middle">S</text>
+          <text class="rosa__valor" x="142" y="222">13</text>
+          <text class="rosa__letra rosa__letra--dom" x="48" y="172" text-anchor="end">E</text>
+          <text class="rosa__valor" x="16" y="172">17</text>
+          <text class="rosa__letra" x="48" y="74" text-anchor="end">C</text>
+          <text class="rosa__valor" x="20" y="74">8</text>
+        </svg>
+      </figure>
+
+      <div>
+        <ul class="rumbos">
+          <li class="dominante">
+            <span class="letra">I</span><span class="nombre">Investigativo</span>
+            <span class="valor">23 / 25</span>
+          </li>
+          <li class="dominante">
+            <span class="letra">A</span><span class="nombre">Artístico</span>
+            <span class="valor">20 / 25</span>
+          </li>
+          <li class="dominante">
+            <span class="letra">E</span><span class="nombre">Emprendedor</span>
+            <span class="valor">17 / 25</span>
+          </li>
+          <li>
+            <span class="letra">S</span><span class="nombre">Social</span>
+            <span class="valor">13 / 25</span>
+          </li>
+          <li>
+            <span class="letra">R</span><span class="nombre">Realista</span>
+            <span class="valor">11 / 25</span>
+          </li>
+          <li>
+            <span class="letra">C</span><span class="nombre">Convencional</span>
+            <span class="valor">8 / 25</span>
+          </li>
+        </ul>
+        <p class="codigo">Tu código Holland → <b>IAE</b></p>
+      </div>
+    </section>
+
+    <section aria-labelledby="areas-titulo">
+      <h2 id="areas-titulo">Áreas afines a tu perfil</h2>
+      <p class="seccion-sub">
+        Calculamos la afinidad entre tu perfil y cada área académica. Empezá por la
+        más cercana a tu norte.
+      </p>
+      <ol class="areas">
+        <li class="area area--principal">
+          <div class="area__cabecera">
+            <span class="area__nombre">Ciencia y Tecnología</span>
+            <span class="area__afinidad">87 %</span>
+          </div>
+          <div class="ruta" aria-hidden="true"><i style="left: 87%"></i></div>
+          <p class="area__porque">
+            Coincide con tu interés investigativo: te atrae entender cómo funcionan
+            las cosas y resolver problemas con método.
+          </p>
+          <a class="area__link" href="#">Ver 8 carreras del área</a>
+        </li>
+        <li class="area">
+          <div class="area__cabecera">
+            <span class="area__nombre">Arte, Diseño y Comunicación</span>
+            <span class="area__afinidad">74 %</span>
+          </div>
+          <div class="ruta" aria-hidden="true"><i style="left: 74%"></i></div>
+          <p class="area__porque">
+            Tu lado artístico pide espacio: crear, comunicar y darle forma propia a
+            las ideas pesa fuerte en tu perfil.
+          </p>
+          <a class="area__link" href="#">Ver 6 carreras del área</a>
+        </li>
+        <li class="area">
+          <div class="area__cabecera">
+            <span class="area__nombre">Negocios y Emprendimiento</span>
+            <span class="area__afinidad">66 %</span>
+          </div>
+          <div class="ruta" aria-hidden="true"><i style="left: 66%"></i></div>
+          <p class="area__porque">
+            Tu vena emprendedora disfruta liderar proyectos, convencer y echar a
+            andar ideas nuevas.
+          </p>
+          <a class="area__link" href="#">Ver 5 carreras del área</a>
+        </li>
+      </ol>
+    </section>
+
+    <div class="acciones">
+      <button class="btn btn--primario" type="button">Descargá tu perfil en PDF</button>
+      <button class="btn btn--secundario" type="button">Repetir el cuestionario</button>
+      <p class="nota">Modelo RIASEC de Holland · escala 1–5</p>
+    </div>
+  </main>
+</body>
+</html>
