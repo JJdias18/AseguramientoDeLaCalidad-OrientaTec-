@@ -22,6 +22,14 @@
 | 10 | Push en Fase 0 | **Solo git local** (`main` + `develop`), sin remoto | No hay remoto/credenciales configurados localmente; el push se hará cuando el equipo lo indique |
 | 11 | Scaffold del cliente | **Manual con React fijado en 18.3** (sin `npm create vite`) | La plantilla actual de Vite trae React 19 + ESLint 9 flat, incompatibles con el stack fijo |
 | 12 | Entregables de la Fase 1.5 (propuestas) | Previews en `docs/design/direcciones/` + propuesta en `docs/design/DIRECCIONES.md`; los 6 colores RIASEC de la dirección "Huella" validados para daltonismo (CVD ΔE adyacente ≥ 12) y todo texto verificado WCAG AA por cálculo | El brief exige comparación lado a lado y accesibilidad AA como DoD |
+| 13 | JWT (HU-01) | Librería **jsonwebtoken** | Firmar/verificar tokens con expiración 24h (decisión #6); no había dependencia instalada aún |
+| 14 | Ruteo del cliente (HU-01) | **react-router-dom v6** | Rutas públicas/protegidas (login, registro) y las que siguen en fases 3–8; no había dependencia instalada aún |
+| 15 | `import.meta.env` bajo Jest (HU-01) | **babel-plugin-transform-vite-meta-env**, activo solo en `BABEL_ENV=test` | Vite resuelve `import.meta.env` nativamente; Jest usa Babel a CommonJS y no lo soporta sin plugin (decisión #9: Jest, no Vitest) |
+| 16 | Interacción en pruebas de componentes (HU-01) | **@testing-library/user-event** | Complemento estándar de Testing Library para simular clics/tecleo de forma realista; faltaba instalarlo |
+| 17 | Validación de props en componentes (HU-01) | **prop-types** como dependencia directa del cliente | Airbnb ESLint exige `react/prop-types`; ya estaba disponible transitivamente vía `eslint-plugin-react` pero no declarada |
+| 18 | ESLint `react/require-default-props` (HU-01) | Override a `{ functions: 'defaultArguments' }` | Airbnb asume `defaultProps`, deprecado en componentes función desde React 18.3; se acepta el valor por defecto en la desestructuración |
+| 19 | ESLint `jsx-a11y/label-has-associated-control` (HU-01) | Override a `{ assert: 'htmlFor' }` | DESIGN.md fija el patrón `<label for>` + `<input id>` como hermanos (nunca label envolviendo el control); el default de la regla exige ambos (anidar y `htmlFor`) |
+| 20 | CORS (HU-01, corrección) | Paquete **cors**, origen desde `CLIENT_ORIGIN` (fallback `http://localhost:5173`), validado con función (`callback(null, !origin \|\| origin === allowedOrigin)`) en vez de string estático | El cliente Vite (puerto 5173) no podía llamar al backend (puerto 3000); la validación por función deja el header ausente ante orígenes no permitidos, en vez de reflejar siempre el mismo valor |
 
 (Claude Code: si tomás una decisión nueva, agregala a esta tabla.)
 
@@ -120,8 +128,8 @@ Regido por **DESIGN_BRIEF.md**. Cargar la skill `frontend-design` antes de empez
 - [x] Con la dirección elegida: `DESIGN.md` (concepto, tokens, componentes,
       especificación por pantalla), `client/src/styles/tokens.css` y
       `docs/prototipo.html` navegable (8 pantallas + estados, consume tokens.css).
-- [ ] **PAUSA** — aprobación del equipo. Solo entonces se habilita el frontend de
-      las fases 2–8. ← **ESTAMOS ACÁ**
+- [x] **PAUSA** — aprobación del equipo (3/7). Se habilita el frontend de las
+      fases 2–8.
 
 **DoD:** dirección aprobada por el equipo; tokens implementados; ningún valor visual
 hardcodeado fuera de `tokens.css`.
@@ -129,14 +137,17 @@ hardcodeado fuera de `tokens.css`.
 ## FASE 2 — Registro e inicio de sesión · HU-01 (Alta)
 Cronograma: Módulo de Autenticación **27/6 – 4/7**.
 
-- [ ] `register` (bcrypt, valida correo único y contraseña ≥ 8 con letras y números).
-- [ ] `login` (JWT 24 h, **mensaje genérico** ante credenciales incorrectas).
-- [ ] Middleware de auth + de rol. `GET /auth/me`.
-- [ ] Frontend: pantallas de registro e inicio de sesión, contexto de auth, rutas
+- [x] `register` (bcrypt, valida correo único y contraseña ≥ 8 con letras y números).
+- [x] `login` (JWT 24 h, **mensaje genérico** ante credenciales incorrectas).
+- [x] Middleware de auth + de rol. `GET /auth/me`.
+- [x] Frontend: pantallas de registro e inicio de sesión, contexto de auth, rutas
       protegidas, contraseña enmascarada, campos obligatorios.
-- [ ] **Pruebas** de los 5 escenarios de HU-01 (registro ok, correo repetido,
+- [x] **Pruebas** de los 5 escenarios de HU-01 (registro ok, correo repetido,
       contraseña débil, login ok, credenciales incorrectas).
-- [ ] Postman actualizado.
+- [x] Postman actualizado.
+
+**Cerrada 3/7.** `npm run lint` y `npm test` en verde en `client` y `server`
+(30 + 38 pruebas). Traza en `docs/trazabilidad.md`. Ver resumen de fase para detalle.
 
 ## FASE 3 — Cuestionario vocacional · HU-02 (Alta)
 Cronograma: **5/7 – 12/7**.

@@ -1,0 +1,230 @@
+/*
+ * Componentes base — Brújula Vocacional · dirección "Huella" (DESIGN.md §5).
+ * Solo los componentes usados por las pantallas ya implementadas (Fase 2:
+ * navegación, botones, campos de formulario, paneles, huella vacía).
+ */
+
+/* ── Navegación (mínima: logo + avatar-botón de cierre de sesión) ── */
+.nav {
+  display: flex;
+  align-items: center;
+  gap: var(--esp-5);
+  padding: var(--esp-3) var(--esp-4);
+  border-bottom: 1px solid var(--color-hairline);
+}
+
+.nav__logo {
+  font-family: var(--fuente-display);
+  font-weight: 750;
+  font-size: var(--fs-md);
+  letter-spacing: -0.02em;
+  color: var(--color-tinta);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: var(--esp-2);
+}
+
+.huella-mini {
+  display: inline-flex;
+  width: 26px;
+  height: 18px;
+  border-radius: 5px;
+  overflow: hidden;
+  gap: var(--gap-huella-mini);
+}
+
+.huella-mini i {
+  flex: 1;
+}
+
+.nav__avatar {
+  margin-left: auto;
+  width: var(--target-tactil);
+  height: var(--target-tactil);
+  border-radius: var(--radio-pill);
+  background: var(--color-brote);
+  border: 1.5px solid var(--color-borde);
+  color: var(--color-jade);
+  font: 700 var(--fs-sm) var(--fuente-cuerpo);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+}
+
+@media (min-width: 720px) {
+  .nav {
+    padding: var(--esp-3) var(--esp-6);
+  }
+}
+
+/* ── Botones ── */
+.btn {
+  font: 600 var(--fs-base) var(--fuente-cuerpo);
+  padding: 0.9rem 1.7rem;
+  border-radius: var(--radio-pill);
+  border: none;
+  cursor: pointer;
+  text-align: center;
+  white-space: nowrap;
+  flex-shrink: 0;
+  min-height: var(--target-tactil);
+  transition:
+    background-color var(--dur-rapida) ease,
+    border-color var(--dur-rapida) ease;
+}
+
+.btn:not(:disabled):active {
+  transform: translateY(1px);
+}
+
+.btn--primario {
+  background: var(--color-jade);
+  color: var(--color-fondo);
+}
+
+.btn--primario:hover {
+  background: var(--color-jade-oscuro);
+}
+
+.btn--secundario {
+  background: transparent;
+  color: var(--color-jade);
+  border: 1.5px solid var(--color-borde);
+}
+
+.btn--secundario:hover {
+  border-color: var(--color-jade);
+}
+
+.btn:disabled {
+  background: var(--color-brote);
+  color: var(--color-musgo);
+  cursor: not-allowed;
+}
+
+.btn--bloque {
+  display: block;
+  width: 100%;
+}
+
+/* ── Campos de formulario ── */
+.campo {
+  display: grid;
+  gap: var(--esp-1);
+  margin-bottom: var(--esp-4);
+}
+
+.campo label {
+  font-weight: 600;
+  font-size: var(--fs-sm);
+}
+
+.campo input {
+  font: 400 var(--fs-base) var(--fuente-cuerpo);
+  color: var(--color-tinta);
+  padding: var(--esp-3) 0.9rem;
+  border: 1.5px solid var(--color-borde);
+  border-radius: var(--radio-s);
+  background: var(--color-fondo);
+  width: 100%;
+}
+
+.campo .ayuda {
+  font-size: var(--fs-sm);
+  color: var(--color-musgo);
+}
+
+.campo--error input {
+  border-color: var(--color-error);
+}
+
+.campo--error .mensaje {
+  font-size: var(--fs-sm);
+  color: var(--color-error);
+  font-weight: 600;
+}
+
+/*
+ * Envuelve solo el input + botón "Mostrar" (nunca el label ni el texto de
+ * ayuda/error) para que el posicionamiento absoluto del botón quede anclado
+ * al alto real del campo, sin importar si hay texto debajo.
+ */
+.campo__control-clave {
+  position: relative;
+}
+
+.campo__control-clave input {
+  padding-right: 5.2rem;
+}
+
+.campo__control-clave .mostrar {
+  position: absolute;
+  top: 50%;
+  right: var(--esp-2);
+  transform: translateY(-50%);
+  font: 600 var(--fs-sm) var(--fuente-cuerpo);
+  color: var(--color-jade);
+  background: none;
+  border: none;
+  padding: var(--esp-2) var(--esp-2);
+  cursor: pointer;
+}
+
+/* ── Paneles ── */
+.panel {
+  background: var(--color-brote);
+  border-radius: var(--radio-s);
+  padding: var(--esp-4) var(--esp-4);
+  max-width: var(--medida-prosa);
+}
+
+.panel--error {
+  background: var(--color-error-suave);
+}
+
+.panel--error b {
+  color: var(--color-error);
+}
+
+/* ── Huella (variante vacía, DESIGN.md §4) ── */
+.huella {
+  display: flex;
+  gap: var(--gap-huella);
+  border-radius: var(--radio);
+  overflow: hidden;
+}
+
+.huella > i {
+  min-width: 0;
+  flex: 1;
+}
+
+.huella--vacia {
+  height: var(--alto-huella-estado);
+  border-radius: var(--radio-s);
+}
+
+.huella--vacia i {
+  border: 1.5px dashed var(--color-borde);
+  border-radius: 4px;
+}
+
+.t-r {
+  background: var(--tinta-r);
+}
+.t-i {
+  background: var(--tinta-i);
+}
+.t-a {
+  background: var(--tinta-a);
+}
+.t-s {
+  background: var(--tinta-s);
+}
+.t-e {
+  background: var(--tinta-e);
+}
+.t-c {
+  background: var(--tinta-c);
+}

@@ -1,12 +1,24 @@
 const express = require('express');
+const cors = require('cors');
+
+const authRoutes = require('./routes/authRoutes');
 
 const app = express();
 
+const allowedOrigin = process.env.CLIENT_ORIGIN || 'http://localhost:5173';
+app.use(
+  cors({
+    // Sin header Origin (curl, Postman, server-to-server): no aplica CORS, se permite.
+    origin: (origin, callback) => callback(null, !origin || origin === allowedOrigin),
+  })
+);
 app.use(express.json());
 
 app.get('/api/v1/health', (req, res) => {
   res.json({ status: 'ok' });
 });
+
+app.use('/api/v1/auth', authRoutes);
 
 // 404 con el formato de error uniforme del proyecto.
 app.use((req, res) => {
