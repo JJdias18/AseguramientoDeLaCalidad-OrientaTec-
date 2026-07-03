@@ -99,9 +99,9 @@ Objetivo: repo listo para trabajar. (EDT 1.1 / 1.2 · cronograma: ya vencido —
 ## FASE 1 — Capa de datos
 Objetivo: esquema + seeds. (EDT 1.2.2.1 · cronograma: diseño de modelo 19–20/6, vencido)
 
-- [ ] Migraciones para todas las tablas de la sección A + extensión `unaccent`.
-- [ ] Seeds: ≥ 30 reactivos (5 por tipo), áreas con pesos, ≥ 20 carreras, 1 admin.
-- [ ] Capa de acceso a datos (repositorios/queries) con manejo de errores.
+- [x] Migraciones para todas las tablas de la sección A + extensión `unaccent`.
+- [x] Seeds: ≥ 30 reactivos (5 por tipo), áreas con pesos, ≥ 20 carreras, 1 admin.
+- [x] Capa de acceso a datos (repositorios/queries) con manejo de errores.
 
 **DoD:** `migrate` + `seed` dejan la BD poblada; smoke test de conexión pasa.
 
