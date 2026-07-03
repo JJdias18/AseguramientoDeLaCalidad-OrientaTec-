@@ -1,0 +1,13 @@
+# Dependencias
+node_modules/
+
+# Builds y reportes
+dist/
+coverage/
+
+# Secretos (solo se versiona .env.example)
+.env
+
+# Sistema / logs
+*.log
+.DS_Store

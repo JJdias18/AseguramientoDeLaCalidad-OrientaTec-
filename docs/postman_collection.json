@@ -1,0 +1,16 @@
+{
+  "info": {
+    "_postman_id": "7f2c1c9e-4b6a-4b0e-9a3d-0b1c2d3e4f5a",
+    "name": "Brújula Vocacional API",
+    "description": "Colección de la API REST (/api/v1). Se actualiza en cada fase de backend.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000/api/v1",
+      "type": "string"
+    }
+  ]
+}
