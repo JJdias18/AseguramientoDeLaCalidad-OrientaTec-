@@ -111,3 +111,20 @@
 | CP-049 | Nav superior enlaza a "Carreras" y "Comparar" con sesión iniciada                                    | `client/src/__tests__/components/AppHeader.test.jsx`                           | ✅ Pasa   |
 
 **Total de casos documentados hasta la Fase 6: 49** (21 de aceptación + 28 complementarios) — se mantiene por encima de la meta global de ≥ 25 casos (`CLAUDE.md` §7.6).
+
+## HU-06 — Descargar perfil en PDF (Fase 7)
+
+| Caso   | Escenario (criterio de aceptación)         | Dado / Cuando / Entonces                                                                                                          | Caso de prueba automatizado                                                                                                        | Resultado |
+| ------ | -------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- | --------- |
+| CP-050 | Escenario 1: Descarga exitosa                | Dado un perfil calculado, cuando el estudiante pide su reporte, entonces el sistema genera un PDF descargable con su perfil.           | `server/tests/routes/profileReportRoutes.test.js` → "Escenario 1: … descarga el PDF"; `client/src/__tests__/pages/ResultadoPage.test.jsx` → "con perfil, descarga el PDF al hacer clic" | ✅ Pasa   |
+| CP-051 | Escenario 2: Sin perfil, deshabilitado       | Dado que el estudiante no completó el cuestionario, cuando entra a "Mi huella", entonces el botón "Descargar reporte (PDF)" aparece deshabilitado con un texto de ayuda. | `server/tests/routes/profileReportRoutes.test.js` → "Escenario 2: … 404 PROFILE_NOT_FOUND"; `client/src/__tests__/pages/ResultadoPage.test.jsx` → "sin perfil, el botón de descarga está deshabilitado con ayuda" | ✅ Pasa   |
+| CP-052 | Escenario 3: Contenido del reporte           | Dado un perfil con áreas afines, cuando se genera el PDF, entonces incluye nombre, fecha, código Holland, áreas afines y al menos 3 carreras sugeridas, coincidiendo con "Mi huella" (mismo `recommendationService`, sin recalcular). | `server/tests/routes/profileReportRoutes.test.js` → "Escenario 3: … fecha, áreas, ≥3 carreras" | ✅ Pasa   |
+
+### Cobertura complementaria de HU-06 (seguridad y frontend)
+
+| Caso   | Qué cubre                                                                                          | Ubicación                                                                     | Resultado |
+| ------ | ---------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------ | --------- |
+| CP-053 | `GET /profile/report` exige sesión iniciada (401 sin token)                                         | `server/tests/routes/profileReportRoutes.test.js`                              | ✅ Pasa   |
+| CP-054 | Si falla la generación del reporte, el frontend muestra un mensaje de error inline (sin romper la pantalla) | `client/src/__tests__/pages/ResultadoPage.test.jsx` → "si falla la generación, muestra un mensaje de error" | ✅ Pasa   |
+
+**Total de casos documentados hasta la Fase 7: 54** (24 de aceptación + 30 complementarios) — se mantiene por encima de la meta global de ≥ 25 casos (`CLAUDE.md` §7.6).

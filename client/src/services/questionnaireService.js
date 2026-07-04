@@ -1,4 +1,4 @@
-import apiRequest from './apiClient';
+import apiRequest, { apiRequestBlob } from './apiClient';
 
 /** Cliente de la API del cuestionario vocacional (HU-02). */
 
@@ -21,3 +21,6 @@ export const submitAttempt = (token, attemptId) =>
 export const getProfile = (token) => apiRequest('/profile', { token });
 
 export const getRecommendations = (token) => apiRequest('/recommendations', { token });
+
+/** PDF del perfil vocacional (HU-06): nombre, fecha, código Holland, áreas y carreras. */
+export const getProfileReportBlob = (token) => apiRequestBlob('/profile/report', { token });

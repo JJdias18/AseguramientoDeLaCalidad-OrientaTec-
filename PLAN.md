@@ -41,6 +41,10 @@
 | 29 | Botón "Comparar esta carrera" de la ficha (DESIGN.md §7.6) | Se **omite** hasta la Fase 6 (HU-05), cuando exista la funcionalidad de comparación | `CLAUDE.md` prohíbe adelantar fases; un botón sin destino funcional confundiría al estudiante |
 | 30 | Enlace "Comparar" en la nav (HU-05, frontend) | Se agrega junto a "Carreras" en la nav simple existente (logo + enlaces + avatar), **no** la tab bar móvil completa de 4 destinos que describe DESIGN.md §5 | Sigue el mismo patrón mínimo con el que se agregó "Carreras" en la Fase 5 (decisión #28); la tab bar móvil queda pendiente para cuando el resto de destinos (Cuestionario, Mi huella) la necesiten |
 | 31 | Recomparar al cambiar una carrera (HU-05, frontend) | La comparación inicial requiere el botón "Comparar" (habilitado solo con dos carreras distintas); una vez mostrada, cambiar cualquiera de los dos selects vuelve a consultar `GET /careers/compare` de inmediato, sin nuevo clic | El criterio de HU-05 pide la acción explícita "elige Comparar" para la primera comparación (escenario 1) pero actualización inmediata al cambiar una carrera ya comparada (escenario 4); un único flag `intentado` distingue ambos casos sin duplicar lógica |
+| 32 | `GET /profile/report` sin perfil (HU-06) | Responde **404 `PROFILE_NOT_FOUND`** (igual que `GET /profile`), no un 200 con bandera como `/recommendations` | El botón de descarga ya está deshabilitado en el frontend sin perfil (criterio de HU-06); a diferencia de `/recommendations`, esta ruta no alimenta un estado vacío de la UI, así que llegar sin perfil es un caso anómalo y no uno esperado |
+| 33 | Fecha del reporte PDF (HU-06) | Es la **fecha de generación** del PDF (hoy), no la fecha en que se calculó el perfil | El criterio solo pide "fecha" sin especificar cuál; la fecha de generación es la que tiene sentido en un documento descargado en cualquier momento después del cuestionario |
+| 34 | Carreras sugeridas del reporte (HU-06) | Se arman recorriendo las áreas de `getRecommendations` (ya ordenadas por afinidad) y tomando sus carreras ya embebidas, sin duplicar, hasta un tope de 6 | Reusa el mismo dato que ya arma HU-03 para el drill-down; evita una consulta o criterio de selección nuevo, y garantiza que el PDF coincida con "Mi huella" |
+| 35 | Colores del PDF (HU-06) | `pdfReportService.js` define `COLOR_JADE`/`COLOR_TINTA`/`COLOR_MUSGO`/`COLOR_HAIRLINE` como constantes locales, con los mismos hex que `tokens.css` | El servidor no puede leer `tokens.css` (es un archivo del cliente); son los únicos valores de color fuera de `tokens.css` en todo el proyecto, y solo porque el documento se genera fuera del navegador |
 
 (Claude Code: si tomás una decisión nueva, agregala a esta tabla.)
 
@@ -246,11 +250,23 @@ cambio de carrera, entrada desde la ficha), sin errores de consola. Traza CP-042
 `docs/trazabilidad.md` (49 casos). Decisiones nuevas: #30, #31.
 
 ## FASE 7 — Descargar perfil en PDF · HU-06 (Baja)
-- [ ] `GET /profile/report` genera PDF con **pdfkit**: nombre, fecha, perfil, áreas
+- [x] `GET /profile/report` genera PDF con **pdfkit**: nombre, fecha, perfil, áreas
       afines y ≥ 3 carreras sugeridas.
-- [ ] Opción de descarga **deshabilitada** si no hay perfil.
-- [ ] **Pruebas** de los 3 escenarios de HU-06.
-- [ ] Postman actualizado.
+- [x] Opción de descarga **deshabilitada** si no hay perfil.
+- [x] **Pruebas** de los 3 escenarios de HU-06.
+- [x] Postman actualizado.
+
+**Cerrada 4/7.** `npm run lint` y `npm test` en verde en `client` y `server`
+(85 + 97 pruebas). Endpoint nuevo: `GET /profile/report` (401 sin sesión, 404
+`PROFILE_NOT_FOUND` sin perfil, 200 `application/pdf` con perfil). Módulo puro
+`pdfReportService` (pdfkit, `compress: false`) que solo da formato: reusa
+`questionnaireService.getRecommendations` (mismo `recommendationService` de HU-03)
+para que el PDF coincida siempre con "Mi huella", sin recalcular afinidad aparte.
+Frontend: botón "Descargar reporte (PDF)" en "Mi huella", deshabilitado con texto
+de ayuda sin perfil, que descarga el blob autenticado vía `fetch` + `Authorization`
+header (no un `<a href>` directo, porque la ruta requiere JWT) y dispara la
+descarga con un enlace temporal. Traza CP-050…CP-054 en `docs/trazabilidad.md`
+(54 casos). Decisiones nuevas: #32, #33, #34, #35.
 
 ## FASE 8 — Gestión del banco de reactivos · HU-07 (Baja)
 - [ ] CRUD de `questions` protegido por rol `admin`; texto y área obligatorios;

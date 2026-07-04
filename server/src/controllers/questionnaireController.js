@@ -1,4 +1,5 @@
 const questionnaireService = require('../services/questionnaireService');
+const pdfReportService = require('../services/pdfReportService');
 const AppError = require('../utils/AppError');
 
 /** Convierte un parámetro a entero positivo o lanza un 400 uniforme. */
@@ -71,6 +72,19 @@ const getProfile = async (req, res) => {
   res.status(200).json({ profile });
 };
 
+/** GET /profile/report — PDF del perfil vocacional con áreas afines y carreras (HU-06). */
+const getReport = async (req, res) => {
+  const { profile, recommendations } = await questionnaireService.getProfileReportData(
+    req.user.id
+  );
+  const doc = pdfReportService.buildProfileReportPdf({ user: req.user, profile, recommendations });
+
+  res.setHeader('Content-Type', 'application/pdf');
+  res.setHeader('Content-Disposition', 'attachment; filename="perfil-vocacional.pdf"');
+  doc.pipe(res);
+  doc.end();
+};
+
 module.exports = {
   getQuestions,
   startAttempt,
@@ -78,4 +92,5 @@ module.exports = {
   saveAnswer,
   submitAttempt,
   getProfile,
+  getReport,
 };

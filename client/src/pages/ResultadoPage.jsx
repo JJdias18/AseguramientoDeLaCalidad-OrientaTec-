@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import { useAuth } from '../context/AuthContext';
-import { getRecommendations } from '../services/questionnaireService';
+import { getRecommendations, getProfileReportBlob } from '../services/questionnaireService';
 import { DIMENSIONES, PUNTAJE_MAXIMO, nombrePorTipo } from '../utils/riasec';
 import Huella from '../components/Huella';
 import AreaAfin from '../components/AreaAfin';
@@ -24,6 +24,28 @@ function ResultadoPage() {
   const [status, setStatus] = useState('loading'); // loading | vacio | error | listo
   const [profile, setProfile] = useState(null);
   const [areas, setAreas] = useState([]);
+  const [descargando, setDescargando] = useState(false);
+  const [errorReporte, setErrorReporte] = useState(false);
+
+  const descargarReporte = async () => {
+    setDescargando(true);
+    setErrorReporte(false);
+    try {
+      const blob = await getProfileReportBlob(token);
+      const url = URL.createObjectURL(blob);
+      const enlace = document.createElement('a');
+      enlace.href = url;
+      enlace.download = 'perfil-vocacional.pdf';
+      document.body.appendChild(enlace);
+      enlace.click();
+      enlace.remove();
+      URL.revokeObjectURL(url);
+    } catch (error) {
+      setErrorReporte(true);
+    } finally {
+      setDescargando(false);
+    }
+  };
 
   useEffect(() => {
     let activo = true;
@@ -91,6 +113,15 @@ function ResultadoPage() {
         >
           Empezar cuestionario
         </Link>
+
+        <div style={{ marginTop: 'var(--esp-4)' }}>
+          <button type="button" className="btn btn--secundario" disabled>
+            Descargar reporte (PDF)
+          </button>
+          <p className="sub ayuda-comparar">
+            Completá el cuestionario para poder descargar tu reporte en PDF.
+          </p>
+        </div>
       </div>
     );
   }
@@ -180,13 +211,31 @@ function ResultadoPage() {
         )}
       </section>
 
-      <Link
-        className="btn btn--secundario"
-        to="/cuestionario"
-        style={{ display: 'inline-block', marginTop: 'var(--esp-7)' }}
+      <div
+        style={{
+          display: 'flex',
+          flexWrap: 'wrap',
+          gap: 'var(--esp-4)',
+          marginTop: 'var(--esp-7)',
+        }}
       >
-        Repetir el cuestionario
-      </Link>
+        <Link className="btn btn--secundario" to="/cuestionario">
+          Repetir el cuestionario
+        </Link>
+        <button
+          type="button"
+          className="btn btn--secundario"
+          onClick={descargarReporte}
+          disabled={descargando}
+        >
+          {descargando ? 'Generando…' : 'Descargar reporte (PDF)'}
+        </button>
+      </div>
+      {errorReporte && (
+        <p className="sub ayuda-comparar" role="alert">
+          No pudimos generar el reporte. Intentá de nuevo.
+        </p>
+      )}
     </div>
   );
 }
