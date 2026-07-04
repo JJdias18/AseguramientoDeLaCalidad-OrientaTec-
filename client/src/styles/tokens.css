@@ -73,6 +73,7 @@
   /* ── Componentes clave ── */
   --alto-huella-hero: 112px;
   --alto-huella-eco: 16px;
+  --ancho-huella-eco: 240px;
   --alto-huella-progreso: 12px;
   --alto-huella-estado: 40px;
   --gap-huella: 3px;

@@ -406,6 +406,55 @@
           }
         }
       ]
+    },
+    {
+      "name": "Recomendaciones (HU-03)",
+      "item": [
+        {
+          "name": "Áreas afines del perfil (GET /recommendations)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK (nunca error de sesión si el token es válido)', () =>",
+                  "  pm.response.to.have.status(200));",
+                  "const body = pm.response.json();",
+                  "pm.test('indica si hay perfil', () => {",
+                  "  pm.expect(body.hasProfile).to.be.a('boolean');",
+                  "  pm.expect(body.recommendations).to.be.an('array');",
+                  "});",
+                  "if (body.hasProfile) {",
+                  "  pm.test('al menos 3 áreas con % y explicación, en orden descendente', () => {",
+                  "    pm.expect(body.recommendations.length).to.be.at.least(3);",
+                  "    const afinidades = body.recommendations.map((a) => a.affinity);",
+                  "    afinidades.forEach((valor) => pm.expect(valor).to.be.within(0, 100));",
+                  "    const ordenadas = [...afinidades].sort((a, b) => b - a);",
+                  "    pm.expect(afinidades).to.eql(ordenadas);",
+                  "    body.recommendations.forEach((a) => {",
+                  "      pm.expect(a.explanation).to.be.a('string').and.not.empty;",
+                  "    });",
+                  "  });",
+                  "} else {",
+                  "  pm.test('sin perfil no devuelve recomendaciones (guía al cuestionario)', () =>",
+                  "    pm.expect(body.recommendations).to.eql([]));",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/recommendations",
+              "host": ["{{baseUrl}}"],
+              "path": ["recommendations"]
+            }
+          }
+        }
+      ]
     }
   ],
   "variable": [

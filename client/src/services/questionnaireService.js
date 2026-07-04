@@ -19,3 +19,5 @@ export const submitAttempt = (token, attemptId) =>
   apiRequest(`/attempts/${attemptId}/submit`, { method: 'POST', token });
 
 export const getProfile = (token) => apiRequest('/profile', { token });
+
+export const getRecommendations = (token) => apiRequest('/recommendations', { token });

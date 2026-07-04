@@ -32,6 +32,9 @@
 | 20 | CORS (HU-01, corrección) | Paquete **cors**, origen desde `CLIENT_ORIGIN` (fallback `http://localhost:5173`), validado con función (`callback(null, !origin \|\| origin === allowedOrigin)`) en vez de string estático | El cliente Vite (puerto 5173) no podía llamar al backend (puerto 3000); la validación por función deja el header ausente ante orígenes no permitidos, en vez de reflejar siempre el mismo valor |
 | 21 | `GET /profile` (HU-02) | Se implementa ya en Fase 3 devolviendo el perfil **más reciente** (scores + holland + dominantes); **sin** recomendaciones de áreas | HU-02 exige "calcula el perfil y lo muestra": la pantalla "Mi huella" necesita leerlo tras el envío y al recargar. La afinidad con áreas (HU-03) queda para la Fase 4; no se adelanta |
 | 22 | Formato de error con detalle (HU-02) | `AppError` gana un 4º parámetro opcional `details`; el middleware lo incluye como `{ error: { code, message, details } }` solo cuando existe | El envío incompleto debe indicar **cuáles** reactivos faltan (`details.missing`/`missingPositions`) sin romper el formato uniforme de error del proyecto |
+| 23 | Explicación de afinidad (HU-03) | Se deriva del tipo con mayor **producto puntaje×peso** (no del dominante global del perfil), con desempate estable R-I-A-S-E-C → "Coincide con tu interés {interés}." | El escenario exige una explicación por área; el argmax de la contribución da un texto distinto y correcto para cada área (nombra el interés del estudiante que ESA área realmente premia) en vez de repetir el mismo dominante en todas |
+| 24 | Respuesta sin perfil (HU-03) | `GET /recommendations` responde **200** con `{ hasProfile: false, recommendations: [] }` (no 404 ni 401) | El criterio pide que la falta de perfil "lleve al cuestionario, no sea un error de sesión"; un 200 con bandera explícita deja a la UI mostrar el estado vacío sin tratarlo como fallo |
+| 25 | Drill-down a carreras (HU-03) | Cada área recomendada **embebe** sus carreras (`id`, `name`, `fieldOfWork`, `duration`) en la respuesta de `/recommendations` | El catálogo de carreras (`GET /careers`, búsqueda/filtros) es de la Fase 5; embeber las carreras del área cubre el drill-down de HU-03 sin adelantar HU-04 |
 
 (Claude Code: si tomás una decisión nueva, agregala a esta tabla.)
 
@@ -176,14 +179,22 @@ en `docs/trazabilidad.md` (26 casos, supera la meta de 25). Decisiones nuevas: #
 ## FASE 4 — Recomendación de áreas · HU-03 (Alta)
 Cronograma: **13/7 – 20/7**.
 
-- [ ] `recommendationService` con afinidad coseno + **orden determinista** (desempate
+- [x] `recommendationService` con afinidad coseno + **orden determinista** (desempate
       por nombre).
-- [ ] `GET /recommendations`: ≥ 3 áreas con `%` y explicación; si no hay perfil,
+- [x] `GET /recommendations`: ≥ 3 áreas con `%` y explicación; si no hay perfil,
       respuesta que lleva al cuestionario.
-- [ ] Frontend: vista de recomendaciones, drill-down a carreras del área.
-- [ ] **Pruebas** de los 4 escenarios de HU-03 (mínimo 3 áreas, sin perfil, explicación,
+- [x] Frontend: vista de recomendaciones, drill-down a carreras del área.
+- [x] **Pruebas** de los 4 escenarios de HU-03 (mínimo 3 áreas, sin perfil, explicación,
       resultados consistentes en dos consultas).
-- [ ] Postman actualizado.
+- [x] Postman actualizado.
+
+**Cerrada 3/7.** `npm run lint` y `npm test` en verde en `client` y `server`
+(62 + 78 pruebas). Motor `recommendationService` puro con 12 unitarias (coseno,
+desempate por nombre, perfil plano, vector nulo, consistencia). Endpoint nuevo:
+`GET /recommendations` (200 con `hasProfile`, nunca 401/500 sin perfil). Frontend:
+sección "Tus áreas más afines" en "Mi huella" con la huella variante **eco** por área,
+% de afinidad, explicación y drill-down a las carreras. Traza CP-027…CP-033 en
+`docs/trazabilidad.md` (33 casos). Decisiones nuevas: #23, #24, #25.
 
 ## FASE 5 — Catálogo de carreras · HU-04 (Media)
 Cronograma: Módulo de Información **21/7 – 28/7**.

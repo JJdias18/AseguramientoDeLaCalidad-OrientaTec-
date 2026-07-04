@@ -5,6 +5,7 @@ import {
   saveAnswer,
   submitAttempt,
   getProfile,
+  getRecommendations,
 } from '../../services/questionnaireService';
 
 jest.mock('../../services/apiClient', () => jest.fn());
@@ -52,5 +53,11 @@ describe('questionnaireService (cliente)', () => {
     apiRequest.mockResolvedValue({ profile: {} });
     await getProfile('jwt');
     expect(apiRequest).toHaveBeenCalledWith('/profile', { token: 'jwt' });
+  });
+
+  it('getRecommendations pide GET /recommendations', async () => {
+    apiRequest.mockResolvedValue({ hasProfile: true, recommendations: [] });
+    await getRecommendations('jwt');
+    expect(apiRequest).toHaveBeenCalledWith('/recommendations', { token: 'jwt' });
   });
 });

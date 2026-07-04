@@ -2,7 +2,10 @@ const questionRepository = require('../repositories/questionRepository');
 const attemptRepository = require('../repositories/attemptRepository');
 const answerRepository = require('../repositories/answerRepository');
 const profileRepository = require('../repositories/profileRepository');
+const areaRepository = require('../repositories/areaRepository');
+const careerRepository = require('../repositories/careerRepository');
 const scoringService = require('./scoringService');
+const recommendationService = require('./recommendationService');
 const AppError = require('../utils/AppError');
 
 /**
@@ -23,6 +26,14 @@ const toPublicQuestion = (row, index) => ({
 });
 
 const toPublicAnswer = (row) => ({ questionId: row.question_id, value: row.value });
+
+/** Carrera de cara al cliente (para el drill-down desde cada área recomendada). */
+const toPublicCareer = (row) => ({
+  id: row.id,
+  name: row.name,
+  fieldOfWork: row.field_of_work,
+  duration: row.duration,
+});
 
 const toPublicProfile = (row) => ({
   id: row.id,
@@ -190,6 +201,54 @@ const getLatestProfile = async (userId) => {
   return row ? toPublicProfile(row) : null;
 };
 
+/**
+ * GET /recommendations (HU-03): áreas académicas ordenadas por afinidad con el
+ * perfil más reciente del usuario. Si el usuario todavía no tiene perfil, NO es un
+ * error: devuelve `hasProfile: false` para que la UI lo lleve al cuestionario.
+ * El ranking (coseno + orden determinista) lo hace el motor puro `recommendationService`.
+ */
+const getRecommendations = async (userId) => {
+  const profileRow = await profileRepository.findLatestByUser(userId);
+  if (!profileRow) {
+    return { hasProfile: false, recommendations: [] };
+  }
+
+  const profile = toPublicProfile(profileRow);
+  const [areaRows, careerRows] = await Promise.all([
+    areaRepository.findAll(),
+    careerRepository.findAll(),
+  ]);
+
+  const careersByArea = careerRows.reduce((acc, row) => {
+    (acc[row.area_id] = acc[row.area_id] || []).push(row);
+    return acc;
+  }, {});
+
+  const areas = areaRows.map((row) => ({
+    id: row.id,
+    name: row.name,
+    description: row.description,
+    weights: row.riasec_weights,
+    careers: (careersByArea[row.id] || []).map(toPublicCareer),
+  }));
+
+  const recommendations = recommendationService
+    .recommendAreas(profile.scores, areas)
+    .map((area) => ({
+      id: area.id,
+      name: area.name,
+      description: area.description,
+      affinity: area.affinity,
+      dominantType: area.dominantType,
+      explanation: area.explanation,
+      weights: area.weights,
+      careerCount: area.careers.length,
+      careers: area.careers,
+    }));
+
+  return { hasProfile: true, profile, recommendations };
+};
+
 module.exports = {
   listActiveQuestions,
   getCurrentAttempt,
@@ -197,4 +256,5 @@ module.exports = {
   saveAnswer,
   submitAttempt,
   getLatestProfile,
+  getRecommendations,
 };

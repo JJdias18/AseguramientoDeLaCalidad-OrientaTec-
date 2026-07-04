@@ -52,3 +52,22 @@
 | CP-026 | Resultado ("Mi huella"): muestra huella hero, leyenda con valores y código Holland; estado vacío sin perfil | `client/src/__tests__/pages/ResultadoPage.test.jsx`                            | ✅ Pasa   |
 
 **Total de casos documentados hasta la Fase 3: 26** (9 de aceptación + 17 complementarios) — se supera la meta global de ≥ 25 casos (`CLAUDE.md` §7.6).
+
+## HU-03 — Recomendación de áreas académicas (Fase 4)
+
+| Caso   | Escenario (criterio de aceptación)         | Dado / Cuando / Entonces                                                                                                                          | Caso de prueba automatizado                                                                                                     | Resultado |
+| ------ | ------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- | --------- |
+| CP-027 | Escenario 1: Áreas recomendadas             | Dado un perfil calculado, cuando el estudiante consulta sus recomendaciones, entonces recibe al menos 3 áreas ordenadas por afinidad con su porcentaje. | `server/tests/routes/recommendationRoutes.test.js` → "Escenario 1: … en orden descendente"; `client/src/__tests__/pages/ResultadoPage.test.jsx` → "lista al menos 3 áreas afines…" | ✅ Pasa   |
+| CP-028 | Escenario 2: Sin perfil                     | Dado que el estudiante aún no completó el cuestionario, cuando consulta recomendaciones, entonces la respuesta lo lleva al cuestionario (no un error de sesión). | `server/tests/routes/recommendationRoutes.test.js` → "Escenario 2: … hasProfile=false"; `client/src/__tests__/pages/ResultadoPage.test.jsx` → "sin perfil muestra el estado vacío…" | ✅ Pasa   |
+| CP-029 | Escenario 3: Explicación de afinidad        | Dado un perfil, cuando ve cada área recomendada, entonces cada una incluye una explicación breve derivada del tipo dominante de la coincidencia.        | `server/tests/routes/recommendationRoutes.test.js` → "Escenario 3: … incluye una explicación"; `server/tests/services/recommendationService.test.js` → "explica cada área…" | ✅ Pasa   |
+| CP-030 | Escenario 4: Resultados consistentes        | Dado el mismo perfil, cuando consulta dos veces, entonces obtiene siempre el mismo orden y los mismos porcentajes (desempate estable por nombre).       | `server/tests/routes/recommendationRoutes.test.js` → "Escenario 4: … mismo orden"; `server/tests/services/recommendationService.test.js` → "es consistente…" / "desempata … por nombre" | ✅ Pasa   |
+
+### Cobertura complementaria de HU-03 (motor de recomendación y frontend)
+
+| Caso   | Qué cubre                                                                                                        | Ubicación                                                                     | Resultado |
+| ------ | ---------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------ | --------- |
+| CP-031 | Motor de recomendación puro: similitud coseno (magnitud no infla), % 0–100, orden desc, desempate por nombre, casos borde (perfil plano, vector nulo) y consistencia | `server/tests/services/recommendationService.test.js` (12 pruebas)             | ✅ Pasa   |
+| CP-032 | Cliente de recomendaciones: contrato del endpoint (`getRecommendations` → `GET /recommendations`)               | `client/src/__tests__/services/questionnaireService.test.js`                   | ✅ Pasa   |
+| CP-033 | Vista de recomendaciones: huella "eco" por área, % y explicación, drill-down a las carreras del área y estado vacío | `client/src/__tests__/pages/ResultadoPage.test.jsx`                            | ✅ Pasa   |
+
+**Total de casos documentados hasta la Fase 4: 33** (13 de aceptación + 20 complementarios) — se mantiene por encima de la meta global de ≥ 25 casos (`CLAUDE.md` §7.6).

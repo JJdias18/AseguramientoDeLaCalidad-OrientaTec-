@@ -427,3 +427,225 @@
   font-variant-numeric: tabular-nums;
   color: var(--color-musgo);
 }
+
+/*
+ * ── Huella eco: IDENTIDAD del área (DESIGN.md §4) ──
+ * Seis tintas con ancho proporcional a los pesos del área. Ancho fijo (máx
+ * --ancho-huella-eco): representa la mezcla del área, NO su afinidad. La afinidad
+ * tiene su propio indicador (número grande); así no compiten (DESIGN.md §10).
+ */
+.huella--eco {
+  height: var(--alto-huella-eco);
+  width: 100%;
+  max-width: var(--ancho-huella-eco);
+  border-radius: var(--radio-s);
+}
+
+.huella--eco i {
+  min-width: 0;
+}
+
+/* ── Áreas afines (cards de recomendación, DESIGN.md §5 / §7.4) ── */
+.areas {
+  list-style: none;
+  display: grid;
+  gap: var(--esp-4);
+  margin-top: var(--esp-5);
+  padding: 0;
+}
+
+.area {
+  display: grid;
+  gap: var(--esp-3);
+  border: 1.5px solid var(--color-hairline);
+  border-radius: var(--radio);
+  padding: var(--esp-5);
+}
+
+.area--principal {
+  border: 2px solid var(--color-jade);
+}
+
+/* La afinidad (número grande) arriba a la derecha, sin depender del largo del nombre. */
+.area__cabecera {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: start;
+  gap: var(--esp-3);
+}
+
+.area__nombre {
+  font-family: var(--fuente-display);
+  font-weight: 600;
+  font-size: var(--fs-md);
+  color: var(--color-tinta);
+}
+
+/* ── Indicador de afinidad: número grande en jade (distinto de la huella) ── */
+.area__afinidad {
+  display: grid;
+  justify-items: end;
+  gap: var(--esp-1);
+  text-align: right;
+}
+
+.area__afinidad-val {
+  font-family: var(--fuente-display);
+  font-weight: 700;
+  font-size: var(--fs-xl);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-jade);
+}
+
+.area__afinidad-val small {
+  font-size: var(--fs-md);
+  font-weight: 600;
+}
+
+.area__afinidad-cap {
+  font-size: var(--fs-xs);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-musgo);
+}
+
+/* ── Identidad del área: rótulo + huella eco ── */
+.ident {
+  display: grid;
+  gap: var(--esp-2);
+}
+
+.ident__rotulo {
+  font-size: var(--fs-xs);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-musgo);
+}
+
+.area__porque {
+  color: var(--color-musgo);
+  max-width: var(--medida-prosa);
+}
+
+.area__link {
+  justify-self: start;
+  font: 600 var(--fs-base) var(--fuente-cuerpo);
+  color: var(--color-jade);
+  background: none;
+  border: none;
+  padding: var(--esp-2) 0;
+  min-height: var(--target-tactil);
+  cursor: pointer;
+  text-align: left;
+}
+
+.area__link:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.area__carreras {
+  list-style: none;
+  display: grid;
+  gap: var(--esp-3);
+  margin: 0;
+  padding: var(--esp-4);
+  background: var(--color-brote);
+  border-radius: var(--radio-s);
+}
+
+.area__carrera {
+  display: grid;
+  gap: var(--esp-1);
+}
+
+.area__carrera-nombre {
+  font-family: var(--fuente-display);
+  font-weight: 600;
+  color: var(--color-tinta);
+}
+
+.area__carrera-meta {
+  font-size: var(--fs-sm);
+  color: var(--color-musgo);
+}
+
+/* ── "Ver más áreas afines": áreas 4+ colapsadas en lista simple ── */
+.areas-mas {
+  margin-top: var(--esp-4);
+  border-top: 1px solid var(--color-hairline);
+}
+
+.areas-mas__toggle {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: var(--esp-2);
+  font: 600 var(--fs-base) var(--fuente-cuerpo);
+  color: var(--color-jade);
+  min-height: var(--target-tactil);
+  cursor: pointer;
+}
+
+.areas-mas__toggle::-webkit-details-marker {
+  display: none;
+}
+
+.areas-mas__toggle:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.areas-mas__chevron {
+  transition: transform var(--dur-rapida) ease;
+}
+
+.areas-mas[open] .areas-mas__chevron {
+  transform: rotate(90deg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .areas-mas__chevron {
+    transition: none;
+  }
+}
+
+.areas-mas__lista {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+}
+
+.area-mas {
+  display: grid;
+  gap: var(--esp-2);
+  padding: var(--esp-3) 0;
+  border-top: 1px solid var(--color-hairline);
+}
+
+.area-mas__fila {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: baseline;
+  gap: var(--esp-2) var(--esp-4);
+}
+
+.area-mas__nombre {
+  font-family: var(--fuente-display);
+  font-weight: 600;
+  color: var(--color-tinta);
+}
+
+.area-mas__pct {
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-tinta);
+}
+
+/* El enlace de carreras arranca bajo el nombre, alineado a la izquierda. */
+.area-mas__link {
+  grid-column: 1 / -1;
+}

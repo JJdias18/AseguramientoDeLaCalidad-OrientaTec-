@@ -196,8 +196,11 @@ formulario: "Correo o contraseña incorrectos. Revisá los datos e intentá de n
 Implementada como la preview congelada `docs/design/direcciones/02-huella.html`:
 saludo con fecha, h1 "Esta huella es solo tuya", huella hero, leyenda en orden
 R-I-A-S-E-C con `valor / 25` y clave de dominantes, panel del código Holland
-traducido a narrativa, ≥3 cards de área (%, eco rotulado, porqué, "Ver N carreras
-del área →"), acciones: "Descargá tu huella en PDF" (primario; deshabilitado con
+traducido a narrativa, **top 3 áreas** como cards destacadas (afinidad como **número
+grande** en jade + eco rotulado como identidad del área + porqué + "Ver N carreras
+del área →"); las áreas 4+ se colapsan en un desplegable "Ver más áreas afines"
+(lista simple: nombre, % y enlace a carreras, sin la huella grande). Acciones:
+"Descargá tu huella en PDF" (primario; deshabilitado con
 ayuda si no hay perfil), "Repetir el cuestionario" (secundario; al confirmar avisa
 que el perfil anterior se conserva en el historial y el nuevo lo reemplaza como
 vigente), nota metodológica con "¿Cómo se calcula?".
@@ -260,4 +263,13 @@ zoom 200% sin pérdida (la tab bar cubre la nav cuando el breakpoint colapsa).
 
 ## 10. Extensiones
 
-*(Vacía. Todo lo nuevo se anota acá con una línea de justificación antes de usarse.)*
+- **Afinidad separada de la identidad (HU-03):** la huella eco es la **identidad**
+  del área (su mezcla de 6 dimensiones), con ancho fijo (máx `--ancho-huella-eco`,
+  240px). La **afinidad** tiene indicador propio y distinto — un **número grande en
+  jade** con el rótulo "afinidad" — para que huella e indicador no compitan. Se
+  destacan las **top 3** áreas como cards; las 4+ van en un desplegable
+  ("Ver más áreas afines") como lista simple. *Justificación:* el coseno entre
+  vectores todos positivos comprime los valores (~65–89%) y usar la huella también
+  como medidor confundía identidad con afinidad. El **% coseno real y el orden no
+  cambian** (los calcula el motor); esto es solo presentación. Token nuevo:
+  `--ancho-huella-eco`.

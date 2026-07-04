@@ -2,12 +2,16 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import { useAuth } from '../context/AuthContext';
-import { getProfile } from '../services/questionnaireService';
+import { getRecommendations } from '../services/questionnaireService';
 import { DIMENSIONES, PUNTAJE_MAXIMO, nombrePorTipo } from '../utils/riasec';
 import Huella from '../components/Huella';
+import AreaAfin from '../components/AreaAfin';
 
 const fechaLarga = (iso) =>
   new Date(iso).toLocaleDateString('es-CR', { day: 'numeric', month: 'long', year: 'numeric' });
+
+/** Cuántas áreas se muestran como cards destacadas; el resto va colapsado. */
+const TOP_DESTACADAS = 3;
 
 /** aria-label de la huella hero: los seis valores y la dimensión más alta. */
 const descripcionHuella = (scores, dominante) =>
@@ -19,18 +23,24 @@ function ResultadoPage() {
   const { token, user } = useAuth();
   const [status, setStatus] = useState('loading'); // loading | vacio | error | listo
   const [profile, setProfile] = useState(null);
+  const [areas, setAreas] = useState([]);
 
   useEffect(() => {
     let activo = true;
-    getProfile(token)
+    getRecommendations(token)
       .then((data) => {
         if (!activo) return;
+        if (!data.hasProfile) {
+          setStatus('vacio');
+          return;
+        }
         setProfile(data.profile);
+        setAreas(data.recommendations);
         setStatus('listo');
       })
-      .catch((error) => {
+      .catch(() => {
         if (!activo) return;
-        setStatus(error.code === 'PROFILE_NOT_FOUND' ? 'vacio' : 'error');
+        setStatus('error');
       });
     return () => {
       activo = false;
@@ -91,6 +101,8 @@ function ResultadoPage() {
     {}
   );
   const dominantes = new Set(dominant);
+  const destacadas = areas.slice(0, TOP_DESTACADAS);
+  const resto = areas.slice(TOP_DESTACADAS);
 
   return (
     <div className="pagina resultado">
@@ -134,15 +146,44 @@ function ResultadoPage() {
         <h2 style={{ marginBottom: 'var(--esp-2)' }}>Tu código Holland: {hollandCode}</h2>
         <p>
           Tus dimensiones predominantes son <b>{nombrePorTipo(dominant[0])}</b> y{' '}
-          <b>{nombrePorTipo(dominant[1])}</b>. En la próxima etapa vas a ver las áreas académicas
-          que más coinciden con tu huella.
+          <b>{nombrePorTipo(dominant[1])}</b>. Estas son las áreas académicas que más coinciden con
+          tu huella.
         </p>
       </div>
+
+      <section aria-labelledby="areas-titulo" style={{ marginTop: 'var(--esp-7)' }}>
+        <h2 id="areas-titulo">Tus áreas más afines</h2>
+        <p className="sub" style={{ marginTop: 'var(--esp-2)' }}>
+          Comparamos tu huella con la de cada área académica. Cuanto más se parecen, más alta la
+          afinidad.
+        </p>
+        <ol className="areas">
+          {destacadas.map((area, indice) => (
+            <AreaAfin key={area.id} area={area} principal={indice === 0} />
+          ))}
+        </ol>
+
+        {resto.length > 0 && (
+          <details className="areas-mas">
+            <summary className="areas-mas__toggle">
+              <span className="areas-mas__chevron" aria-hidden="true">
+                ›
+              </span>
+              Ver más áreas afines ({resto.length})
+            </summary>
+            <ol className="areas-mas__lista">
+              {resto.map((area) => (
+                <AreaAfin key={area.id} area={area} compacta />
+              ))}
+            </ol>
+          </details>
+        )}
+      </section>
 
       <Link
         className="btn btn--secundario"
         to="/cuestionario"
-        style={{ display: 'inline-block', marginTop: 'var(--esp-6)' }}
+        style={{ display: 'inline-block', marginTop: 'var(--esp-7)' }}
       >
         Repetir el cuestionario
       </Link>
