@@ -249,6 +249,20 @@ const getRecommendations = async (userId) => {
   return { hasProfile: true, profile, recommendations };
 };
 
+/**
+ * GET /profile/report (HU-06): datos para el PDF del perfil vocacional. Reusa
+ * `getRecommendations` (mismo perfil + mismas áreas afines que "Mi huella"); si el
+ * usuario no tiene perfil todavía, es un error explícito (el botón de descarga ya
+ * está deshabilitado en ese caso, así que llegar acá sin perfil es un caso anómalo).
+ */
+const getProfileReportData = async (userId) => {
+  const result = await getRecommendations(userId);
+  if (!result.hasProfile) {
+    throw new AppError(404, 'PROFILE_NOT_FOUND', 'Todavía no completaste el cuestionario.');
+  }
+  return { profile: result.profile, recommendations: result.recommendations };
+};
+
 module.exports = {
   listActiveQuestions,
   getCurrentAttempt,
@@ -257,4 +271,5 @@ module.exports = {
   submitAttempt,
   getLatestProfile,
   getRecommendations,
+  getProfileReportData,
 };

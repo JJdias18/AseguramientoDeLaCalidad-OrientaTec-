@@ -1066,6 +1066,89 @@
           }
         }
       ]
+    },
+    {
+      "name": "Reporte de perfil en PDF (HU-06)",
+      "item": [
+        {
+          "name": "Descargar reporte (GET /profile/report)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));",
+                  "pm.test('Content-Type application/pdf', () => {",
+                  "  pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/pdf');",
+                  "});",
+                  "pm.test('se descarga como adjunto', () => {",
+                  "  pm.expect(pm.response.headers.get('Content-Disposition')).to.include('attachment');",
+                  "});",
+                  "pm.test('el cuerpo empieza con la cabecera %PDF-', () => {",
+                  "  pm.expect(pm.response.text().slice(0, 5)).to.eql('%PDF-');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/profile/report",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "profile",
+                "report"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Sin perfil (404 PROFILE_NOT_FOUND)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('404 Not Found mientras no haya perfil', () => pm.response.to.have.status(404));",
+                  "pm.test('código PROFILE_NOT_FOUND', () => {",
+                  "  pm.expect(pm.response.json().error.code).to.eql('PROFILE_NOT_FOUND');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/profile/report",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "profile",
+                "report"
+              ]
+            }
+          }
+        }
+      ]
     }
   ],
   "variable": [

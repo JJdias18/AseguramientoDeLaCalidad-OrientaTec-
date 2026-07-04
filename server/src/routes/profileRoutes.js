@@ -7,5 +7,6 @@ const asyncHandler = require('../utils/asyncHandler');
 const router = express.Router();
 
 router.get('/', requireAuth, asyncHandler(questionnaireController.getProfile));
+router.get('/report', requireAuth, asyncHandler(questionnaireController.getReport));
 
 module.exports = router;

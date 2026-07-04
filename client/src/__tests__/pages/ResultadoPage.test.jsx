@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import '@testing-library/jest-dom';
 import { MemoryRouter } from 'react-router-dom';
@@ -201,5 +201,58 @@ describe('ResultadoPage (HU-02 + HU-03)', () => {
     renderPage();
 
     expect(await screen.findByText(/No pudimos cargar tu huella/i)).toBeInTheDocument();
+  });
+
+  describe('Descargar reporte en PDF (HU-06)', () => {
+    it('sin perfil, el botón de descarga está deshabilitado con ayuda (esc. 2)', async () => {
+      questionnaireService.getRecommendations.mockResolvedValue({
+        hasProfile: false,
+        recommendations: [],
+      });
+      renderPage();
+
+      await screen.findByRole('heading', { name: 'Aún no tenés tu huella' });
+      expect(screen.getByRole('button', { name: 'Descargar reporte (PDF)' })).toBeDisabled();
+      expect(
+        screen.getByText(/Completá el cuestionario para poder descargar tu reporte/i)
+      ).toBeInTheDocument();
+    });
+
+    it('con perfil, descarga el PDF al hacer clic (esc. 1)', async () => {
+      okRecommendations();
+      const blob = new Blob(['%PDF-1.3'], { type: 'application/pdf' });
+      questionnaireService.getProfileReportBlob.mockResolvedValue(blob);
+      const createObjectURL = jest.fn(() => 'blob:mock-url');
+      const revokeObjectURL = jest.fn();
+      global.URL.createObjectURL = createObjectURL;
+      global.URL.revokeObjectURL = revokeObjectURL;
+      // jsdom no implementa la navegación real de un <a>; solo interesa que se dispare.
+      const click = jest.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => {});
+
+      renderPage();
+      await screen.findByText('Artes y Diseño');
+
+      const boton = screen.getByRole('button', { name: 'Descargar reporte (PDF)' });
+      expect(boton).toBeEnabled();
+      await userEvent.click(boton);
+
+      await waitFor(() =>
+        expect(questionnaireService.getProfileReportBlob).toHaveBeenCalledWith('jwt')
+      );
+      expect(createObjectURL).toHaveBeenCalledWith(blob);
+      expect(click).toHaveBeenCalled();
+      expect(revokeObjectURL).toHaveBeenCalledWith('blob:mock-url');
+    });
+
+    it('si falla la generación, muestra un mensaje de error (contenido del reporte esc. 3)', async () => {
+      okRecommendations();
+      questionnaireService.getProfileReportBlob.mockRejectedValue(new Error('fail'));
+      renderPage();
+      await screen.findByText('Artes y Diseño');
+
+      await userEvent.click(screen.getByRole('button', { name: 'Descargar reporte (PDF)' }));
+
+      expect(await screen.findByText(/No pudimos generar el reporte/i)).toBeInTheDocument();
+    });
   });
 });
