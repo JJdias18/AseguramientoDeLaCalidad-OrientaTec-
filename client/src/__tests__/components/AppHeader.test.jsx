@@ -37,11 +37,37 @@ describe('AppHeader', () => {
   });
 
   it('con sesión iniciada, enlaza a "Carreras" y "Comparar" (HU-05)', () => {
-    useAuth.mockReturnValue({ user: { fullName: 'Valeria Mora' }, logout: jest.fn() });
+    useAuth.mockReturnValue({
+      user: { fullName: 'Valeria Mora', role: 'student' },
+      logout: jest.fn(),
+    });
     renderHeader();
 
     expect(screen.getByRole('link', { name: 'Carreras' })).toHaveAttribute('href', '/carreras');
     expect(screen.getByRole('link', { name: 'Comparar' })).toHaveAttribute('href', '/comparar');
+  });
+
+  it('un estudiante NO ve el enlace de gestión de reactivos (HU-07)', () => {
+    useAuth.mockReturnValue({
+      user: { fullName: 'Valeria Mora', role: 'student' },
+      logout: jest.fn(),
+    });
+    renderHeader();
+
+    expect(screen.queryByRole('link', { name: /gestión de reactivos/i })).not.toBeInTheDocument();
+  });
+
+  it('un admin sí ve el enlace de gestión de reactivos (HU-07)', () => {
+    useAuth.mockReturnValue({
+      user: { fullName: 'Administrador OrientaTec', role: 'admin' },
+      logout: jest.fn(),
+    });
+    renderHeader();
+
+    expect(screen.getByRole('link', { name: /gestión de reactivos/i })).toHaveAttribute(
+      'href',
+      '/admin/reactivos'
+    );
   });
 
   it('la burbuja de perfil lleva a "Mi huella" y NO cierra la sesión', async () => {

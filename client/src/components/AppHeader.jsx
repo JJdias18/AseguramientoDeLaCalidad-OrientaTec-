@@ -34,6 +34,11 @@ function AppHeader() {
           <Link className="enlace" to="/comparar">
             Comparar
           </Link>
+          {user.role === 'admin' && (
+            <Link className="enlace" to="/admin/reactivos">
+              Gestión de reactivos
+            </Link>
+          )}
           <Link
             className="nav__avatar"
             to="/mi-huella"

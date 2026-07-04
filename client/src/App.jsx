@@ -3,6 +3,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import AppHeader from './components/AppHeader';
 import ProtectedRoute from './components/ProtectedRoute';
+import AdminRoute from './components/AdminRoute';
 import GuestRoute from './components/GuestRoute';
 import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
@@ -12,6 +13,7 @@ import ResultadoPage from './pages/ResultadoPage';
 import CarrerasPage from './pages/CarrerasPage';
 import CarreraDetallePage from './pages/CarreraDetallePage';
 import ComparadorPage from './pages/ComparadorPage';
+import AdminReactivosPage from './pages/AdminReactivosPage';
 import NotFoundPage from './pages/NotFoundPage';
 
 function App() {
@@ -28,6 +30,9 @@ function App() {
               <Route path="/carreras" element={<CarrerasPage />} />
               <Route path="/carreras/:id" element={<CarreraDetallePage />} />
               <Route path="/comparar" element={<ComparadorPage />} />
+              <Route element={<AdminRoute />}>
+                <Route path="/admin/reactivos" element={<AdminReactivosPage />} />
+              </Route>
             </Route>
             <Route element={<GuestRoute />}>
               <Route path="/iniciar-sesion" element={<LoginPage />} />

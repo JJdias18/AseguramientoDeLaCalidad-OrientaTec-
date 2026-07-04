@@ -7,6 +7,7 @@ const attemptRoutes = require('./routes/attemptRoutes');
 const profileRoutes = require('./routes/profileRoutes');
 const recommendationRoutes = require('./routes/recommendationRoutes');
 const careerRoutes = require('./routes/careerRoutes');
+const adminQuestionRoutes = require('./routes/adminQuestionRoutes');
 
 const app = express();
 
@@ -29,6 +30,7 @@ app.use('/api/v1/attempts', attemptRoutes);
 app.use('/api/v1/profile', profileRoutes);
 app.use('/api/v1/recommendations', recommendationRoutes);
 app.use('/api/v1/careers', careerRoutes);
+app.use('/api/v1/admin/questions', adminQuestionRoutes);
 
 // 404 con el formato de error uniforme del proyecto.
 app.use((req, res) => {

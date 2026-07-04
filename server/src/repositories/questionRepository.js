@@ -11,6 +11,17 @@ const findActive = async () => {
   }
 };
 
+/** Todos los reactivos (activos e inactivos), para el banco de reactivos del admin. */
+const findAll = async () => {
+  try {
+    const result = await query('SELECT * FROM questions ORDER BY id ASC');
+    return result.rows;
+  } catch (error) {
+    console.error('Error listando reactivos:', error.message);
+    throw error;
+  }
+};
+
 const findById = async (id) => {
   try {
     const result = await query('SELECT * FROM questions WHERE id = $1', [id]);
@@ -36,6 +47,21 @@ const create = async ({ text, riasecType, scaleMin = 1, scaleMax = 5 }) => {
   }
 };
 
+const update = async (id, { text, riasecType }) => {
+  try {
+    const result = await query(
+      `UPDATE questions SET text = $1, riasec_type = $2, updated_at = NOW()
+       WHERE id = $3
+       RETURNING *`,
+      [text, riasecType, id]
+    );
+    return result.rows[0] || null;
+  } catch (error) {
+    console.error('Error actualizando reactivo:', error.message);
+    throw error;
+  }
+};
+
 /** Soft delete: nunca se borra físicamente porque `answers` referencia reactivos históricos. */
 const deactivate = async (id) => {
   try {
@@ -52,7 +78,9 @@ const deactivate = async (id) => {
 
 module.exports = {
   findActive,
+  findAll,
   findById,
   create,
+  update,
   deactivate,
 };
