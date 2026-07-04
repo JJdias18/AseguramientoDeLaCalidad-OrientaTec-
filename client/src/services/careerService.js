@@ -11,3 +11,11 @@ export const getCareers = (token, { search, area } = {}) => {
 };
 
 export const getCareer = (token, id) => apiRequest(`/careers/${id}`, { token });
+
+/** Comparación de dos carreras distintas, lado a lado (HU-05). */
+export const compareCareers = (token, { a, b } = {}) => {
+  const params = new URLSearchParams();
+  if (a) params.set('a', a);
+  if (b) params.set('b', b);
+  return apiRequest(`/careers/compare?${params.toString()}`, { token });
+};

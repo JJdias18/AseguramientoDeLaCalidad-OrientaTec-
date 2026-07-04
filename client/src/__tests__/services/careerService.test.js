@@ -1,4 +1,4 @@
-import { getCareers, getCareer } from '../../services/careerService';
+import { getCareers, getCareer, compareCareers } from '../../services/careerService';
 
 jest.mock('../../services/apiClient', () => jest.fn());
 
@@ -23,5 +23,11 @@ describe('careerService (cliente)', () => {
     apiRequest.mockResolvedValue({ career: {} });
     await getCareer('jwt', 5);
     expect(apiRequest).toHaveBeenCalledWith('/careers/5', { token: 'jwt' });
+  });
+
+  it('compareCareers pide GET /careers/compare con "a" y "b" (HU-05)', async () => {
+    apiRequest.mockResolvedValue({ careers: [] });
+    await compareCareers('jwt', { a: 3, b: 7 });
+    expect(apiRequest).toHaveBeenCalledWith('/careers/compare?a=3&b=7', { token: 'jwt' });
   });
 });

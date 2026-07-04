@@ -91,3 +91,23 @@
 | CP-041 | Cliente del catálogo: contrato de los endpoints (`getCareers`/`getCareer` → `GET /careers`, `GET /careers/:id`) | `client/src/__tests__/services/careerService.test.js`                          | ✅ Pasa   |
 
 **Total de casos documentados hasta la Fase 5: 41** (17 de aceptación + 24 complementarios) — se mantiene por encima de la meta global de ≥ 25 casos (`CLAUDE.md` §7.6).
+
+## HU-05 — Comparar dos carreras (Fase 6)
+
+| Caso   | Escenario (criterio de aceptación)         | Dado / Cuando / Entonces                                                                                                          | Caso de prueba automatizado                                                                                                        | Resultado |
+| ------ | -------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- | --------- |
+| CP-042 | Escenario 1: Comparación válida              | Dado que el estudiante seleccionó dos carreras distintas, cuando elige "Comparar", entonces el sistema muestra ambas carreras lado a lado con sus atributos. | `server/tests/routes/careerCompareRoutes.test.js` → "Escenario 1: … lado a lado con sus atributos"; `client/src/__tests__/pages/ComparadorPage.test.jsx` → "muestra ambas carreras lado a lado…" | ✅ Pasa   |
+| CP-043 | Escenario 2: Una sola carrera seleccionada   | Dado que el estudiante solo eligió una carrera, cuando intenta comparar, entonces el sistema le pide seleccionar una segunda carrera.  | `server/tests/routes/careerCompareRoutes.test.js` → "Escenario 2: … pide seleccionar una segunda carrera"; `client/src/__tests__/pages/ComparadorPage.test.jsx` → "deshabilita «Comparar»…" | ✅ Pasa   |
+| CP-044 | Escenario 3: Misma carrera repetida          | Dado la pantalla de comparación, cuando el estudiante elige la misma carrera en ambos lados, entonces el sistema avisa que las carreras deben ser diferentes. | `server/tests/routes/careerCompareRoutes.test.js` → "Escenario 3: … avisa que las carreras deben ser distintas"; `client/src/__tests__/pages/ComparadorPage.test.jsx` → "avisa que las carreras deben ser distintas…" | ✅ Pasa   |
+| CP-045 | Escenario 4: Cambiar una carrera             | Dado una comparación ya hecha entre dos carreras, cuando el estudiante cambia la segunda carrera, entonces el sistema actualiza la comparación con la nueva carrera. | `server/tests/routes/careerCompareRoutes.test.js` → "Escenario 4: … actualiza la comparación al pedirla de nuevo"; `client/src/__tests__/pages/ComparadorPage.test.jsx` → "al cambiar la segunda carrera, actualiza la comparación de inmediato" | ✅ Pasa   |
+
+### Cobertura complementaria de HU-05 (seguridad, ficha y frontend)
+
+| Caso   | Qué cubre                                                                                          | Ubicación                                                                     | Resultado |
+| ------ | ---------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------ | --------- |
+| CP-046 | `GET /careers/compare` exige sesión iniciada (401 sin token) y responde 404 si alguna carrera no existe | `server/tests/routes/careerCompareRoutes.test.js`                              | ✅ Pasa   |
+| CP-047 | Botón "Comparar esta carrera" en la ficha (HU-04, decisión #29): enlaza a `/comparar?a=<id>` y precarga la Carrera A | `client/src/__tests__/pages/CarreraDetallePage.test.jsx`; `client/src/__tests__/pages/ComparadorPage.test.jsx` → "precarga la Carrera A…" | ✅ Pasa   |
+| CP-048 | Cliente del comparador: contrato del endpoint (`compareCareers` → `GET /careers/compare?a=&b=`)     | `client/src/__tests__/services/careerService.test.js`                          | ✅ Pasa   |
+| CP-049 | Nav superior enlaza a "Carreras" y "Comparar" con sesión iniciada                                    | `client/src/__tests__/components/AppHeader.test.jsx`                           | ✅ Pasa   |
+
+**Total de casos documentados hasta la Fase 6: 49** (21 de aceptación + 28 complementarios) — se mantiene por encima de la meta global de ≥ 25 casos (`CLAUDE.md` §7.6).

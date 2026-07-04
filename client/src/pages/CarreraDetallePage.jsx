@@ -98,6 +98,14 @@ function CarreraDetallePage() {
         <h2>Perfil del estudiante</h2>
         <p style={{ marginTop: 'var(--esp-2)' }}>{profileDesc}</p>
       </section>
+
+      <Link
+        className="btn btn--secundario"
+        to={`/comparar?a=${id}`}
+        style={{ marginTop: 'var(--esp-6)', display: 'inline-block' }}
+      >
+        Comparar esta carrera
+      </Link>
     </div>
   );
 }

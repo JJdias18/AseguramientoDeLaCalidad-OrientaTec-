@@ -39,6 +39,8 @@
 | 27 | Punto de tinta del área en el catálogo (HU-04) | Se deriva de la dimensión con mayor peso en `riasec_weights` reusando `scoringService.rankTypes` (mismo criterio de desempate R-I-A-S-E-C) | Evita duplicar la lógica de argmax que ya usa HU-03; ninguna columna nueva en `areas` |
 | 28 | Chips de filtro por área (HU-04, frontend) | Se arman con las áreas presentes en la respuesta **sin filtros** de `GET /careers` (sin agregar un endpoint `GET /areas`) | El catálogo completo ya trae `area.id`/`area.name` por carrera; minimalismo: no crear un endpoint nuevo solo para poblar los chips |
 | 29 | Botón "Comparar esta carrera" de la ficha (DESIGN.md §7.6) | Se **omite** hasta la Fase 6 (HU-05), cuando exista la funcionalidad de comparación | `CLAUDE.md` prohíbe adelantar fases; un botón sin destino funcional confundiría al estudiante |
+| 30 | Enlace "Comparar" en la nav (HU-05, frontend) | Se agrega junto a "Carreras" en la nav simple existente (logo + enlaces + avatar), **no** la tab bar móvil completa de 4 destinos que describe DESIGN.md §5 | Sigue el mismo patrón mínimo con el que se agregó "Carreras" en la Fase 5 (decisión #28); la tab bar móvil queda pendiente para cuando el resto de destinos (Cuestionario, Mi huella) la necesiten |
+| 31 | Recomparar al cambiar una carrera (HU-05, frontend) | La comparación inicial requiere el botón "Comparar" (habilitado solo con dos carreras distintas); una vez mostrada, cambiar cualquiera de los dos selects vuelve a consultar `GET /careers/compare` de inmediato, sin nuevo clic | El criterio de HU-05 pide la acción explícita "elige Comparar" para la primera comparación (escenario 1) pero actualización inmediata al cambiar una carrera ya comparada (escenario 4); un único flag `intentado` distingue ambos casos sin duplicar lógica |
 
 (Claude Code: si tomás una decisión nueva, agregala a esta tabla.)
 
@@ -223,11 +225,25 @@ resultados, filtro por área, ficha), sin errores de consola. Traza CP-034…CP-
 ## FASE 6 — Comparar carreras · HU-05 (Media)
 Cronograma: **29/7 – 5/8**.
 
-- [ ] Comparar exactamente 2 carreras **distintas** (rechazar si es la misma o falta una).
-- [ ] Frontend: selección A/B, tabla lado a lado (duración, área, campo laboral, perfil),
+- [x] Comparar exactamente 2 carreras **distintas** (rechazar si es la misma o falta una).
+- [x] Frontend: selección A/B, tabla lado a lado (duración, área, campo laboral, perfil),
       recomparar al cambiar una.
-- [ ] **Pruebas** de los 4 escenarios de HU-05.
-- [ ] Postman actualizado.
+- [x] **Pruebas** de los 4 escenarios de HU-05.
+- [x] Postman actualizado.
+
+**Cerrada 4/7.** `npm run lint` y `npm test` en verde en `client` y `server`
+(82 + 93 pruebas). Endpoint nuevo: `GET /careers/compare?a=&b=` (400 `MISSING_CAREER` si
+falta una, 400 `SAME_CAREER` si es la misma, 404 `CAREER_NOT_FOUND` si alguna no existe,
+200 con ambas fichas completas si son válidas y distintas); reusa `findByIdWithArea` y el
+mismo `toDetail` de la ficha (HU-04). Frontend: `/comparar` con dos selects poblados desde
+el catálogo completo, botón "Comparar" (deshabilitado con ayuda si falta una carrera),
+error inline bajo la Carrera B si se repite, tabla lado a lado que se apila por atributo en
+&lt;720px, y recálculo inmediato al cambiar cualquiera de los dos selects una vez hecha la
+primera comparación. Se integró el botón "Comparar esta carrera" pospuesto de la Fase 5
+(pospone la Carrera A vía `?a=<id>`) y el enlace "Comparar" en la nav. Verificado en
+navegador con Playwright (comparación válida, una sola carrera, misma carrera repetida,
+cambio de carrera, entrada desde la ficha), sin errores de consola. Traza CP-042…CP-049 en
+`docs/trazabilidad.md` (49 casos). Decisiones nuevas: #30, #31.
 
 ## FASE 7 — Descargar perfil en PDF · HU-06 (Baja)
 - [ ] `GET /profile/report` genera PDF con **pdfkit**: nombre, fecha, perfil, áreas

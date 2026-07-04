@@ -42,6 +42,15 @@ const parseAreaId = (area) => {
   return areaId;
 };
 
+/** Valida el id de una carrera (usado por la ficha y por el comparador, HU-04/HU-05). */
+const parseCareerId = (id) => {
+  const careerId = Number(id);
+  if (!Number.isInteger(careerId) || careerId <= 0) {
+    throw new AppError(400, 'INVALID_CAREER', 'La carrera indicada no es válida.');
+  }
+  return careerId;
+};
+
 /** GET /careers: catálogo con búsqueda por nombre y filtro por área, ambos opcionales. */
 const listCareers = async ({ search, area } = {}) => {
   const areaId = parseAreaId(area);
@@ -53,10 +62,7 @@ const listCareers = async ({ search, area } = {}) => {
 
 /** GET /careers/:id: ficha con descripción, campo laboral, duración y perfil. */
 const getCareerById = async (id) => {
-  const careerId = Number(id);
-  if (!Number.isInteger(careerId) || careerId <= 0) {
-    throw new AppError(400, 'INVALID_CAREER', 'La carrera indicada no es válida.');
-  }
+  const careerId = parseCareerId(id);
 
   const row = await careerRepository.findByIdWithArea(careerId);
   if (!row) {
@@ -65,4 +71,37 @@ const getCareerById = async (id) => {
   return toDetail(row);
 };
 
-module.exports = { listCareers, getCareerById };
+/**
+ * GET /careers/compare?a=&b=: exactamente dos carreras distintas, lado a lado (HU-05).
+ * Reusa `findByIdWithArea` (misma forma que la ficha) para no duplicar la consulta.
+ */
+const compareCareers = async ({ a, b } = {}) => {
+  if (!a && !b) {
+    throw new AppError(400, 'MISSING_CAREER', 'Seleccioná dos carreras para comparar.');
+  }
+  if (!a || !b) {
+    throw new AppError(400, 'MISSING_CAREER', 'Seleccioná una segunda carrera para comparar.');
+  }
+
+  const idA = parseCareerId(a);
+  const idB = parseCareerId(b);
+  if (idA === idB) {
+    throw new AppError(
+      400,
+      'SAME_CAREER',
+      'Elegiste la misma carrera dos veces. Cambiá una para poder comparar.'
+    );
+  }
+
+  const [rowA, rowB] = await Promise.all([
+    careerRepository.findByIdWithArea(idA),
+    careerRepository.findByIdWithArea(idB),
+  ]);
+  if (!rowA || !rowB) {
+    throw new AppError(404, 'CAREER_NOT_FOUND', 'No encontramos esa carrera.');
+  }
+
+  return [toDetail(rowA), toDetail(rowB)];
+};
+
+module.exports = { listCareers, getCareerById, compareCareers };

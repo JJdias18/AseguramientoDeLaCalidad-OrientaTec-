@@ -13,4 +13,11 @@ const getCareer = async (req, res) => {
   res.status(200).json({ career });
 };
 
-module.exports = { listCareers, getCareer };
+/** GET /careers/compare?a=&b= — comparación de dos carreras distintas (HU-05). */
+const compareCareers = async (req, res) => {
+  const { a, b } = req.query;
+  const careers = await careerService.compareCareers({ a, b });
+  res.status(200).json({ careers });
+};
+
+module.exports = { listCareers, getCareer, compareCareers };

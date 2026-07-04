@@ -31,6 +31,9 @@ function AppHeader() {
           <Link className="enlace" to="/carreras">
             Carreras
           </Link>
+          <Link className="enlace" to="/comparar">
+            Comparar
+          </Link>
           <Link
             className="nav__avatar"
             to="/mi-huella"

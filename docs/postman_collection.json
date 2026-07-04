@@ -875,6 +875,197 @@
           }
         }
       ]
+    },
+    {
+      "name": "Comparar carreras (HU-05)",
+      "item": [
+        {
+          "name": "Comparación válida (GET /careers/compare?a=&b=)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));",
+                  "const body = pm.response.json();",
+                  "pm.test('muestra ambas carreras con sus atributos', () => {",
+                  "  pm.expect(body.careers).to.have.lengthOf(2);",
+                  "  body.careers.forEach((c) => {",
+                  "    pm.expect(c.duration).to.be.a('string');",
+                  "    pm.expect(c.fieldOfWork).to.be.a('string');",
+                  "    pm.expect(c.profileDesc).to.be.a('string');",
+                  "    pm.expect(c.area.name).to.be.a('string');",
+                  "  });",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/careers/compare?a={{careerAId}}&b={{careerBId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "careers",
+                "compare"
+              ],
+              "query": [
+                {
+                  "key": "a",
+                  "value": "{{careerAId}}"
+                },
+                {
+                  "key": "b",
+                  "value": "{{careerBId}}"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Falta la segunda carrera (400)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('400 Bad Request', () => pm.response.to.have.status(400));",
+                  "const body = pm.response.json();",
+                  "pm.test('MISSING_CAREER', () => pm.expect(body.error.code).to.eql('MISSING_CAREER'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/careers/compare?a={{careerAId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "careers",
+                "compare"
+              ],
+              "query": [
+                {
+                  "key": "a",
+                  "value": "{{careerAId}}"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Misma carrera dos veces (400)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('400 Bad Request', () => pm.response.to.have.status(400));",
+                  "const body = pm.response.json();",
+                  "pm.test('SAME_CAREER', () => pm.expect(body.error.code).to.eql('SAME_CAREER'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/careers/compare?a={{careerAId}}&b={{careerAId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "careers",
+                "compare"
+              ],
+              "query": [
+                {
+                  "key": "a",
+                  "value": "{{careerAId}}"
+                },
+                {
+                  "key": "b",
+                  "value": "{{careerAId}}"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Cambiar la segunda carrera (recalcula)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));",
+                  "const body = pm.response.json();",
+                  "pm.test('la segunda carrera cambia según el parámetro b', () => {",
+                  "  pm.expect(String(body.careers[1].id)).to.eql(pm.variables.get('careerBId'));",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/careers/compare?a={{careerAId}}&b={{careerBId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "careers",
+                "compare"
+              ],
+              "query": [
+                {
+                  "key": "a",
+                  "value": "{{careerAId}}"
+                },
+                {
+                  "key": "b",
+                  "value": "{{careerBId}}"
+                }
+              ]
+            }
+          }
+        }
+      ]
     }
   ],
   "variable": [
@@ -905,6 +1096,16 @@
     },
     {
       "key": "careerId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "careerAId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "careerBId",
       "value": "",
       "type": "string"
     }

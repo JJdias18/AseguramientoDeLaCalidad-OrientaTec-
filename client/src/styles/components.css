@@ -735,6 +735,103 @@ a.carrera:hover {
   color: var(--color-musgo);
 }
 
+/* ── Comparador de carreras (DESIGN.md §7.7) ── */
+.campo select {
+  font: 400 var(--fs-base) var(--fuente-cuerpo);
+  color: var(--color-tinta);
+  padding: var(--esp-3) 0.9rem;
+  border: 1.5px solid var(--color-borde);
+  border-radius: var(--radio-s);
+  background: var(--color-fondo);
+  width: 100%;
+}
+
+.comparador__selects {
+  display: grid;
+  gap: var(--esp-4);
+}
+
+@media (min-width: 720px) {
+  .comparador__selects {
+    grid-template-columns: 1fr 1fr;
+    gap: var(--esp-5);
+  }
+}
+
+.ayuda-comparar {
+  margin-top: var(--esp-2);
+}
+
+.tabla-comparar {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.tabla-comparar th,
+.tabla-comparar td {
+  text-align: left;
+  padding: var(--esp-3) var(--esp-4);
+  border-bottom: 1px solid var(--color-hairline);
+}
+
+.tabla-comparar thead th {
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  background: var(--color-tinta);
+  color: var(--color-fondo);
+}
+
+.tabla-comparar tbody th {
+  font-weight: 600;
+  font-size: var(--fs-sm);
+  color: var(--color-musgo);
+  white-space: nowrap;
+}
+
+/* <720px: cada fila se apila por atributo, con los dos valores identificados. */
+@media (max-width: 719px) {
+  .tabla-comparar thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+
+  .tabla-comparar,
+  .tabla-comparar tbody,
+  .tabla-comparar tr,
+  .tabla-comparar th,
+  .tabla-comparar td {
+    display: block;
+    width: 100%;
+  }
+
+  .tabla-comparar tr {
+    padding: var(--esp-3) 0;
+  }
+
+  .tabla-comparar tbody th {
+    padding: 0 0 var(--esp-2);
+    border-bottom: none;
+  }
+
+  .tabla-comparar td {
+    padding: var(--esp-1) 0;
+    border-bottom: none;
+  }
+
+  .tabla-comparar td::before {
+    content: attr(data-carrera) ': ';
+    font-weight: 600;
+    color: var(--color-tinta);
+  }
+
+  .tabla-comparar tr:not(:last-child) {
+    border-bottom: 1px solid var(--color-hairline);
+  }
+}
+
 /* ── Catálogo de carreras: esqueleto de carga (DESIGN.md §4 / §7.5) ── */
 .carrera--esqueleto i {
   display: block;

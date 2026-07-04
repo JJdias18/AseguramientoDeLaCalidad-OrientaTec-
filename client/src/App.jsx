@@ -11,6 +11,7 @@ import CuestionarioPage from './pages/CuestionarioPage';
 import ResultadoPage from './pages/ResultadoPage';
 import CarrerasPage from './pages/CarrerasPage';
 import CarreraDetallePage from './pages/CarreraDetallePage';
+import ComparadorPage from './pages/ComparadorPage';
 import NotFoundPage from './pages/NotFoundPage';
 
 function App() {
@@ -26,6 +27,7 @@ function App() {
               <Route path="/mi-huella" element={<ResultadoPage />} />
               <Route path="/carreras" element={<CarrerasPage />} />
               <Route path="/carreras/:id" element={<CarreraDetallePage />} />
+              <Route path="/comparar" element={<ComparadorPage />} />
             </Route>
             <Route element={<GuestRoute />}>
               <Route path="/iniciar-sesion" element={<LoginPage />} />

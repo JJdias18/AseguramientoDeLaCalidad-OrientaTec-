@@ -53,6 +53,10 @@ describe('CarreraDetallePage (HU-04, escenario 3: ficha de la carrera)', () => {
     expect(screen.getByText('Curioso, observador, metódico.')).toBeInTheDocument();
     expect(screen.getByText(/Ciencias Exactas y Naturales · 4 años/)).toBeInTheDocument();
     expect(careerService.getCareer).toHaveBeenCalledWith('jwt', '3');
+    expect(screen.getByRole('link', { name: /comparar esta carrera/i })).toHaveAttribute(
+      'href',
+      '/comparar?a=3'
+    );
   });
 
   it('si la carrera no existe, muestra un aviso y el enlace de vuelta al catálogo', async () => {

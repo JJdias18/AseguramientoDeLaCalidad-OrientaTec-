@@ -36,6 +36,14 @@ describe('AppHeader', () => {
     expect(screen.queryByRole('link', { name: /mi huella/i })).not.toBeInTheDocument();
   });
 
+  it('con sesión iniciada, enlaza a "Carreras" y "Comparar" (HU-05)', () => {
+    useAuth.mockReturnValue({ user: { fullName: 'Valeria Mora' }, logout: jest.fn() });
+    renderHeader();
+
+    expect(screen.getByRole('link', { name: 'Carreras' })).toHaveAttribute('href', '/carreras');
+    expect(screen.getByRole('link', { name: 'Comparar' })).toHaveAttribute('href', '/comparar');
+  });
+
   it('la burbuja de perfil lleva a "Mi huella" y NO cierra la sesión', async () => {
     const user = userEvent.setup();
     const logout = jest.fn();
