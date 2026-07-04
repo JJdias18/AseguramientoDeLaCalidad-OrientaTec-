@@ -5,11 +5,1108 @@
     "description": "Colección de la API REST (/api/v1). Se actualiza en cada fase de backend.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
-  "item": [],
+  "item": [
+    {
+      "name": "Auth (HU-01)",
+      "item": [
+        {
+          "name": "Registro - éxito",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('201 Created', () => pm.response.to.have.status(201));",
+                  "pm.test('devuelve token y usuario sin password', () => {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body.token).to.be.a('string');",
+                  "  pm.expect(body.user.password).to.be.undefined;",
+                  "  pm.expect(body.user.passwordHash).to.be.undefined;",
+                  "});",
+                  "if (pm.response.code === 201) {",
+                  "  pm.collectionVariables.set('token', pm.response.json().token);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fullName\": \"Valeria Mora\",\n  \"email\": \"valeria.mora@ejemplo.cr\",\n  \"password\": \"clave1234\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/register",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "register"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Registro - correo repetido",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('409 Conflict', () => pm.response.to.have.status(409));",
+                  "pm.test('código EMAIL_TAKEN', () => {",
+                  "  pm.expect(pm.response.json().error.code).to.eql('EMAIL_TAKEN');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fullName\": \"Otra Persona\",\n  \"email\": \"valeria.mora@ejemplo.cr\",\n  \"password\": \"clave5678\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/register",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "register"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Registro - contraseña débil",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('400 Bad Request', () => pm.response.to.have.status(400));",
+                  "pm.test('código WEAK_PASSWORD', () => {",
+                  "  pm.expect(pm.response.json().error.code).to.eql('WEAK_PASSWORD');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fullName\": \"Nueva Persona\",\n  \"email\": \"persona.nueva@ejemplo.cr\",\n  \"password\": \"abc\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/register",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "register"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Login - éxito",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));",
+                  "pm.test('devuelve token JWT', () => {",
+                  "  pm.expect(pm.response.json().token).to.be.a('string');",
+                  "});",
+                  "if (pm.response.code === 200) {",
+                  "  pm.collectionVariables.set('token', pm.response.json().token);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"valeria.mora@ejemplo.cr\",\n  \"password\": \"clave1234\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Login - credenciales incorrectas",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('401 Unauthorized', () => pm.response.to.have.status(401));",
+                  "pm.test('mensaje genérico, no revela cuál dato falló', () => {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body.error.code).to.eql('INVALID_CREDENTIALS');",
+                  "  pm.expect(body.error.message).to.eql('Correo o contraseña incorrectos.');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"valeria.mora@ejemplo.cr\",\n  \"password\": \"clave-equivocada\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Perfil autenticado (/auth/me)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));",
+                  "pm.test('devuelve el usuario autenticado', () => {",
+                  "  pm.expect(pm.response.json().user.email).to.be.a('string');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/me",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "me"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Perfil autenticado - sin token",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('401 Unauthorized', () => pm.response.to.have.status(401));",
+                  "pm.test('código UNAUTHORIZED', () => {",
+                  "  pm.expect(pm.response.json().error.code).to.eql('UNAUTHORIZED');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/auth/me",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "me"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Cuestionario (HU-02)",
+      "description": "Reactivos, ciclo de intentos, autosave de respuestas y cálculo del perfil. Requiere haber corrido antes un request de Auth que deja {{token}}.",
+      "item": [
+        {
+          "name": "Reactivos activos (GET /questions)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));",
+                  "pm.test('30 reactivos activos', () => {",
+                  "  pm.expect(pm.response.json().questions).to.have.lengthOf(30);",
+                  "});",
+                  "if (pm.response.code === 200) {",
+                  "  pm.collectionVariables.set('questionId', pm.response.json().questions[0].id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/questions",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "questions"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Iniciar o retomar intento (POST /attempts)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));",
+                  "pm.test('devuelve intento en curso, reactivos y avance', () => {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body.attempt.status).to.eql('in_progress');",
+                  "  pm.expect(body.questions).to.have.lengthOf(30);",
+                  "  pm.expect(body.progress.total).to.eql(30);",
+                  "});",
+                  "if (pm.response.code === 200) {",
+                  "  pm.collectionVariables.set('attemptId', pm.response.json().attempt.id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/attempts",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "attempts"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Autosave de una respuesta (PATCH /attempts/:id/answers)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));",
+                  "pm.test('guarda la respuesta y actualiza el avance', () => {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body.answer.value).to.eql(4);",
+                  "  pm.expect(body.progress.answered).to.be.at.least(1);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"questionId\": {{questionId}},\n  \"value\": 4\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/attempts/{{attemptId}}/answers",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "attempts",
+                "{{attemptId}}",
+                "answers"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Intento en curso (GET /attempts/current)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));",
+                  "pm.test('conserva las respuestas guardadas (retomar)', () => {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body.attempt.id).to.eql(Number(pm.collectionVariables.get('attemptId')));",
+                  "  pm.expect(body.progress.answered).to.be.at.least(1);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/attempts/current",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "attempts",
+                "current"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Envío incompleto bloqueado (POST /attempts/:id/submit)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('409 Conflict', () => pm.response.to.have.status(409));",
+                  "pm.test('código INCOMPLETE_QUESTIONNAIRE con las preguntas faltantes', () => {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body.error.code).to.eql('INCOMPLETE_QUESTIONNAIRE');",
+                  "  pm.expect(body.error.details.missing.length).to.be.above(0);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/attempts/{{attemptId}}/submit",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "attempts",
+                "{{attemptId}}",
+                "submit"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Perfil sin completar (GET /profile)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('404 Not Found mientras no haya perfil', () => pm.response.to.have.status(404));",
+                  "pm.test('código PROFILE_NOT_FOUND', () => {",
+                  "  pm.expect(pm.response.json().error.code).to.eql('PROFILE_NOT_FOUND');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/profile",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "profile"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Recomendaciones (HU-03)",
+      "item": [
+        {
+          "name": "Áreas afines del perfil (GET /recommendations)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK (nunca error de sesión si el token es válido)', () =>",
+                  "  pm.response.to.have.status(200));",
+                  "const body = pm.response.json();",
+                  "pm.test('indica si hay perfil', () => {",
+                  "  pm.expect(body.hasProfile).to.be.a('boolean');",
+                  "  pm.expect(body.recommendations).to.be.an('array');",
+                  "});",
+                  "if (body.hasProfile) {",
+                  "  pm.test('al menos 3 áreas con % y explicación, en orden descendente', () => {",
+                  "    pm.expect(body.recommendations.length).to.be.at.least(3);",
+                  "    const afinidades = body.recommendations.map((a) => a.affinity);",
+                  "    afinidades.forEach((valor) => pm.expect(valor).to.be.within(0, 100));",
+                  "    const ordenadas = [...afinidades].sort((a, b) => b - a);",
+                  "    pm.expect(afinidades).to.eql(ordenadas);",
+                  "    body.recommendations.forEach((a) => {",
+                  "      pm.expect(a.explanation).to.be.a('string').and.not.empty;",
+                  "    });",
+                  "  });",
+                  "} else {",
+                  "  pm.test('sin perfil no devuelve recomendaciones (guía al cuestionario)', () =>",
+                  "    pm.expect(body.recommendations).to.eql([]));",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/recommendations",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "recommendations"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Carreras (HU-04)",
+      "item": [
+        {
+          "name": "Listar el catálogo (GET /careers)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));",
+                  "const body = pm.response.json();",
+                  "pm.test('al menos 20 carreras con nombre y área', () => {",
+                  "  pm.expect(body.careers.length).to.be.at.least(20);",
+                  "  body.careers.forEach((c) => {",
+                  "    pm.expect(c.name).to.be.a('string');",
+                  "    pm.expect(c.area.name).to.be.a('string');",
+                  "  });",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/careers",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "careers"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Buscar carreras (GET /careers?search=)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));",
+                  "const body = pm.response.json();",
+                  "pm.test('todas las carreras contienen el término buscado', () => {",
+                  "  body.careers.forEach((c) =>",
+                  "    pm.expect(c.name.toLowerCase()).to.include('ingenier'));",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/careers?search=Ingeniería",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "careers"
+              ],
+              "query": [
+                {
+                  "key": "search",
+                  "value": "Ingeniería"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Buscar sin acentos (GET /careers?search=biologia)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));",
+                  "const body = pm.response.json();",
+                  "pm.test('encuentra \"Biología\" buscando \"biologia\" sin tilde', () => {",
+                  "  pm.expect(body.careers.some((c) => c.name === 'Biología')).to.be.true;",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/careers?search=biologia",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "careers"
+              ],
+              "query": [
+                {
+                  "key": "search",
+                  "value": "biologia"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Filtrar por área (GET /careers?area=)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));",
+                  "const body = pm.response.json();",
+                  "pm.test('todas las carreras pertenecen al área indicada', () => {",
+                  "  body.careers.forEach((c) => pm.expect(String(c.area.id)).to.eql(pm.variables.get('areaId')));",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/careers?area={{areaId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "careers"
+              ],
+              "query": [
+                {
+                  "key": "area",
+                  "value": "{{areaId}}"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Sin resultados (GET /careers?search=panaderia)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));",
+                  "const body = pm.response.json();",
+                  "pm.test('no hay carreras para un término inexistente', () =>",
+                  "  pm.expect(body.careers).to.eql([]));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/careers?search=panaderia",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "careers"
+              ],
+              "query": [
+                {
+                  "key": "search",
+                  "value": "panaderia"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Ficha de carrera (GET /careers/:id)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));",
+                  "const body = pm.response.json();",
+                  "pm.test('incluye descripción, campo laboral, duración y perfil', () => {",
+                  "  pm.expect(body.career.description).to.be.a('string').and.not.empty;",
+                  "  pm.expect(body.career.fieldOfWork).to.be.a('string').and.not.empty;",
+                  "  pm.expect(body.career.duration).to.be.a('string').and.not.empty;",
+                  "  pm.expect(body.career.profileDesc).to.be.a('string').and.not.empty;",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/careers/{{careerId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "careers",
+                "{{careerId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Ficha de carrera inexistente (404)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('404 Not Found', () => pm.response.to.have.status(404));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/careers/999999",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "careers",
+                "999999"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Comparar carreras (HU-05)",
+      "item": [
+        {
+          "name": "Comparación válida (GET /careers/compare?a=&b=)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));",
+                  "const body = pm.response.json();",
+                  "pm.test('muestra ambas carreras con sus atributos', () => {",
+                  "  pm.expect(body.careers).to.have.lengthOf(2);",
+                  "  body.careers.forEach((c) => {",
+                  "    pm.expect(c.duration).to.be.a('string');",
+                  "    pm.expect(c.fieldOfWork).to.be.a('string');",
+                  "    pm.expect(c.profileDesc).to.be.a('string');",
+                  "    pm.expect(c.area.name).to.be.a('string');",
+                  "  });",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/careers/compare?a={{careerAId}}&b={{careerBId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "careers",
+                "compare"
+              ],
+              "query": [
+                {
+                  "key": "a",
+                  "value": "{{careerAId}}"
+                },
+                {
+                  "key": "b",
+                  "value": "{{careerBId}}"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Falta la segunda carrera (400)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('400 Bad Request', () => pm.response.to.have.status(400));",
+                  "const body = pm.response.json();",
+                  "pm.test('MISSING_CAREER', () => pm.expect(body.error.code).to.eql('MISSING_CAREER'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/careers/compare?a={{careerAId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "careers",
+                "compare"
+              ],
+              "query": [
+                {
+                  "key": "a",
+                  "value": "{{careerAId}}"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Misma carrera dos veces (400)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('400 Bad Request', () => pm.response.to.have.status(400));",
+                  "const body = pm.response.json();",
+                  "pm.test('SAME_CAREER', () => pm.expect(body.error.code).to.eql('SAME_CAREER'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/careers/compare?a={{careerAId}}&b={{careerAId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "careers",
+                "compare"
+              ],
+              "query": [
+                {
+                  "key": "a",
+                  "value": "{{careerAId}}"
+                },
+                {
+                  "key": "b",
+                  "value": "{{careerAId}}"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Cambiar la segunda carrera (recalcula)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));",
+                  "const body = pm.response.json();",
+                  "pm.test('la segunda carrera cambia según el parámetro b', () => {",
+                  "  pm.expect(String(body.careers[1].id)).to.eql(pm.variables.get('careerBId'));",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/careers/compare?a={{careerAId}}&b={{careerBId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "careers",
+                "compare"
+              ],
+              "query": [
+                {
+                  "key": "a",
+                  "value": "{{careerAId}}"
+                },
+                {
+                  "key": "b",
+                  "value": "{{careerBId}}"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ],
   "variable": [
     {
       "key": "baseUrl",
       "value": "http://localhost:3000/api/v1",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "attemptId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "questionId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "areaId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "careerId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "careerAId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "careerBId",
+      "value": "",
       "type": "string"
     }
   ]

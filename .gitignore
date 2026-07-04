@@ -5,6 +5,9 @@ node_modules/
 dist/
 coverage/
 
+# Cache de herramientas (skill impeccable)
+.impeccable/
+
 # Secretos (solo se versiona .env.example)
 .env
 

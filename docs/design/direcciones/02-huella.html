@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Dirección 2 · Huella — Brújula Vocacional</title>
+<!--
+  Fase 1.5 · Dirección de arte 2: "Huella"
+  Concepto: nadie mezcla los seis intereses igual que vos — tu perfil vocacional
+  es una huella de color irrepetible.
+  Paleta RIASEC validada (CVD protan/deutan, ΔE adyacente mínimo 17.5; ≥3:1 sobre blanco).
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+  href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Instrument+Sans:ital,wght@0,400..700;1,400&display=swap"
+  rel="stylesheet"
+/>
+<style>
+  :root {
+    --blanco: #ffffff;
+    --carbon: #1b211b;
+    --musgo: #576157;
+    --jade: #1d6835;
+    --jade-oscuro: #145228;
+    --brote: #eef6ef;
+    --hairline: #d2dfd4;
+    --borde: #6f7a6f; /* bordes de componentes interactivos: >=3:1 sobre blanco */
+    /* seis tintas RIASEC — orden fijo del hexágono de Holland */
+    --tinta-r: #c7692c;
+    --tinta-i: #2e69b2;
+    --tinta-a: #db509c;
+    --tinta-s: #3b9555;
+    --tinta-e: #c38300;
+    --tinta-c: #564692;
+    --radio: 14px;
+    --radio-s: 8px;
+    --display: 'Bricolage Grotesque', system-ui, sans-serif;
+    --cuerpo: 'Instrument Sans', system-ui, sans-serif;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: var(--cuerpo);
+    background: var(--blanco);
+    color: var(--carbon);
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+  a { color: var(--jade); }
+  :focus-visible {
+    outline: 2.5px solid var(--jade);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  /* ── Chrome ── */
+  .nav {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 0.95rem 1.25rem;
+    border-bottom: 1px solid var(--hairline);
+  }
+  .nav__logo {
+    font-family: var(--display);
+    font-weight: 750;
+    font-size: 1.15rem;
+    letter-spacing: -0.02em;
+    color: var(--carbon);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+  }
+  /* mini-huella como marca */
+  .marca-huella {
+    display: inline-flex;
+    width: 26px;
+    height: 18px;
+    border-radius: 5px;
+    overflow: hidden;
+    gap: 1px;
+    background: var(--blanco);
+  }
+  .marca-huella i { flex: 1; }
+  .nav__links { display: none; gap: 1.5rem; margin-left: auto; list-style: none; }
+  .nav__links a {
+    color: var(--musgo);
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.95rem;
+    transition: color 0.15s ease;
+  }
+  .nav__links a:hover { color: var(--carbon); }
+  .nav__links a[aria-current='page'] {
+    color: var(--jade);
+    font-weight: 600;
+  }
+  .nav__avatar {
+    margin-left: auto;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--brote);
+    border: 1.5px solid var(--borde);
+    color: var(--jade);
+    font: 700 0.8rem var(--cuerpo);
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+  }
+  @media (min-width: 720px) {
+    .nav { padding: 0.95rem 2.5rem; }
+    .nav__links { display: flex; }
+    .nav__avatar { margin-left: 0; }
+  }
+
+  /* tab bar móvil: la nav principal vive en la zona del pulgar */
+  .tabbar {
+    position: fixed;
+    inset: auto 0 0 0;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    background: var(--blanco);
+    border-top: 1px solid var(--hairline);
+    padding: 0.4rem 0.5rem calc(0.4rem + env(safe-area-inset-bottom));
+    z-index: 10;
+  }
+  .tabbar a {
+    display: grid;
+    justify-items: center;
+    gap: 2px;
+    padding: 0.35rem 0;
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--musgo);
+    text-decoration: none;
+    border-radius: var(--radio-s);
+  }
+  .tabbar a[aria-current='page'] { color: var(--jade); }
+  .tabbar svg { display: block; }
+  @media (min-width: 720px) { .tabbar { display: none; } }
+
+  .pagina { max-width: 60rem; margin: 0 auto; padding: 2.25rem 1.25rem 7.5rem; }
+  @media (min-width: 720px) { .pagina { padding: 3.5rem 2.5rem 5rem; } }
+
+  /* ── Encabezado ── */
+  .saludo { color: var(--musgo); font-size: 0.95rem; }
+  h1 {
+    font-family: var(--display);
+    font-weight: 780;
+    font-size: clamp(2rem, 6.5vw, 3.2rem);
+    letter-spacing: -0.03em;
+    line-height: 1.02;
+    text-wrap: balance;
+    margin: 0.4rem 0 0.9rem;
+  }
+  h1 em { font-style: normal; color: var(--jade); }
+  .intro { color: var(--musgo); max-width: 54ch; }
+
+  /* ── La huella ── */
+  .huella-bloque { margin: 2.75rem 0 3.25rem; }
+  .huella {
+    display: flex;
+    gap: 3px;
+    height: 112px;
+    border-radius: var(--radio);
+    overflow: hidden;
+  }
+  .huella > div { position: relative; min-width: 0; }
+  @media (prefers-reduced-motion: no-preference) {
+    /* la huella se asienta al entrar; visible desde el primer fotograma */
+    .huella { animation: asentar 0.7s cubic-bezier(0.16, 1, 0.3, 1); }
+    @keyframes asentar {
+      from { opacity: 0.35; transform: translateY(10px); }
+    }
+  }
+  /* leyenda en el mismo orden que la franja (R-I-A-S-E-C) */
+  .huella-leyenda {
+    list-style: none;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.5rem 1.5rem;
+    margin-top: 1.25rem;
+    max-width: 24rem;
+  }
+  @media (min-width: 480px) {
+    .huella-leyenda { grid-template-columns: repeat(2, 1fr); max-width: none; }
+  }
+  @media (min-width: 720px) { .huella-leyenda { grid-template-columns: repeat(3, 1fr); } }
+  .huella-leyenda li {
+    display: grid;
+    grid-template-columns: 14px 1fr auto;
+    align-items: baseline;
+    gap: 0.55rem;
+    font-size: 0.92rem;
+  }
+  .huella-leyenda i {
+    width: 14px;
+    height: 14px;
+    border-radius: 4px;
+    align-self: center;
+  }
+  .huella-leyenda .valor {
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+  .huella-leyenda .valor small {
+    font-weight: 400;
+    color: var(--musgo);
+    font-size: 0.78rem;
+  }
+  .huella-leyenda .dominante { font-weight: 700; }
+  .huella-leyenda .dominante::after {
+    content: ' ●';
+    color: var(--jade);
+    font-size: 0.55rem;
+    vertical-align: 0.25em;
+  }
+  .leyenda-clave {
+    margin-top: 0.6rem;
+    font-size: 0.85rem;
+    color: var(--musgo);
+  }
+  .leyenda-clave b { color: var(--jade); font-size: 0.65rem; vertical-align: 0.2em; }
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  .codigo {
+    margin-top: 1.4rem;
+    padding: 0.9rem 1.15rem;
+    background: var(--brote);
+    border-radius: var(--radio-s);
+    font-size: 0.95rem;
+    color: var(--musgo);
+    max-width: 60ch;
+  }
+  .codigo b {
+    font-family: var(--display);
+    color: var(--carbon);
+    font-size: 1.05rem;
+    letter-spacing: 0.02em;
+  }
+
+  /* ── Áreas ── */
+  h2 {
+    font-family: var(--display);
+    font-weight: 720;
+    font-size: 1.6rem;
+    letter-spacing: -0.025em;
+    margin-bottom: 0.3rem;
+  }
+  .seccion-sub { color: var(--musgo); margin-bottom: 1.75rem; max-width: 54ch; }
+  .areas { list-style: none; display: grid; gap: 1rem; }
+  .area {
+    border: 1.5px solid var(--hairline);
+    border-radius: var(--radio);
+    padding: 1.25rem 1.25rem 1.35rem;
+    display: grid;
+    gap: 0.6rem;
+  }
+  .area--principal { border-color: var(--jade); border-width: 2px; }
+  /* el % siempre arriba a la derecha, sin depender del largo del título */
+  .area__cabecera {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: baseline;
+    gap: 0.25rem 0.75rem;
+  }
+  .area__nombre {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 1.2rem;
+    letter-spacing: -0.02em;
+  }
+  .area__afinidad {
+    font-family: var(--display);
+    font-weight: 780;
+    font-size: 1.5rem;
+    letter-spacing: -0.02em;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+  .area--principal .area__afinidad { color: var(--jade); }
+  /* eco de la huella: por qué esta área se parece a vos */
+  .area__eco-rotulo {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--musgo);
+    margin-bottom: 0.25rem;
+  }
+  .area__eco {
+    display: flex;
+    gap: 2px;
+    height: 16px;
+    border-radius: 6px;
+    overflow: hidden;
+    max-width: 240px;
+  }
+  .area__eco i { min-width: 0; }
+  .area__porque { color: var(--musgo); max-width: 60ch; }
+  .area__link {
+    justify-self: start;
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    font-weight: 600;
+    color: var(--jade);
+    text-decoration: none;
+  }
+  .area__link:hover { text-decoration: underline; text-underline-offset: 3px; }
+  .area__link::after { content: '→'; margin-left: 0.35rem; }
+
+  /* ── Acciones ── */
+  .acciones {
+    margin-top: 3rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+  }
+  @media (min-width: 720px) { .acciones { flex-direction: row; align-items: center; } }
+  .btn {
+    font: 600 1rem var(--cuerpo);
+    padding: 0.9rem 1.7rem;
+    border-radius: 999px;
+    border: none;
+    cursor: pointer;
+    text-align: center;
+    white-space: nowrap;
+    flex-shrink: 0;
+    transition: background-color 0.15s ease, border-color 0.15s ease;
+  }
+  .btn:not(:disabled):active { transform: translateY(1px); }
+  .btn--primario { background: var(--jade); color: #fff; }
+  .btn--primario:hover { background: var(--jade-oscuro); }
+  .btn--secundario {
+    background: transparent;
+    color: var(--jade);
+    border: 1.5px solid var(--borde);
+  }
+  .btn--secundario:hover { border-color: var(--jade); }
+  .btn:disabled {
+    background: var(--brote);
+    color: var(--musgo);
+    cursor: not-allowed;
+  }
+  .nota { font-size: 0.85rem; color: var(--musgo); }
+  .nota a { color: var(--jade); font-weight: 600; }
+  @media (min-width: 720px) { .nota { margin-left: auto; } }
+
+  /* ── Muestra de estados de la dirección (specimen, no parte de la pantalla) ── */
+  .estados {
+    margin-top: 4rem;
+    padding-top: 1.5rem;
+    border-top: 1px dashed var(--borde);
+  }
+  .estados > h2 { font-size: 1.15rem; color: var(--musgo); }
+  .estados-grid { display: grid; gap: 1rem; margin-top: 1rem; }
+  @media (min-width: 720px) { .estados-grid { grid-template-columns: repeat(3, 1fr); } }
+  .estado {
+    border: 1.5px solid var(--hairline);
+    border-radius: var(--radio);
+    padding: 1.1rem;
+    display: grid;
+    gap: 0.6rem;
+    align-content: start;
+  }
+  .estado h3 { font-family: var(--display); font-size: 1.02rem; font-weight: 700; }
+  .estado p { font-size: 0.9rem; color: var(--musgo); }
+  .estado .btn { padding: 0.7rem 1.2rem; font-size: 0.92rem; justify-self: start; }
+  .huella-esqueleto { display: flex; gap: 3px; height: 40px; border-radius: var(--radio-s); overflow: hidden; }
+  .huella-esqueleto i { background: var(--hairline); }
+  @media (prefers-reduced-motion: no-preference) {
+    .huella-esqueleto i { animation: latir 1.4s ease-in-out infinite alternate; }
+    .huella-esqueleto i:nth-child(odd) { animation-delay: 0.35s; }
+    @keyframes latir { to { opacity: 0.45; } }
+  }
+  .huella-vacia { display: flex; gap: 3px; height: 40px; border-radius: var(--radio-s); overflow: hidden; }
+  .huella-vacia i { border: 1.5px dashed var(--borde); border-radius: 4px; }
+</style>
+</head>
+<body>
+  <nav class="nav" aria-label="Principal">
+    <a class="nav__logo" href="#">
+      <span class="marca-huella" aria-hidden="true">
+        <i style="background: var(--tinta-r)"></i><i style="background: var(--tinta-i)"></i><i
+          style="background: var(--tinta-a)"></i><i style="background: var(--tinta-s)"></i><i
+          style="background: var(--tinta-e)"></i><i style="background: var(--tinta-c)"></i>
+      </span>
+      Brújula
+    </a>
+    <ul class="nav__links">
+      <li><a href="#">Cuestionario</a></li>
+      <li><a href="#" aria-current="page">Mi huella</a></li>
+      <li><a href="#">Carreras</a></li>
+      <li><a href="#">Comparar</a></li>
+    </ul>
+    <button class="nav__avatar" type="button" aria-label="Cuenta de Valeria Mora">VM</button>
+  </nav>
+
+  <main class="pagina">
+    <p class="saludo">Valeria · resultados del 2 de julio de 2026</p>
+
+    <h1>Esta huella es <em>solo tuya</em></h1>
+    <p class="intro">
+      Terminaste las 30 preguntas. Así se mezclan tus seis intereses: nadie más los
+      combina en estas proporciones. Tus tres tintas dominantes marcan el rumbo.
+    </p>
+
+    <section class="huella-bloque" aria-label="Perfil RIASEC">
+      <div class="huella" role="img"
+        aria-label="Huella vocacional: Realista 11, Investigativo 23, Artístico 20, Social 13, Emprendedor 17, Convencional 8, de un máximo de 25 por dimensión.">
+        <div style="flex: 11; background: var(--tinta-r)"></div>
+        <div style="flex: 23; background: var(--tinta-i)"></div>
+        <div style="flex: 20; background: var(--tinta-a)"></div>
+        <div style="flex: 13; background: var(--tinta-s)"></div>
+        <div style="flex: 17; background: var(--tinta-e)"></div>
+        <div style="flex: 8; background: var(--tinta-c)"></div>
+      </div>
+      <ul class="huella-leyenda">
+        <li><i style="background: var(--tinta-r)"></i><span>Realista</span><span class="valor">11 <small>/ 25</small></span></li>
+        <li>
+          <i style="background: var(--tinta-i)"></i>
+          <span class="dominante">Investigativo<span class="sr-only"> (dominante)</span></span>
+          <span class="valor">23 <small>/ 25</small></span>
+        </li>
+        <li>
+          <i style="background: var(--tinta-a)"></i>
+          <span class="dominante">Artístico<span class="sr-only"> (dominante)</span></span>
+          <span class="valor">20 <small>/ 25</small></span>
+        </li>
+        <li><i style="background: var(--tinta-s)"></i><span>Social</span><span class="valor">13 <small>/ 25</small></span></li>
+        <li>
+          <i style="background: var(--tinta-e)"></i>
+          <span class="dominante">Emprendedor<span class="sr-only"> (dominante)</span></span>
+          <span class="valor">17 <small>/ 25</small></span>
+        </li>
+        <li><i style="background: var(--tinta-c)"></i><span>Convencional</span><span class="valor">8 <small>/ 25</small></span></li>
+      </ul>
+      <p class="leyenda-clave" aria-hidden="true"><b>●</b> tus tres tintas dominantes · en el mismo orden que la franja</p>
+      <p class="codigo">
+        Tu código Holland es <b>I–A–E</b>: primero investigás, después creás, y
+        cuando la idea está lista, la echás a andar.
+      </p>
+    </section>
+
+    <section aria-labelledby="areas-titulo">
+      <h2 id="areas-titulo">Tus áreas más afines</h2>
+      <p class="seccion-sub">
+        Comparamos tu huella con la de cada área académica. Cuanto más se parecen,
+        más alta la afinidad.
+      </p>
+      <ol class="areas">
+        <li class="area area--principal">
+          <div class="area__cabecera">
+            <span class="area__nombre">Ciencia y Tecnología</span>
+            <span class="area__afinidad">87 %</span>
+          </div>
+          <div aria-hidden="true">
+            <p class="area__eco-rotulo">La huella del área:</p>
+            <div class="area__eco">
+              <i style="flex: 10; background: var(--tinta-r)"></i>
+              <i style="flex: 24; background: var(--tinta-i)"></i>
+              <i style="flex: 14; background: var(--tinta-a)"></i>
+              <i style="flex: 8; background: var(--tinta-s)"></i>
+              <i style="flex: 12; background: var(--tinta-e)"></i>
+              <i style="flex: 10; background: var(--tinta-c)"></i>
+            </div>
+          </div>
+          <p class="area__porque">
+            La huella del área se parece a la tuya donde más pesás: curiosidad
+            investigativa y gusto por resolver problemas.
+          </p>
+          <a class="area__link" href="#">Ver 8 carreras del área</a>
+        </li>
+        <li class="area">
+          <div class="area__cabecera">
+            <span class="area__nombre">Arte, Diseño y Comunicación</span>
+            <span class="area__afinidad">74 %</span>
+          </div>
+          <div aria-hidden="true">
+            <p class="area__eco-rotulo">La huella del área:</p>
+            <div class="area__eco">
+              <i style="flex: 6; background: var(--tinta-r)"></i>
+              <i style="flex: 12; background: var(--tinta-i)"></i>
+              <i style="flex: 26; background: var(--tinta-a)"></i>
+              <i style="flex: 12; background: var(--tinta-s)"></i>
+              <i style="flex: 14; background: var(--tinta-e)"></i>
+              <i style="flex: 5; background: var(--tinta-c)"></i>
+            </div>
+          </div>
+          <p class="area__porque">
+            Tu tinta artística es la segunda más fuerte: acá hay espacio para crear,
+            comunicar y darle forma propia a las ideas.
+          </p>
+          <a class="area__link" href="#">Ver 6 carreras del área</a>
+        </li>
+        <li class="area">
+          <div class="area__cabecera">
+            <span class="area__nombre">Negocios y Emprendimiento</span>
+            <span class="area__afinidad">66 %</span>
+          </div>
+          <div aria-hidden="true">
+            <p class="area__eco-rotulo">La huella del área:</p>
+            <div class="area__eco">
+              <i style="flex: 8; background: var(--tinta-r)"></i>
+              <i style="flex: 10; background: var(--tinta-i)"></i>
+              <i style="flex: 10; background: var(--tinta-a)"></i>
+              <i style="flex: 14; background: var(--tinta-s)"></i>
+              <i style="flex: 28; background: var(--tinta-e)"></i>
+              <i style="flex: 12; background: var(--tinta-c)"></i>
+            </div>
+          </div>
+          <p class="area__porque">
+            Tu vena emprendedora disfruta liderar, convencer y echar a andar
+            proyectos nuevos.
+          </p>
+          <a class="area__link" href="#">Ver 5 carreras del área</a>
+        </li>
+      </ol>
+    </section>
+
+    <div class="acciones">
+      <button class="btn btn--primario" type="button">Descargá tu huella en PDF</button>
+      <button class="btn btn--secundario" type="button">Repetir el cuestionario</button>
+      <p class="nota">
+        Modelo RIASEC de Holland · 30 preguntas · escala 1–5 ·
+        <a href="#">¿Cómo se calcula?</a>
+      </p>
+    </div>
+
+    <!-- Specimen de estados: demuestra la dirección, no es parte de la pantalla real -->
+    <section class="estados" aria-label="Muestra de estados de la dirección">
+      <h2>Estados del sistema (muestra de la dirección)</h2>
+      <div class="estados-grid">
+        <div class="estado">
+          <h3>Calculando tu huella…</h3>
+          <div class="huella-esqueleto" aria-hidden="true">
+            <i style="flex: 14"></i><i style="flex: 20"></i><i style="flex: 17"></i><i
+              style="flex: 15"></i><i style="flex: 18"></i><i style="flex: 12"></i>
+          </div>
+          <p>Estamos comparando tus respuestas con las seis dimensiones. Tarda unos segundos.</p>
+        </div>
+        <div class="estado">
+          <h3>Aún no tenés tu huella</h3>
+          <div class="huella-vacia" aria-hidden="true">
+            <i style="flex: 14"></i><i style="flex: 20"></i><i style="flex: 17"></i><i
+              style="flex: 15"></i><i style="flex: 18"></i><i style="flex: 12"></i>
+          </div>
+          <p>Respondé el cuestionario de 30 preguntas y acá va a aparecer tu combinación única.</p>
+          <button class="btn btn--primario" type="button">Empezar el cuestionario</button>
+        </div>
+        <div class="estado">
+          <h3>Descarga sin perfil</h3>
+          <button class="btn btn--primario" type="button" disabled>Descargá tu huella en PDF</button>
+          <p>Necesitás completar el cuestionario para poder descargar tu huella.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <nav class="tabbar" aria-label="Principal (móvil)">
+    <a href="#">
+      <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor"
+        stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+        <path d="M4 5.5h9M4 11h14M4 16.5h11" />
+      </svg>
+      Cuestionario
+    </a>
+    <a href="#" aria-current="page">
+      <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true">
+        <rect x="3" y="5" width="3.4" height="12" rx="1.4" fill="currentColor" />
+        <rect x="7.6" y="3" width="3.4" height="16" rx="1.4" fill="currentColor" />
+        <rect x="12.2" y="6.5" width="3.4" height="9" rx="1.4" fill="currentColor" />
+        <rect x="16.8" y="8" width="2.6" height="6" rx="1.3" fill="currentColor" />
+      </svg>
+      Mi huella
+    </a>
+    <a href="#">
+      <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor"
+        stroke-width="1.8" stroke-linejoin="round" aria-hidden="true">
+        <path d="M4 6.5 11 3l7 3.5-7 3.5z" />
+        <path d="M7 8.9v4.3c0 1.2 1.8 2.3 4 2.3s4-1.1 4-2.3V8.9" />
+      </svg>
+      Carreras
+    </a>
+    <a href="#">
+      <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor"
+        stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+        <rect x="3.5" y="4" width="6.2" height="14" rx="1.6" />
+        <rect x="12.3" y="4" width="6.2" height="14" rx="1.6" />
+      </svg>
+      Comparar
+    </a>
+  </nav>
+</body>
+</html>

@@ -1,0 +1,87 @@
+/*
+ * Base global — Brújula Vocacional · dirección "Huella".
+ * Consume exclusivamente los tokens de tokens.css (ver DESIGN.md §5).
+ */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--fuente-cuerpo);
+  font-size: var(--fs-base);
+  line-height: var(--interlineado-prosa);
+  background: var(--color-fondo);
+  color: var(--color-tinta);
+}
+
+a {
+  color: var(--color-jade);
+}
+
+:focus-visible {
+  outline: var(--foco-grosor) solid var(--color-jade);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--fuente-display);
+  letter-spacing: var(--tracking-display);
+  text-wrap: balance;
+  line-height: var(--interlineado-display);
+}
+
+h1 {
+  font-size: var(--fs-display);
+  font-weight: 780;
+}
+
+h2 {
+  font-size: var(--fs-lg);
+  font-weight: 720;
+  line-height: 1.2;
+}
+
+h3 {
+  font-size: var(--fs-md);
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+p {
+  max-width: var(--medida-prosa);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.sub {
+  color: var(--color-musgo);
+}
+
+.pagina {
+  max-width: 60rem;
+  margin: 0 auto;
+  padding: var(--esp-6) var(--esp-4) calc(var(--esp-8) + 4.5rem);
+}
+
+@media (min-width: 720px) {
+  .pagina {
+    padding: var(--esp-7) var(--esp-6) var(--esp-8);
+  }
+}
+
+.estrecha {
+  max-width: 26rem;
+}

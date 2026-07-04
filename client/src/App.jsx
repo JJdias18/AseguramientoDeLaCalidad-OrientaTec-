@@ -1,9 +1,43 @@
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+
+import { AuthProvider } from './context/AuthContext';
+import AppHeader from './components/AppHeader';
+import ProtectedRoute from './components/ProtectedRoute';
+import GuestRoute from './components/GuestRoute';
+import HomePage from './pages/HomePage';
+import LoginPage from './pages/LoginPage';
+import RegisterPage from './pages/RegisterPage';
+import CuestionarioPage from './pages/CuestionarioPage';
+import ResultadoPage from './pages/ResultadoPage';
+import CarrerasPage from './pages/CarrerasPage';
+import CarreraDetallePage from './pages/CarreraDetallePage';
+import ComparadorPage from './pages/ComparadorPage';
+import NotFoundPage from './pages/NotFoundPage';
+
 function App() {
   return (
-    <main>
-      <h1>Brújula Vocacional</h1>
-      <p>Andamiaje inicial (Fase 0). Las pantallas se implementan a partir de la Fase 2.</p>
-    </main>
+    <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+      <AuthProvider>
+        <AppHeader />
+        <main>
+          <Routes>
+            <Route element={<ProtectedRoute />}>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/cuestionario" element={<CuestionarioPage />} />
+              <Route path="/mi-huella" element={<ResultadoPage />} />
+              <Route path="/carreras" element={<CarrerasPage />} />
+              <Route path="/carreras/:id" element={<CarreraDetallePage />} />
+              <Route path="/comparar" element={<ComparadorPage />} />
+            </Route>
+            <Route element={<GuestRoute />}>
+              <Route path="/iniciar-sesion" element={<LoginPage />} />
+              <Route path="/registro" element={<RegisterPage />} />
+            </Route>
+            <Route path="*" element={<NotFoundPage />} />
+          </Routes>
+        </main>
+      </AuthProvider>
+    </BrowserRouter>
   );
 }
 

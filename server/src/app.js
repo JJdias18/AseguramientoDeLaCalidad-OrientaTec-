@@ -1,12 +1,34 @@
 const express = require('express');
+const cors = require('cors');
+
+const authRoutes = require('./routes/authRoutes');
+const questionRoutes = require('./routes/questionRoutes');
+const attemptRoutes = require('./routes/attemptRoutes');
+const profileRoutes = require('./routes/profileRoutes');
+const recommendationRoutes = require('./routes/recommendationRoutes');
+const careerRoutes = require('./routes/careerRoutes');
 
 const app = express();
 
+const allowedOrigin = process.env.CLIENT_ORIGIN || 'http://localhost:5173';
+app.use(
+  cors({
+    // Sin header Origin (curl, Postman, server-to-server): no aplica CORS, se permite.
+    origin: (origin, callback) => callback(null, !origin || origin === allowedOrigin),
+  })
+);
 app.use(express.json());
 
 app.get('/api/v1/health', (req, res) => {
   res.json({ status: 'ok' });
 });
+
+app.use('/api/v1/auth', authRoutes);
+app.use('/api/v1/questions', questionRoutes);
+app.use('/api/v1/attempts', attemptRoutes);
+app.use('/api/v1/profile', profileRoutes);
+app.use('/api/v1/recommendations', recommendationRoutes);
+app.use('/api/v1/careers', careerRoutes);
 
 // 404 con el formato de error uniforme del proyecto.
 app.use((req, res) => {
@@ -22,12 +44,14 @@ app.use((req, res) => {
 // eslint-disable-next-line no-unused-vars
 app.use((err, req, res, next) => {
   const status = err.status || 500;
-  res.status(status).json({
-    error: {
-      code: err.code || 'INTERNAL_ERROR',
-      message: err.message || 'Error interno del servidor.',
-    },
-  });
+  const error = {
+    code: err.code || 'INTERNAL_ERROR',
+    message: err.message || 'Error interno del servidor.',
+  };
+  if (err.details !== undefined) {
+    error.details = err.details;
+  }
+  res.status(status).json({ error });
 });
 
 module.exports = app;

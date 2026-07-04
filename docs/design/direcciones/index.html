@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Fase 1.5 · Direcciones de arte — Brújula Vocacional</title>
+<!--
+  Comparador de las 3 direcciones de arte (pantalla de resultados, vista móvil).
+  Este archivo es chrome neutro de revisión: NO es una dirección de diseño.
+  Abrí cada preview en su pestaña para verla también en desktop.
+-->
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: system-ui, sans-serif;
+    background: #ececee;
+    color: #222;
+    padding: 2rem 1.25rem 3rem;
+    line-height: 1.5;
+  }
+  header { max-width: 80rem; margin: 0 auto 2rem; }
+  h1 { font-size: 1.4rem; margin-bottom: 0.25rem; }
+  header p { color: #555; max-width: 70ch; }
+  .grid {
+    max-width: 80rem;
+    margin: 0 auto;
+    display: grid;
+    gap: 2rem;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    justify-items: center;
+  }
+  figure { width: 100%; max-width: 400px; }
+  figcaption { margin-bottom: 0.6rem; }
+  figcaption b { font-size: 1.05rem; }
+  figcaption span { display: block; color: #555; font-size: 0.88rem; }
+  iframe {
+    width: 100%;
+    height: 720px;
+    border: 1px solid #c8c8cc;
+    border-radius: 14px;
+    background: #fff;
+  }
+  .abrir {
+    display: inline-block;
+    margin-top: 0.5rem;
+    font-size: 0.9rem;
+    color: #1a4fa0;
+  }
+</style>
+</head>
+<body>
+  <header>
+    <h1>Fase 1.5 · Direcciones de arte — pantalla de resultados</h1>
+    <p>
+      Mismos datos de muestra en las tres. Cada marco simula un móvil (~390px);
+      abrí cada dirección en su propia pestaña para revisar el layout de escritorio
+      y los estados de foco.
+    </p>
+  </header>
+  <div class="grid">
+    <figure>
+      <figcaption>
+        <b>1 · Norte propio</b>
+        <span>Cartografía personal: rosa RIASEC, retícula milimetrada, vermellón señal.</span>
+      </figcaption>
+      <iframe src="01-norte-propio.html" title="Preview dirección 1: Norte propio"></iframe>
+      <a class="abrir" href="01-norte-propio.html" target="_blank" rel="noopener">Abrir en pestaña →</a>
+    </figure>
+    <figure>
+      <figcaption>
+        <b>2 · Huella</b>
+        <span>Tu mezcla de intereses como huella cromática irrepetible; base jade.</span>
+      </figcaption>
+      <iframe src="02-huella.html" title="Preview dirección 2: Huella"></iframe>
+      <a class="abrir" href="02-huella.html" target="_blank" rel="noopener">Abrir en pestaña →</a>
+    </figure>
+    <figure>
+      <figcaption>
+        <b>3 · Constancia</b>
+        <span>El resultado como documento editorial: monograma Holland, ciruela y señalador.</span>
+      </figcaption>
+      <iframe src="03-constancia.html" title="Preview dirección 3: Constancia"></iframe>
+      <a class="abrir" href="03-constancia.html" target="_blank" rel="noopener">Abrir en pestaña →</a>
+    </figure>
+  </div>
+</body>
+</html>
