@@ -1149,6 +1149,366 @@
           }
         }
       ]
+    },
+    {
+      "name": "Admin — Banco de reactivos (HU-07)",
+      "item": [
+        {
+          "name": "Login admin",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));",
+                  "if (pm.response.code === 200) {",
+                  "  pm.collectionVariables.set('adminToken', pm.response.json().token);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@orientatec.cr\",\n  \"password\": \"Admin1234\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Acceso denegado a estudiante (GET /admin/questions)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('403 Forbidden', () => pm.response.to.have.status(403));",
+                  "pm.test('código FORBIDDEN', () => pm.expect(pm.response.json().error.code).to.eql('FORBIDDEN'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/questions",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "questions"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Sin sesión (GET /admin/questions)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('401 Unauthorized', () => pm.response.to.have.status(401));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/admin/questions",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "questions"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Crear reactivo (POST /admin/questions)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('201 Created', () => pm.response.to.have.status(201));",
+                  "pm.test('devuelve el reactivo creado y activo', () => {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body.question.text).to.be.a('string');",
+                  "  pm.expect(body.question.riasecType).to.eql('I');",
+                  "  pm.expect(body.question.isActive).to.be.true;",
+                  "});",
+                  "if (pm.response.code === 201) {",
+                  "  pm.collectionVariables.set('questionAdminId', pm.response.json().question.id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/questions",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "questions"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"text\": \"Reactivo de prueba creado desde Postman.\",\n  \"riasecType\": \"I\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Editar reactivo (PUT /admin/questions/:id)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));",
+                  "pm.test('el texto y el tipo quedaron actualizados', () => {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body.question.text).to.eql('Reactivo de prueba editado desde Postman.');",
+                  "  pm.expect(body.question.riasecType).to.eql('C');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/questions/{{questionAdminId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "questions",
+                "{{questionAdminId}}"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"text\": \"Reactivo de prueba editado desde Postman.\",\n  \"riasecType\": \"C\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Validación - texto vacío",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('400 Bad Request', () => pm.response.to.have.status(400));",
+                  "pm.test('código INVALID_QUESTION_TEXT', () => pm.expect(pm.response.json().error.code).to.eql('INVALID_QUESTION_TEXT'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/questions",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "questions"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"text\": \"   \",\n  \"riasecType\": \"R\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Validación - tipo RIASEC inválido",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('400 Bad Request', () => pm.response.to.have.status(400));",
+                  "pm.test('código INVALID_RIASEC_TYPE', () => pm.expect(pm.response.json().error.code).to.eql('INVALID_RIASEC_TYPE'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/questions",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "questions"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"text\": \"Texto válido, tipo inválido.\",\n  \"riasecType\": \"Z\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Desactivar reactivo — soft delete (DELETE /admin/questions/:id)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));",
+                  "pm.test('queda inactivo, nunca se borra físicamente', () => {",
+                  "  pm.expect(pm.response.json().question.isActive).to.be.false;",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/questions/{{questionAdminId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "questions",
+                "{{questionAdminId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Desactivar reactivo inexistente (404)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('404 Not Found', () => pm.response.to.have.status(404));",
+                  "pm.test('código QUESTION_NOT_FOUND', () => pm.expect(pm.response.json().error.code).to.eql('QUESTION_NOT_FOUND'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/questions/999999",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "questions",
+                "999999"
+              ]
+            }
+          }
+        }
+      ]
     }
   ],
   "variable": [
@@ -1189,6 +1549,16 @@
     },
     {
       "key": "careerBId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "adminToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "questionAdminId",
       "value": "",
       "type": "string"
     }

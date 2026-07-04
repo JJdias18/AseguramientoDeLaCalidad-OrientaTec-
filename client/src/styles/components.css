@@ -852,3 +852,110 @@ a.carrera:hover {
 .carrera--esqueleto i:last-child {
   width: 70%;
 }
+
+/* ── Admin: banco de reactivos (DESIGN.md §5 "Tabla admin" / §7.8, HU-07) ── */
+.tabla-admin {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.tabla-admin th,
+.tabla-admin td {
+  text-align: left;
+  padding: var(--esp-3) var(--esp-4);
+  border-bottom: 1px solid var(--color-hairline);
+}
+
+.tabla-admin thead th {
+  font-size: var(--fs-sm);
+  font-weight: 700;
+}
+
+.tabla-admin tbody tr.fila--inactiva {
+  color: var(--color-musgo);
+}
+
+.tabla-admin__acciones {
+  display: flex;
+  gap: var(--esp-4);
+}
+
+.tabla-admin__acciones button {
+  font: 600 var(--fs-sm) var(--fuente-cuerpo);
+  color: var(--color-jade);
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  min-height: var(--target-tactil);
+}
+
+.tabla-admin__acciones button:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.chip-estado {
+  display: inline-block;
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  padding: 0.15rem 0.6rem;
+  border-radius: var(--radio-pill);
+  background: var(--color-brote);
+  color: var(--color-musgo);
+}
+
+/* ── Modal de confirmación (DESIGN.md §5, solo acciones destructivas/irreversibles) ── */
+.modal::backdrop {
+  background: var(--color-velo-modal);
+}
+
+.modal {
+  max-width: 28rem;
+  width: calc(100% - var(--esp-6));
+  border: none;
+  border-radius: var(--radio);
+  padding: var(--esp-5);
+  z-index: var(--z-modal);
+}
+
+.modal h2 {
+  font-family: var(--fuente-display);
+  margin-bottom: var(--esp-3);
+}
+
+.modal p {
+  margin-bottom: var(--esp-5);
+}
+
+.modal__acciones {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--esp-3);
+}
+
+.btn--peligro {
+  background: var(--color-error);
+  color: var(--color-fondo);
+}
+
+.btn--peligro:hover {
+  background: #8f1e18;
+}
+
+/* ── Toast (aviso post-acción, DESIGN.md §5) ── */
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: var(--esp-6);
+  transform: translateX(-50%);
+  z-index: var(--z-toast);
+  background: var(--color-tinta);
+  color: var(--color-fondo);
+  padding: var(--esp-3) var(--esp-5);
+  border-radius: var(--radio-pill);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  max-width: calc(100% - var(--esp-6));
+  text-align: center;
+}

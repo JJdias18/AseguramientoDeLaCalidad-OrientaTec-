@@ -45,6 +45,8 @@
 | 33 | Fecha del reporte PDF (HU-06) | Es la **fecha de generación** del PDF (hoy), no la fecha en que se calculó el perfil | El criterio solo pide "fecha" sin especificar cuál; la fecha de generación es la que tiene sentido en un documento descargado en cualquier momento después del cuestionario |
 | 34 | Carreras sugeridas del reporte (HU-06) | Se arman recorriendo las áreas de `getRecommendations` (ya ordenadas por afinidad) y tomando sus carreras ya embebidas, sin duplicar, hasta un tope de 6 | Reusa el mismo dato que ya arma HU-03 para el drill-down; evita una consulta o criterio de selección nuevo, y garantiza que el PDF coincida con "Mi huella" |
 | 35 | Colores del PDF (HU-06) | `pdfReportService.js` define `COLOR_JADE`/`COLOR_TINTA`/`COLOR_MUSGO`/`COLOR_HAIRLINE` como constantes locales, con los mismos hex que `tokens.css` | El servidor no puede leer `tokens.css` (es un archivo del cliente); son los únicos valores de color fuera de `tokens.css` en todo el proyecto, y solo porque el documento se genera fuera del navegador |
+| 36 | Jest del servidor en serie (HU-07) | `jest.config.cjs` fija `maxWorkers: 1` | Los tests de rutas pegan a una única BD real sin mocks; `adminQuestionRoutes.test.js` crea/desactiva reactivos activos y `questionnaireRoutes.test.js` exige exactamente 30 activos del seed. En paralelo (workers por defecto) ambos archivos pueden ejecutarse a la vez y pisarse; en serie el conteo queda determinista |
+| 37 | Ruta de admin en el cliente (HU-07) | `AdminRoute` anidado dentro de `ProtectedRoute`: sin sesión redirige a login (como cualquier ruta protegida); con sesión pero sin rol admin muestra "Acceso denegado" con enlace a inicio, en vez de redirigir | DESIGN.md §7.8 pide ese mensaje específico para un estudiante que entra por URL directa; redirigir silenciosamente ocultaría por qué no puede entrar |
 
 (Claude Code: si tomás una decisión nueva, agregala a esta tabla.)
 
@@ -269,13 +271,27 @@ descarga con un enlace temporal. Traza CP-050…CP-054 en `docs/trazabilidad.md`
 (54 casos). Decisiones nuevas: #32, #33, #34, #35.
 
 ## FASE 8 — Gestión del banco de reactivos · HU-07 (Baja)
-- [ ] CRUD de `questions` protegido por rol `admin`; texto y área obligatorios;
+- [x] CRUD de `questions` protegido por rol `admin`; texto y área obligatorios;
       **confirmación** antes de eliminar; acceso negado a estudiantes.
-- [ ] DELETE = **soft delete** (`is_active = false`); el reactivo deja de aparecer en el
+- [x] DELETE = **soft delete** (`is_active = false`); el reactivo deja de aparecer en el
       cuestionario pero las respuestas históricas se conservan.
-- [ ] Frontend: panel de admin (listar/crear/editar/desactivar).
-- [ ] **Pruebas** de los 5 escenarios de HU-07.
-- [ ] Postman actualizado.
+- [x] Frontend: panel de admin (listar/crear/editar/desactivar).
+- [x] **Pruebas** de los 5 escenarios de HU-07.
+- [x] Postman actualizado.
+
+**Cerrada 4/7.** `npm run lint` y `npm test` en verde en `client` y `server`
+(100 + 108 pruebas). Endpoints nuevos, todos tras `requireAuth` + `requireRole('admin')`:
+`GET/POST /admin/questions`, `PUT/DELETE /admin/questions/:id` (404 `QUESTION_NOT_FOUND`
+sobre un id inexistente, 400 `INVALID_QUESTION_TEXT`/`INVALID_RIASEC_TYPE` si faltan datos,
+403 `FORBIDDEN` para un estudiante). El DELETE reutiliza `questionRepository.deactivate`
+de la Fase 1 (soft delete ya existía; ahora tiene endpoint). Frontend: `/admin/reactivos`
+(tabla con estado activo/inactivo, formulario único para crear/editar, modal `<dialog>`
+nativo de confirmación antes de desactivar con el texto de consecuencia de DESIGN.md §7.8,
+toast de aviso tras cada acción) protegida por `AdminRoute` (anidada en `ProtectedRoute`:
+sin sesión redirige a login, con sesión pero sin rol admin muestra "Acceso denegado").
+Enlace "Gestión de reactivos" en el nav solo para `user.role === 'admin'` (UX; la
+seguridad real es el `roleMiddleware` del servidor). Traza CP-055…CP-064 en
+`docs/trazabilidad.md` (64 casos). Decisiones nuevas: #36, #37.
 
 ## FASE 9 — Calidad y cierre
 Objetivo: cerrar el aseguramiento de calidad. (EDT 1.4 / 1.5 · cronograma: 6/8 – 30/8)
