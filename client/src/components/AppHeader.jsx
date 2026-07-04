@@ -28,6 +28,9 @@ function AppHeader() {
       </Link>
       {user && (
         <div className="nav__cuenta">
+          <Link className="enlace" to="/carreras">
+            Carreras
+          </Link>
           <Link
             className="nav__avatar"
             to="/mi-huella"

@@ -71,3 +71,23 @@
 | CP-033 | Vista de recomendaciones: huella "eco" por área, % y explicación, drill-down a las carreras del área y estado vacío | `client/src/__tests__/pages/ResultadoPage.test.jsx`                            | ✅ Pasa   |
 
 **Total de casos documentados hasta la Fase 4: 33** (13 de aceptación + 20 complementarios) — se mantiene por encima de la meta global de ≥ 25 casos (`CLAUDE.md` §7.6).
+
+## HU-04 — Consultar información de carreras (Fase 5)
+
+| Caso   | Escenario (criterio de aceptación)   | Dado / Cuando / Entonces                                                                                                  | Caso de prueba automatizado                                                                                             | Resultado |
+| ------ | -------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ | --------- |
+| CP-034 | Escenario 1: Listar el catálogo        | Dado un catálogo con 20 carreras, cuando el estudiante entra a la sección "Carreras", entonces el sistema muestra las 20 carreras con su nombre y área. | `server/tests/routes/careerRoutes.test.js` → "Escenario 1: … con al menos 20 carreras con nombre y área"; `client/src/__tests__/pages/CarrerasPage.test.jsx` → "muestra cada carrera con su nombre y área" | ✅ Pasa   |
+| CP-035 | Escenario 2: Búsqueda con resultados   | Dado el catálogo de carreras, cuando el estudiante busca "Ingeniería", entonces el sistema muestra únicamente las carreras cuyo nombre contiene esa palabra. | `server/tests/routes/careerRoutes.test.js` → "muestra únicamente las carreras…" y "la búsqueda es insensible a mayúsculas y a acentos…"; `client/src/__tests__/pages/CarrerasPage.test.jsx` → "vuelve a consultar el catálogo con el término escrito" | ✅ Pasa   |
+| CP-036 | Escenario 3: Ficha de la carrera       | Dado la lista de carreras, cuando el estudiante abre una carrera, entonces el sistema muestra su descripción, campo laboral y duración. | `server/tests/routes/careerRoutes.test.js` → "Escenario 3: … muestra su descripción, campo laboral y duración"; `client/src/__tests__/pages/CarreraDetallePage.test.jsx` → "muestra la descripción, el campo laboral, la duración y el perfil…" | ✅ Pasa   |
+| CP-037 | Escenario 4: Búsqueda sin resultados   | Dado el catálogo de carreras, cuando el estudiante busca un término que no existe, entonces el sistema muestra el mensaje "No se encontraron carreras". | `server/tests/routes/careerRoutes.test.js` → "Escenario 4: … devuelve una lista vacía…"; `client/src/__tests__/pages/CarrerasPage.test.jsx` → "muestra el mensaje de «no se encontraron carreras»…" | ✅ Pasa   |
+
+### Cobertura complementaria de HU-04 (filtro por área, seguridad y frontend)
+
+| Caso   | Qué cubre                                                                                          | Ubicación                                                                     | Resultado |
+| ------ | ----------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------ | --------- |
+| CP-038 | `GET /careers` y `GET /careers/:id` exigen sesión iniciada (401 sin token)                          | `server/tests/routes/careerRoutes.test.js`                                     | ✅ Pasa   |
+| CP-039 | Filtro por área (`?area=`): el servidor devuelve solo las carreras de esa área; los chips del catálogo se arman a partir del catálogo completo (decisión #28) | `server/tests/routes/careerRoutes.test.js` → "Filtro por área"; `client/src/__tests__/pages/CarrerasPage.test.jsx` → "arma los chips…" / "al elegir un chip…" | ✅ Pasa   |
+| CP-040 | Ficha de una carrera inexistente responde 404; el frontend muestra "No encontramos esa carrera" con enlace de vuelta | `server/tests/routes/careerRoutes.test.js`; `client/src/__tests__/pages/CarreraDetallePage.test.jsx` → "si la carrera no existe…" | ✅ Pasa   |
+| CP-041 | Cliente del catálogo: contrato de los endpoints (`getCareers`/`getCareer` → `GET /careers`, `GET /careers/:id`) | `client/src/__tests__/services/careerService.test.js`                          | ✅ Pasa   |
+
+**Total de casos documentados hasta la Fase 5: 41** (17 de aceptación + 24 complementarios) — se mantiene por encima de la meta global de ≥ 25 casos (`CLAUDE.md` §7.6).

@@ -33,15 +33,25 @@
           ],
           "request": {
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"fullName\": \"Valeria Mora\",\n  \"email\": \"valeria.mora@ejemplo.cr\",\n  \"password\": \"clave1234\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/auth/register",
-              "host": ["{{baseUrl}}"],
-              "path": ["auth", "register"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "register"
+              ]
             }
           }
         },
@@ -63,15 +73,25 @@
           ],
           "request": {
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"fullName\": \"Otra Persona\",\n  \"email\": \"valeria.mora@ejemplo.cr\",\n  \"password\": \"clave5678\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/auth/register",
-              "host": ["{{baseUrl}}"],
-              "path": ["auth", "register"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "register"
+              ]
             }
           }
         },
@@ -93,15 +113,25 @@
           ],
           "request": {
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"fullName\": \"Nueva Persona\",\n  \"email\": \"persona.nueva@ejemplo.cr\",\n  \"password\": \"abc\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/auth/register",
-              "host": ["{{baseUrl}}"],
-              "path": ["auth", "register"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "register"
+              ]
             }
           }
         },
@@ -126,15 +156,25 @@
           ],
           "request": {
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"email\": \"valeria.mora@ejemplo.cr\",\n  \"password\": \"clave1234\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/auth/login",
-              "host": ["{{baseUrl}}"],
-              "path": ["auth", "login"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
             }
           }
         },
@@ -158,15 +198,25 @@
           ],
           "request": {
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"email\": \"valeria.mora@ejemplo.cr\",\n  \"password\": \"clave-equivocada\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/auth/login",
-              "host": ["{{baseUrl}}"],
-              "path": ["auth", "login"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
             }
           }
         },
@@ -188,11 +238,21 @@
           ],
           "request": {
             "method": "GET",
-            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
             "url": {
               "raw": "{{baseUrl}}/auth/me",
-              "host": ["{{baseUrl}}"],
-              "path": ["auth", "me"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "me"
+              ]
             }
           }
         },
@@ -216,8 +276,13 @@
             "method": "GET",
             "url": {
               "raw": "{{baseUrl}}/auth/me",
-              "host": ["{{baseUrl}}"],
-              "path": ["auth", "me"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "me"
+              ]
             }
           }
         }
@@ -248,11 +313,20 @@
           ],
           "request": {
             "method": "GET",
-            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
             "url": {
               "raw": "{{baseUrl}}/questions",
-              "host": ["{{baseUrl}}"],
-              "path": ["questions"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "questions"
+              ]
             }
           }
         },
@@ -280,11 +354,20 @@
           ],
           "request": {
             "method": "POST",
-            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
             "url": {
               "raw": "{{baseUrl}}/attempts",
-              "host": ["{{baseUrl}}"],
-              "path": ["attempts"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "attempts"
+              ]
             }
           }
         },
@@ -309,8 +392,14 @@
           "request": {
             "method": "PATCH",
             "header": [
-              { "key": "Authorization", "value": "Bearer {{token}}" },
-              { "key": "Content-Type", "value": "application/json" }
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
             ],
             "body": {
               "mode": "raw",
@@ -318,8 +407,14 @@
             },
             "url": {
               "raw": "{{baseUrl}}/attempts/{{attemptId}}/answers",
-              "host": ["{{baseUrl}}"],
-              "path": ["attempts", "{{attemptId}}", "answers"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "attempts",
+                "{{attemptId}}",
+                "answers"
+              ]
             }
           }
         },
@@ -343,11 +438,21 @@
           ],
           "request": {
             "method": "GET",
-            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
             "url": {
               "raw": "{{baseUrl}}/attempts/current",
-              "host": ["{{baseUrl}}"],
-              "path": ["attempts", "current"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "attempts",
+                "current"
+              ]
             }
           }
         },
@@ -371,11 +476,22 @@
           ],
           "request": {
             "method": "POST",
-            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
             "url": {
               "raw": "{{baseUrl}}/attempts/{{attemptId}}/submit",
-              "host": ["{{baseUrl}}"],
-              "path": ["attempts", "{{attemptId}}", "submit"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "attempts",
+                "{{attemptId}}",
+                "submit"
+              ]
             }
           }
         },
@@ -397,11 +513,20 @@
           ],
           "request": {
             "method": "GET",
-            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
             "url": {
               "raw": "{{baseUrl}}/profile",
-              "host": ["{{baseUrl}}"],
-              "path": ["profile"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "profile"
+              ]
             }
           }
         }
@@ -446,11 +571,306 @@
           ],
           "request": {
             "method": "GET",
-            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
             "url": {
               "raw": "{{baseUrl}}/recommendations",
-              "host": ["{{baseUrl}}"],
-              "path": ["recommendations"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "recommendations"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Carreras (HU-04)",
+      "item": [
+        {
+          "name": "Listar el catálogo (GET /careers)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));",
+                  "const body = pm.response.json();",
+                  "pm.test('al menos 20 carreras con nombre y área', () => {",
+                  "  pm.expect(body.careers.length).to.be.at.least(20);",
+                  "  body.careers.forEach((c) => {",
+                  "    pm.expect(c.name).to.be.a('string');",
+                  "    pm.expect(c.area.name).to.be.a('string');",
+                  "  });",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/careers",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "careers"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Buscar carreras (GET /careers?search=)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));",
+                  "const body = pm.response.json();",
+                  "pm.test('todas las carreras contienen el término buscado', () => {",
+                  "  body.careers.forEach((c) =>",
+                  "    pm.expect(c.name.toLowerCase()).to.include('ingenier'));",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/careers?search=Ingeniería",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "careers"
+              ],
+              "query": [
+                {
+                  "key": "search",
+                  "value": "Ingeniería"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Buscar sin acentos (GET /careers?search=biologia)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));",
+                  "const body = pm.response.json();",
+                  "pm.test('encuentra \"Biología\" buscando \"biologia\" sin tilde', () => {",
+                  "  pm.expect(body.careers.some((c) => c.name === 'Biología')).to.be.true;",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/careers?search=biologia",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "careers"
+              ],
+              "query": [
+                {
+                  "key": "search",
+                  "value": "biologia"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Filtrar por área (GET /careers?area=)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));",
+                  "const body = pm.response.json();",
+                  "pm.test('todas las carreras pertenecen al área indicada', () => {",
+                  "  body.careers.forEach((c) => pm.expect(String(c.area.id)).to.eql(pm.variables.get('areaId')));",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/careers?area={{areaId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "careers"
+              ],
+              "query": [
+                {
+                  "key": "area",
+                  "value": "{{areaId}}"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Sin resultados (GET /careers?search=panaderia)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));",
+                  "const body = pm.response.json();",
+                  "pm.test('no hay carreras para un término inexistente', () =>",
+                  "  pm.expect(body.careers).to.eql([]));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/careers?search=panaderia",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "careers"
+              ],
+              "query": [
+                {
+                  "key": "search",
+                  "value": "panaderia"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Ficha de carrera (GET /careers/:id)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));",
+                  "const body = pm.response.json();",
+                  "pm.test('incluye descripción, campo laboral, duración y perfil', () => {",
+                  "  pm.expect(body.career.description).to.be.a('string').and.not.empty;",
+                  "  pm.expect(body.career.fieldOfWork).to.be.a('string').and.not.empty;",
+                  "  pm.expect(body.career.duration).to.be.a('string').and.not.empty;",
+                  "  pm.expect(body.career.profileDesc).to.be.a('string').and.not.empty;",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/careers/{{careerId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "careers",
+                "{{careerId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Ficha de carrera inexistente (404)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('404 Not Found', () => pm.response.to.have.status(404));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/careers/999999",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "careers",
+                "999999"
+              ]
             }
           }
         }
@@ -475,6 +895,16 @@
     },
     {
       "key": "questionId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "areaId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "careerId",
       "value": "",
       "type": "string"
     }

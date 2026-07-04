@@ -35,6 +35,10 @@
 | 23 | Explicación de afinidad (HU-03) | Se deriva del tipo con mayor **producto puntaje×peso** (no del dominante global del perfil), con desempate estable R-I-A-S-E-C → "Coincide con tu interés {interés}." | El escenario exige una explicación por área; el argmax de la contribución da un texto distinto y correcto para cada área (nombra el interés del estudiante que ESA área realmente premia) en vez de repetir el mismo dominante en todas |
 | 24 | Respuesta sin perfil (HU-03) | `GET /recommendations` responde **200** con `{ hasProfile: false, recommendations: [] }` (no 404 ni 401) | El criterio pide que la falta de perfil "lleve al cuestionario, no sea un error de sesión"; un 200 con bandera explícita deja a la UI mostrar el estado vacío sin tratarlo como fallo |
 | 25 | Drill-down a carreras (HU-03) | Cada área recomendada **embebe** sus carreras (`id`, `name`, `fieldOfWork`, `duration`) en la respuesta de `/recommendations` | El catálogo de carreras (`GET /careers`, búsqueda/filtros) es de la Fase 5; embeber las carreras del área cubre el drill-down de HU-03 sin adelantar HU-04 |
+| 26 | Parámetro `area` del catálogo (HU-04) | Es el **id numérico** de `areas`, validado como entero positivo (400 si no lo es) | Reusa el modelo existente (`areas.id`) en vez de crear un enum de áreas nuevo |
+| 27 | Punto de tinta del área en el catálogo (HU-04) | Se deriva de la dimensión con mayor peso en `riasec_weights` reusando `scoringService.rankTypes` (mismo criterio de desempate R-I-A-S-E-C) | Evita duplicar la lógica de argmax que ya usa HU-03; ninguna columna nueva en `areas` |
+| 28 | Chips de filtro por área (HU-04, frontend) | Se arman con las áreas presentes en la respuesta **sin filtros** de `GET /careers` (sin agregar un endpoint `GET /areas`) | El catálogo completo ya trae `area.id`/`area.name` por carrera; minimalismo: no crear un endpoint nuevo solo para poblar los chips |
+| 29 | Botón "Comparar esta carrera" de la ficha (DESIGN.md §7.6) | Se **omite** hasta la Fase 6 (HU-05), cuando exista la funcionalidad de comparación | `CLAUDE.md` prohíbe adelantar fases; un botón sin destino funcional confundiría al estudiante |
 
 (Claude Code: si tomás una decisión nueva, agregala a esta tabla.)
 
@@ -199,11 +203,22 @@ sección "Tus áreas más afines" en "Mi huella" con la huella variante **eco** 
 ## FASE 5 — Catálogo de carreras · HU-04 (Media)
 Cronograma: Módulo de Información **21/7 – 28/7**.
 
-- [ ] `GET /careers` con búsqueda vía `unaccent` (insensible a mayúsculas/acentos) y
+- [x] `GET /careers` con búsqueda vía `unaccent` (insensible a mayúsculas/acentos) y
       filtro por área; `GET /careers/:id` (descripción, campo laboral, duración, perfil).
-- [ ] Frontend: listado, búsqueda, filtros, ficha; mensaje “No se encontraron carreras”.
-- [ ] **Pruebas** de los 4 escenarios de HU-04 (incluida búsqueda con acentos).
-- [ ] Postman actualizado.
+- [x] Frontend: listado, búsqueda, filtros, ficha; mensaje “No se encontraron carreras”.
+- [x] **Pruebas** de los 4 escenarios de HU-04 (incluida búsqueda con acentos).
+- [x] Postman actualizado.
+
+**Cerrada 3/7.** `npm run lint` y `npm test` en verde en `client` y `server`
+(75 + 86 pruebas). Endpoints nuevos: `GET /careers?search=&area=` (filtrado 100 % en
+SQL con `unaccent(lower(...))`, nunca en JS) y `GET /careers/:id`; ambos requieren
+sesión de estudiante como el resto de endpoints de consulta. Frontend: `/carreras`
+(buscador con debounce, chips de área, cards con punto de tinta, esqueleto de carga,
+estado "No se encontraron carreras" con acción para limpiar filtros) y `/carreras/:id`
+(descripción, campo laboral, duración, perfil del estudiante, huella "eco" del área).
+Verificado en navegador con Playwright (catálogo, búsqueda con y sin acentos, sin
+resultados, filtro por área, ficha), sin errores de consola. Traza CP-034…CP-041 en
+`docs/trazabilidad.md` (41 casos). Decisiones nuevas: #26, #27, #28, #29.
 
 ## FASE 6 — Comparar carreras · HU-05 (Media)
 Cronograma: **29/7 – 5/8**.

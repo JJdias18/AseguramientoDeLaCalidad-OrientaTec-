@@ -295,6 +295,9 @@
 
 /* ── Enlace de acción (botón con apariencia de enlace, DESIGN.md §5) ── */
 .enlace {
+  display: inline-flex;
+  align-items: center;
+  appearance: none;
   font: 600 var(--fs-base) var(--fuente-cuerpo);
   color: var(--color-jade);
   background: none;
@@ -648,4 +651,107 @@
 /* El enlace de carreras arranca bajo el nombre, alineado a la izquierda. */
 .area-mas__link {
   grid-column: 1 / -1;
+}
+
+/* ── Catálogo de carreras: chips de filtro por área (DESIGN.md §7.5) ── */
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--esp-2);
+  margin: var(--esp-4) 0 var(--esp-5);
+}
+
+.chip {
+  font: 600 var(--fs-sm) var(--fuente-cuerpo);
+  padding: 0.5rem 1rem;
+  min-height: var(--target-tactil);
+  border-radius: var(--radio-pill);
+  border: 1.5px solid var(--color-borde);
+  background: transparent;
+  color: var(--color-tinta);
+  cursor: pointer;
+  transition:
+    background-color var(--dur-rapida) ease,
+    border-color var(--dur-rapida) ease;
+}
+
+.chip:hover {
+  border-color: var(--color-jade);
+}
+
+.chip--activo {
+  background: var(--color-jade);
+  border-color: var(--color-jade);
+  color: var(--color-fondo);
+}
+
+/* ── Catálogo de carreras: cards de resultado (DESIGN.md §7.5) ── */
+.carreras {
+  list-style: none;
+  display: grid;
+  gap: var(--esp-3);
+  margin-top: var(--esp-5);
+  padding: 0;
+}
+
+.carrera {
+  display: grid;
+  gap: var(--esp-2);
+  border: 1.5px solid var(--color-hairline);
+  border-radius: var(--radio);
+  padding: var(--esp-4) var(--esp-5);
+  color: inherit;
+  text-decoration: none;
+}
+
+a.carrera:hover {
+  border-color: var(--color-jade);
+}
+
+.carrera__nombre {
+  font-family: var(--fuente-display);
+  font-weight: 600;
+  font-size: var(--fs-md);
+  color: var(--color-tinta);
+}
+
+.carrera__area {
+  display: flex;
+  align-items: center;
+  gap: var(--esp-2);
+  font-size: var(--fs-sm);
+  color: var(--color-musgo);
+}
+
+.carrera__punto {
+  width: var(--esp-3);
+  height: var(--esp-3);
+  min-width: var(--esp-3);
+  border-radius: var(--radio-pill);
+}
+
+.carrera__meta {
+  font-size: var(--fs-sm);
+  color: var(--color-musgo);
+}
+
+/* ── Catálogo de carreras: esqueleto de carga (DESIGN.md §4 / §7.5) ── */
+.carrera--esqueleto i {
+  display: block;
+  height: 0.9rem;
+  border-radius: 4px;
+  background: var(--color-hairline);
+}
+
+.carrera--esqueleto i:first-child {
+  width: 55%;
+  height: 1.1rem;
+}
+
+.carrera--esqueleto i:nth-child(2) {
+  width: 35%;
+}
+
+.carrera--esqueleto i:last-child {
+  width: 70%;
 }
