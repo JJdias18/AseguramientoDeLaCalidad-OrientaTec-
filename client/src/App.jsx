@@ -2,6 +2,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
 import { AuthProvider } from './context/AuthContext';
 import AppHeader from './components/AppHeader';
+import TabBar from './components/TabBar';
 import ProtectedRoute from './components/ProtectedRoute';
 import AdminRoute from './components/AdminRoute';
 import GuestRoute from './components/GuestRoute';
@@ -41,6 +42,7 @@ function App() {
             <Route path="*" element={<NotFoundPage />} />
           </Routes>
         </main>
+        <TabBar />
       </AuthProvider>
     </BrowserRouter>
   );

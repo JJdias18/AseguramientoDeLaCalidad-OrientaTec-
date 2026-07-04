@@ -38,6 +38,20 @@
   flex: 1;
 }
 
+/*
+ * <720px la nav de secciones vive en la tab bar (abajo); el header conserva solo
+ * logo + avatar + cerrar sesión para caber a 360px sin desbordar (DESIGN.md §5).
+ */
+.nav__enlaces {
+  display: none;
+}
+
+@media (min-width: 720px) {
+  .nav__enlaces {
+    display: contents;
+  }
+}
+
 .nav__cuenta {
   margin-left: auto;
   display: flex;
@@ -853,6 +867,45 @@ a.carrera:hover {
   width: 70%;
 }
 
+/* ── Tab bar móvil (DESIGN.md §5): fija abajo <720px, 4 destinos + admin ── */
+.tabbar {
+  position: fixed;
+  inset: auto 0 0 0;
+  z-index: var(--z-tabbar);
+  display: flex;
+  background: var(--color-fondo);
+  border-top: 1px solid var(--color-hairline);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.tabbar__item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--esp-1);
+  min-height: var(--alto-tabbar);
+  font: 600 var(--fs-tabbar) var(--fuente-cuerpo);
+  color: var(--color-musgo);
+  text-decoration: none;
+}
+
+.tabbar__item svg {
+  width: var(--icono-tabbar);
+  height: var(--icono-tabbar);
+}
+
+.tabbar__item--activo {
+  color: var(--color-jade);
+}
+
+@media (min-width: 720px) {
+  .tabbar {
+    display: none;
+  }
+}
+
 /* ── Admin: banco de reactivos (DESIGN.md §5 "Tabla admin" / §7.8, HU-07) ── */
 .tabla-admin {
   width: 100%;
@@ -905,12 +958,68 @@ a.carrera:hover {
   color: var(--color-musgo);
 }
 
+.chip-estado--activo {
+  color: var(--color-jade);
+}
+
+/* <720px: la tabla admin se apila por reactivo (mismo patrón que .tabla-comparar). */
+@media (max-width: 719px) {
+  .tabla-admin thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+
+  .tabla-admin,
+  .tabla-admin tbody,
+  .tabla-admin tr,
+  .tabla-admin td {
+    display: block;
+    width: 100%;
+  }
+
+  .tabla-admin tr {
+    padding: var(--esp-4) 0;
+  }
+
+  .tabla-admin tr:not(:last-child) {
+    border-bottom: 1px solid var(--color-hairline);
+  }
+
+  .tabla-admin td {
+    padding: var(--esp-1) 0;
+    border-bottom: none;
+  }
+
+  .tabla-admin td:first-child {
+    font-weight: 600;
+    padding-bottom: var(--esp-2);
+  }
+
+  /* La celda de acciones conserva su flex (el display: block de arriba lo pisaba). */
+  .tabla-admin td.tabla-admin__acciones {
+    display: flex;
+  }
+
+  .tabla-admin td[data-col]::before {
+    content: attr(data-col) ': ';
+    font-size: var(--fs-sm);
+    font-weight: 600;
+    color: var(--color-musgo);
+  }
+}
+
 /* ── Modal de confirmación (DESIGN.md §5, solo acciones destructivas/irreversibles) ── */
 .modal::backdrop {
   background: var(--color-velo-modal);
 }
 
 .modal {
+  /* El reset global (* { margin: 0 }) pisa el margin: auto del UA que centra
+     los <dialog>; se restaura acá para que el modal no quede en la esquina. */
+  margin: auto;
   max-width: 28rem;
   width: calc(100% - var(--esp-6));
   border: none;

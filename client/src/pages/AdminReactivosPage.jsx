@@ -7,7 +7,7 @@ import {
   getQuestions,
   updateQuestion,
 } from '../services/adminQuestionService';
-import { DIMENSIONES } from '../utils/riasec';
+import { DIMENSIONES, nombrePorTipo } from '../utils/riasec';
 
 const FORM_VACIO = { id: null, text: '', riasecType: '' };
 
@@ -231,14 +231,20 @@ function AdminReactivosPage() {
             {questions.map((question) => (
               <tr key={question.id} className={question.isActive ? '' : 'fila--inactiva'}>
                 <td>{question.text}</td>
-                <td>
+                <td data-col="Tipo">
                   <span
                     className={`carrera__punto t-${question.riasecType.toLowerCase()}`}
                     aria-hidden="true"
                   />{' '}
-                  {question.riasecType}
+                  {question.riasecType} · {nombrePorTipo(question.riasecType)}
                 </td>
-                <td>{!question.isActive && <span className="chip-estado">Inactivo</span>}</td>
+                <td data-col="Estado">
+                  {question.isActive ? (
+                    <span className="chip-estado chip-estado--activo">Activo</span>
+                  ) : (
+                    <span className="chip-estado">Inactivo</span>
+                  )}
+                </td>
                 <td className="tabla-admin__acciones">
                   <button type="button" onClick={() => abrirEditar(question)}>
                     Editar
@@ -255,8 +261,13 @@ function AdminReactivosPage() {
         </table>
       )}
 
-      <dialog ref={dialogRef} className="modal" onClose={() => setParaDesactivar(null)}>
-        <h2>Desactivar reactivo</h2>
+      <dialog
+        ref={dialogRef}
+        className="modal"
+        aria-labelledby="modal-desactivar-titulo"
+        onClose={() => setParaDesactivar(null)}
+      >
+        <h2 id="modal-desactivar-titulo">Desactivar reactivo</h2>
         <p>
           El reactivo deja de aparecer en el cuestionario de inmediato. Las respuestas ya
           registradas se conservan.
