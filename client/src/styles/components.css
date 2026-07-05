@@ -38,6 +38,20 @@
   flex: 1;
 }
 
+/*
+ * <720px la nav de secciones vive en la tab bar (abajo); el header conserva solo
+ * logo + avatar + cerrar sesión para caber a 360px sin desbordar (DESIGN.md §5).
+ */
+.nav__enlaces {
+  display: none;
+}
+
+@media (min-width: 720px) {
+  .nav__enlaces {
+    display: contents;
+  }
+}
+
 .nav__cuenta {
   margin-left: auto;
   display: flex;
@@ -63,6 +77,50 @@
   .nav {
     padding: var(--esp-3) var(--esp-6);
   }
+}
+
+/*
+ * Micro-interacción de los enlaces del header (`/impeccable delight`, 4/7): un
+ * subrayado jade crece desde la izquierda al hover (reemplaza el subrayado nativo
+ * del enlace) y el enlace se prensa 1px al hacer clic, igual que `.btn:active`.
+ * El avatar crece levemente al hover. Solo dentro de `.nav`: no toca `.enlace` en
+ * el resto de la app (áreas, comparador, etc.).
+ */
+.nav .enlace {
+  position: relative;
+}
+
+.nav .enlace::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0.4rem;
+  height: 1.5px;
+  background: var(--color-jade);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.32s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.nav .enlace:hover {
+  text-decoration: none;
+}
+
+.nav .enlace:hover::after {
+  transform: scaleX(1);
+}
+
+.nav .enlace:active {
+  transform: translateY(1px);
+}
+
+.nav__avatar {
+  transition: transform 0.15s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.nav__avatar:hover {
+  transform: scale(1.08);
 }
 
 /* ── Botones ── */
@@ -290,6 +348,49 @@
   }
   50% {
     opacity: 0.45;
+  }
+}
+
+/*
+ * Entrada en cascada de la huella hero del inicio (DESIGN.md §10): cada banda
+ * crece desde 0 hasta su valor, escalonada en orden R-I-A-S-E-C — la huella
+ * "formándose". Reemplaza el asentar del strip para que las barras lleven la
+ * entrada. Solo aplica bajo `.huella-cascada` (la huella de HomePage), no en
+ * la de "Mi huella".
+ */
+@media (prefers-reduced-motion: no-preference) {
+  .huella-cascada .huella--hero {
+    animation: none;
+  }
+
+  .huella-cascada .huella__banda:nth-child(1) {
+    --i: 0;
+  }
+  .huella-cascada .huella__banda:nth-child(2) {
+    --i: 1;
+  }
+  .huella-cascada .huella__banda:nth-child(3) {
+    --i: 2;
+  }
+  .huella-cascada .huella__banda:nth-child(4) {
+    --i: 3;
+  }
+  .huella-cascada .huella__banda:nth-child(5) {
+    --i: 4;
+  }
+  .huella-cascada .huella__banda:nth-child(6) {
+    --i: 5;
+  }
+
+  .huella-cascada .huella__relleno {
+    animation: huella-crece var(--dur-huella-cascada) var(--curva-suave) both;
+    animation-delay: calc(var(--i, 0) * var(--stagger-huella));
+  }
+}
+
+@keyframes huella-crece {
+  from {
+    transform: scaleY(0);
   }
 }
 
@@ -853,6 +954,45 @@ a.carrera:hover {
   width: 70%;
 }
 
+/* ── Tab bar móvil (DESIGN.md §5): fija abajo <720px, 4 destinos + admin ── */
+.tabbar {
+  position: fixed;
+  inset: auto 0 0 0;
+  z-index: var(--z-tabbar);
+  display: flex;
+  background: var(--color-fondo);
+  border-top: 1px solid var(--color-hairline);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.tabbar__item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--esp-1);
+  min-height: var(--alto-tabbar);
+  font: 600 var(--fs-tabbar) var(--fuente-cuerpo);
+  color: var(--color-musgo);
+  text-decoration: none;
+}
+
+.tabbar__item svg {
+  width: var(--icono-tabbar);
+  height: var(--icono-tabbar);
+}
+
+.tabbar__item--activo {
+  color: var(--color-jade);
+}
+
+@media (min-width: 720px) {
+  .tabbar {
+    display: none;
+  }
+}
+
 /* ── Admin: banco de reactivos (DESIGN.md §5 "Tabla admin" / §7.8, HU-07) ── */
 .tabla-admin {
   width: 100%;
@@ -905,12 +1045,68 @@ a.carrera:hover {
   color: var(--color-musgo);
 }
 
+.chip-estado--activo {
+  color: var(--color-jade);
+}
+
+/* <720px: la tabla admin se apila por reactivo (mismo patrón que .tabla-comparar). */
+@media (max-width: 719px) {
+  .tabla-admin thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+
+  .tabla-admin,
+  .tabla-admin tbody,
+  .tabla-admin tr,
+  .tabla-admin td {
+    display: block;
+    width: 100%;
+  }
+
+  .tabla-admin tr {
+    padding: var(--esp-4) 0;
+  }
+
+  .tabla-admin tr:not(:last-child) {
+    border-bottom: 1px solid var(--color-hairline);
+  }
+
+  .tabla-admin td {
+    padding: var(--esp-1) 0;
+    border-bottom: none;
+  }
+
+  .tabla-admin td:first-child {
+    font-weight: 600;
+    padding-bottom: var(--esp-2);
+  }
+
+  /* La celda de acciones conserva su flex (el display: block de arriba lo pisaba). */
+  .tabla-admin td.tabla-admin__acciones {
+    display: flex;
+  }
+
+  .tabla-admin td[data-col]::before {
+    content: attr(data-col) ': ';
+    font-size: var(--fs-sm);
+    font-weight: 600;
+    color: var(--color-musgo);
+  }
+}
+
 /* ── Modal de confirmación (DESIGN.md §5, solo acciones destructivas/irreversibles) ── */
 .modal::backdrop {
   background: var(--color-velo-modal);
 }
 
 .modal {
+  /* El reset global (* { margin: 0 }) pisa el margin: auto del UA que centra
+     los <dialog>; se restaura acá para que el modal no quede en la esquina. */
+  margin: auto;
   max-width: 28rem;
   width: calc(100% - var(--esp-6));
   border: none;
@@ -958,4 +1154,94 @@ a.carrera:hover {
   font-weight: 600;
   max-width: calc(100% - var(--esp-6));
   text-align: center;
+}
+
+/*
+ * ── Inicio: manifiesto informativo con huella ambiental (`/impeccable`, 4/7) ──
+ * Sección debajo de "Tu huella está lista" (estado con perfil): qué es Brújula,
+ * para quién es y cómo ayuda. La huella ambiental es decorativa (aria-hidden),
+ * un "respiro" continuo y lento que reafirma el concepto del §1 sin competir con
+ * la huella hero real (que sí representa datos).
+ */
+.inicio-manifiesto {
+  display: grid;
+  gap: var(--esp-8);
+  margin-top: var(--esp-8);
+}
+
+.inicio-manifiesto__huella {
+  display: flex;
+  gap: var(--gap-huella);
+  height: 64px;
+  border-radius: var(--radio);
+  overflow: hidden;
+}
+
+.inicio-manifiesto__huella > i {
+  flex: 1;
+  min-width: 0;
+}
+
+.inicio-manifiesto__pull {
+  font-family: var(--fuente-display);
+  font-size: var(--fs-lg);
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: var(--tracking-display);
+  margin: var(--esp-4) 0;
+  max-width: var(--medida-prosa);
+  padding-top: var(--esp-3);
+  border-top: 3px solid var(--color-jade);
+}
+
+.inicio-manifiesto__texto .sub {
+  max-width: var(--medida-prosa);
+}
+
+@media (min-width: 720px) {
+  .inicio-manifiesto {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: center;
+  }
+
+  .inicio-manifiesto__huella {
+    height: 100%;
+    min-height: 220px;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .inicio-manifiesto__huella > i {
+    animation: huella-ambiental-respirar 7s ease-in-out infinite;
+  }
+  .inicio-manifiesto__huella > i:nth-child(1) {
+    animation-delay: 0s;
+  }
+  .inicio-manifiesto__huella > i:nth-child(2) {
+    animation-delay: 0.5s;
+  }
+  .inicio-manifiesto__huella > i:nth-child(3) {
+    animation-delay: 1s;
+  }
+  .inicio-manifiesto__huella > i:nth-child(4) {
+    animation-delay: 1.5s;
+  }
+  .inicio-manifiesto__huella > i:nth-child(5) {
+    animation-delay: 2s;
+  }
+  .inicio-manifiesto__huella > i:nth-child(6) {
+    animation-delay: 2.5s;
+  }
+}
+
+@keyframes huella-ambiental-respirar {
+  0%,
+  100% {
+    transform: scaleY(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scaleY(0.82);
+    opacity: 0.8;
+  }
 }

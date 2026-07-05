@@ -273,3 +273,43 @@ zoom 200% sin pérdida (la tab bar cubre la nav cuando el breakpoint colapsa).
   como medidor confundía identidad con afinidad. El **% coseno real y el orden no
   cambian** (los calcula el motor); esto es solo presentación. Token nuevo:
   `--ancho-huella-eco`.
+- **Tab bar móvil implementada (fix post-critique, 4/7):** se materializa la tab
+  bar del §5 (<720px, fija abajo, activo en jade, `env(safe-area-inset-bottom)`).
+  El header en móvil conserva solo logo + avatar + "Cerrar sesión"; los enlaces de
+  sección viven en la tab bar. *Extensión:* para el rol **admin** la tab bar suma
+  un 5.º destino "Reactivos" (los 4 del §5 no contemplaban el panel de admin y el
+  header móvil ya no tiene enlaces de sección). Tokens nuevos: `--alto-tabbar`
+  (56px), `--fs-tabbar` (0.72rem), `--icono-tabbar` (22px).
+- **Chip "Activo" en la tabla admin (fix post-critique, 4/7):** el §5 solo definía
+  el chip "Inactivo", dejando la celda Estado vacía en filas activas; se agrega la
+  variante `chip-estado--activo` (fondo brote, texto jade) para que el estado nunca
+  sea una celda en blanco. En <720px la tabla admin se apila por reactivo con el
+  mismo patrón de la tabla del comparador (§7.7).
+- **Entrada en cascada de la huella hero (`/impeccable animate`, 4/7):** en la
+  pantalla de inicio (HomePage, estado con perfil) y en "Mi huella" (§7.4) las
+  seis bandas de la huella hero **crecen desde 0 hasta su valor, escalonadas en
+  orden R-I-A-S-E-C** — la huella "formándose", reforzando el concepto del §1/§4.
+  Reemplaza el `asentar` del strip bajo la clase reutilizable `.huella-cascada`
+  (una sola declaración de clase por pantalla; sin CSS nuevo por reutilización).
+  Bajo `prefers-reduced-motion` no hay animación (las barras aparecen a su valor
+  final). Tokens nuevos: `--dur-huella-cascada` (0.82s), `--stagger-huella`
+  (0.085s, retardo entre bandas) y `--curva-suave` (`cubic-bezier(0.25, 1, 0.5,
+  1)`, ease-out-quart). Keyframe `huella-crece`.
+- **Manifiesto informativo con huella ambiental en Inicio (`/impeccable`, contenido
+  nuevo, 4/7):** debajo de "Tu huella está lista" (HomePage, estado con perfil), una
+  sección `.inicio-manifiesto` explica qué es Brújula, para quién es y cómo ayuda —
+  dos columnas ≥720px (huella ambiental a la izquierda, texto a la derecha con cita
+  destacada en display + regla jade), apiladas <720px. La huella ambiental (seis
+  bandas `.t-r`…`.t-c`, `aria-hidden`) es puramente decorativa: un "respiro" continuo
+  y lento (`huella-ambiental-respirar`, 7s, escalonado 0.5s por banda) que reafirma
+  el concepto del §1 sin representar datos reales, a diferencia de la huella hero.
+  Anulado bajo `prefers-reduced-motion`. Sin tokens nuevos (reusa `--esp-8`,
+  `--fuente-display`, `--color-jade`, `--medida-prosa`).
+- **Micro-interacción de los enlaces del header (`/impeccable delight`, 4/7):** los
+  enlaces del `.nav` (Carreras, Comparar, Gestión de reactivos, Cerrar sesión) ganan
+  un subrayado jade de 1.5px que crece desde la izquierda al hover (320ms,
+  ease-out-quart), reemplazando el subrayado nativo; se prensan 1px al hacer clic,
+  igual que `.btn:active`. El avatar (`.nav__avatar`) crece levemente (`scale(1.08)`)
+  al hover. Alcance acotado a `.nav .enlace`: no toca `.enlace` en el resto de la
+  app (áreas, comparador, etc.), que conserva su subrayado simple del §5. Sin tokens
+  nuevos (reusa `--color-jade`, `--curva-suave`).

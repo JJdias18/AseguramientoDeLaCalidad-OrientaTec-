@@ -28,17 +28,19 @@ function AppHeader() {
       </Link>
       {user && (
         <div className="nav__cuenta">
-          <Link className="enlace" to="/carreras">
-            Carreras
-          </Link>
-          <Link className="enlace" to="/comparar">
-            Comparar
-          </Link>
-          {user.role === 'admin' && (
-            <Link className="enlace" to="/admin/reactivos">
-              Gestión de reactivos
+          <span className="nav__enlaces">
+            <Link className="enlace" to="/carreras">
+              Carreras
             </Link>
-          )}
+            <Link className="enlace" to="/comparar">
+              Comparar
+            </Link>
+            {user.role === 'admin' && (
+              <Link className="enlace" to="/admin/reactivos">
+                Gestión de reactivos
+              </Link>
+            )}
+          </span>
           <Link
             className="nav__avatar"
             to="/mi-huella"

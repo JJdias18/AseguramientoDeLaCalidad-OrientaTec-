@@ -69,6 +69,10 @@
   --dur-media: 0.3s;
   --dur-entrada: 0.7s;
   --curva-salida: cubic-bezier(0.16, 1, 0.3, 1);
+  /* Entrada en cascada de la huella hero del inicio (DESIGN.md §10) */
+  --dur-huella-cascada: 0.82s;
+  --stagger-huella: 0.085s;
+  --curva-suave: cubic-bezier(0.25, 1, 0.5, 1);
 
   /* ── Componentes clave ── */
   --alto-huella-hero: 112px;
@@ -80,6 +84,11 @@
   --gap-huella-mini: 2px;
   --target-tactil: 44px;
   --foco-grosor: 2.5px;
+
+  /* ── Tab bar móvil (DESIGN.md §5; valores fijados por el spec) ── */
+  --alto-tabbar: 56px;
+  --fs-tabbar: 0.72rem;
+  --icono-tabbar: 22px;
 }
 
 /*
