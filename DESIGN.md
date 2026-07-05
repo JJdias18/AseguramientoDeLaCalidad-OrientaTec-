@@ -305,3 +305,11 @@ zoom 200% sin pérdida (la tab bar cubre la nav cuando el breakpoint colapsa).
   el concepto del §1 sin representar datos reales, a diferencia de la huella hero.
   Anulado bajo `prefers-reduced-motion`. Sin tokens nuevos (reusa `--esp-8`,
   `--fuente-display`, `--color-jade`, `--medida-prosa`).
+- **Micro-interacción de los enlaces del header (`/impeccable delight`, 4/7):** los
+  enlaces del `.nav` (Carreras, Comparar, Gestión de reactivos, Cerrar sesión) ganan
+  un subrayado jade de 1.5px que crece desde la izquierda al hover (320ms,
+  ease-out-quart), reemplazando el subrayado nativo; se prensan 1px al hacer clic,
+  igual que `.btn:active`. El avatar (`.nav__avatar`) crece levemente (`scale(1.08)`)
+  al hover. Alcance acotado a `.nav .enlace`: no toca `.enlace` en el resto de la
+  app (áreas, comparador, etc.), que conserva su subrayado simple del §5. Sin tokens
+  nuevos (reusa `--color-jade`, `--curva-suave`).

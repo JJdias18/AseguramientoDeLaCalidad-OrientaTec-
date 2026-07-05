@@ -79,6 +79,50 @@
   }
 }
 
+/*
+ * Micro-interacción de los enlaces del header (`/impeccable delight`, 4/7): un
+ * subrayado jade crece desde la izquierda al hover (reemplaza el subrayado nativo
+ * del enlace) y el enlace se prensa 1px al hacer clic, igual que `.btn:active`.
+ * El avatar crece levemente al hover. Solo dentro de `.nav`: no toca `.enlace` en
+ * el resto de la app (áreas, comparador, etc.).
+ */
+.nav .enlace {
+  position: relative;
+}
+
+.nav .enlace::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0.4rem;
+  height: 1.5px;
+  background: var(--color-jade);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.32s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.nav .enlace:hover {
+  text-decoration: none;
+}
+
+.nav .enlace:hover::after {
+  transform: scaleX(1);
+}
+
+.nav .enlace:active {
+  transform: translateY(1px);
+}
+
+.nav__avatar {
+  transition: transform 0.15s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.nav__avatar:hover {
+  transform: scale(1.08);
+}
+
 /* ── Botones ── */
 .btn {
   font: 600 var(--fs-base) var(--fuente-cuerpo);
