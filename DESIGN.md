@@ -285,3 +285,23 @@ zoom 200% sin pérdida (la tab bar cubre la nav cuando el breakpoint colapsa).
   variante `chip-estado--activo` (fondo brote, texto jade) para que el estado nunca
   sea una celda en blanco. En <720px la tabla admin se apila por reactivo con el
   mismo patrón de la tabla del comparador (§7.7).
+- **Entrada en cascada de la huella hero (`/impeccable animate`, 4/7):** en la
+  pantalla de inicio (HomePage, estado con perfil) y en "Mi huella" (§7.4) las
+  seis bandas de la huella hero **crecen desde 0 hasta su valor, escalonadas en
+  orden R-I-A-S-E-C** — la huella "formándose", reforzando el concepto del §1/§4.
+  Reemplaza el `asentar` del strip bajo la clase reutilizable `.huella-cascada`
+  (una sola declaración de clase por pantalla; sin CSS nuevo por reutilización).
+  Bajo `prefers-reduced-motion` no hay animación (las barras aparecen a su valor
+  final). Tokens nuevos: `--dur-huella-cascada` (0.82s), `--stagger-huella`
+  (0.085s, retardo entre bandas) y `--curva-suave` (`cubic-bezier(0.25, 1, 0.5,
+  1)`, ease-out-quart). Keyframe `huella-crece`.
+- **Manifiesto informativo con huella ambiental en Inicio (`/impeccable`, contenido
+  nuevo, 4/7):** debajo de "Tu huella está lista" (HomePage, estado con perfil), una
+  sección `.inicio-manifiesto` explica qué es Brújula, para quién es y cómo ayuda —
+  dos columnas ≥720px (huella ambiental a la izquierda, texto a la derecha con cita
+  destacada en display + regla jade), apiladas <720px. La huella ambiental (seis
+  bandas `.t-r`…`.t-c`, `aria-hidden`) es puramente decorativa: un "respiro" continuo
+  y lento (`huella-ambiental-respirar`, 7s, escalonado 0.5s por banda) que reafirma
+  el concepto del §1 sin representar datos reales, a diferencia de la huella hero.
+  Anulado bajo `prefers-reduced-motion`. Sin tokens nuevos (reusa `--esp-8`,
+  `--fuente-display`, `--color-jade`, `--medida-prosa`).

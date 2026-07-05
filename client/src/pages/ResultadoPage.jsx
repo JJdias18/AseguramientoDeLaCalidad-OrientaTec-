@@ -143,7 +143,7 @@ function ResultadoPage() {
         Nadie mezcla los seis intereses igual que vos. Así se ve tu combinación.
       </p>
 
-      <div style={{ margin: 'var(--esp-6) 0' }}>
+      <div className="huella-cascada" style={{ margin: 'var(--esp-6) 0' }}>
         <Huella
           variant="hero"
           fracciones={fracciones}

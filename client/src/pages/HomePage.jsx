@@ -60,32 +60,56 @@ function HomePage() {
     );
 
     return (
-      <div className="pagina">
-        <p className="sub">Hola, {user.fullName}</p>
-        <h1>Tu huella está lista</h1>
-        <div style={{ maxWidth: '24rem', margin: 'var(--esp-5) 0' }}>
-          <Huella
-            variant="hero"
-            fracciones={fracciones}
-            ariaLabel={`Tu huella vocacional. Código Holland ${profile.hollandCode}; tu dimensión más alta es ${nombrePorTipo(profile.dominant[0])}.`}
-          />
+      <>
+        <div className="pagina">
+          <p className="sub">Hola, {user.fullName}</p>
+          <h1>Tu huella está lista</h1>
+          <div className="huella-cascada" style={{ maxWidth: '24rem', margin: 'var(--esp-5) 0' }}>
+            <Huella
+              variant="hero"
+              fracciones={fracciones}
+              ariaLabel={`Tu huella vocacional. Código Holland ${profile.hollandCode}; tu dimensión más alta es ${nombrePorTipo(profile.dominant[0])}.`}
+            />
+          </div>
+          <div className="panel" style={{ marginBottom: 'var(--esp-5)' }}>
+            <p>
+              Tu código Holland es <b>{profile.hollandCode}</b>
+              {areaTop && (
+                <>
+                  {' '}
+                  y tu área más afín es <b>{areaTop.name}</b> ({areaTop.affinity}% de afinidad)
+                </>
+              )}
+              .
+            </p>
+          </div>
+          <Link className="btn btn--primario" to="/mi-huella" style={{ display: 'inline-block' }}>
+            Ver mi huella
+          </Link>
         </div>
-        <div className="panel" style={{ marginBottom: 'var(--esp-5)' }}>
-          <p>
-            Tu código Holland es <b>{profile.hollandCode}</b>
-            {areaTop && (
-              <>
-                {' '}
-                y tu área más afín es <b>{areaTop.name}</b> ({areaTop.affinity}% de afinidad)
-              </>
-            )}
-            .
-          </p>
-        </div>
-        <Link className="btn btn--primario" to="/mi-huella" style={{ display: 'inline-block' }}>
-          Ver mi huella
-        </Link>
-      </div>
+        <section className="inicio-manifiesto" aria-labelledby="inicio-manifiesto-titulo">
+          <div className="inicio-manifiesto__huella" aria-hidden="true">
+            <i className="t-r" />
+            <i className="t-i" />
+            <i className="t-a" />
+            <i className="t-s" />
+            <i className="t-e" />
+            <i className="t-c" />
+          </div>
+          <div className="inicio-manifiesto__texto">
+            <h2 id="inicio-manifiesto-titulo">Nadie decide como vos</h2>
+            <p className="inicio-manifiesto__pull">
+              Brújula Vocacional convierte tus respuestas en un mapa: seis dimensiones, combinadas a
+              tu manera, que muestran qué estudiar tiene sentido para vos.
+            </p>
+            <p className="sub">
+              Es para estudiantes de colegio en Costa Rica que están por elegir carrera. Respondés
+              un cuestionario breve, ves tu perfil vocacional, explorás las áreas académicas más
+              afines y comparás carreras — sin apuro, y podés volver cuando querás.
+            </p>
+          </div>
+        </section>
+      </>
     );
   }
 
