@@ -66,7 +66,7 @@ npm run dev:client   # Frontend en http://localhost:5173
   historia de usuario). PR hacia `develop`.
 - Commits estilo Conventional Commits (`feat:`, `fix:`, `test:`, `chore:`, `docs:`).
 - El plan de construcción por fases vive en `PLAN.md`; el contexto permanente en
-  `CLAUDE.md`; el brief de diseño en `DESIGN_BRIEF.md`.
+  `EstandaresdeCodigo.md`; el brief de diseño en `DESIGN_BRIEF.md`.
 
 ## Pruebas y calidad
 

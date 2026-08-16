@@ -38,7 +38,7 @@
 | 26 | Parámetro `area` del catálogo (HU-04) | Es el **id numérico** de `areas`, validado como entero positivo (400 si no lo es) | Reusa el modelo existente (`areas.id`) en vez de crear un enum de áreas nuevo |
 | 27 | Punto de tinta del área en el catálogo (HU-04) | Se deriva de la dimensión con mayor peso en `riasec_weights` reusando `scoringService.rankTypes` (mismo criterio de desempate R-I-A-S-E-C) | Evita duplicar la lógica de argmax que ya usa HU-03; ninguna columna nueva en `areas` |
 | 28 | Chips de filtro por área (HU-04, frontend) | Se arman con las áreas presentes en la respuesta **sin filtros** de `GET /careers` (sin agregar un endpoint `GET /areas`) | El catálogo completo ya trae `area.id`/`area.name` por carrera; minimalismo: no crear un endpoint nuevo solo para poblar los chips |
-| 29 | Botón "Comparar esta carrera" de la ficha (DESIGN.md §7.6) | Se **omite** hasta la Fase 6 (HU-05), cuando exista la funcionalidad de comparación | `CLAUDE.md` prohíbe adelantar fases; un botón sin destino funcional confundiría al estudiante |
+| 29 | Botón "Comparar esta carrera" de la ficha (DESIGN.md §7.6) | Se **omite** hasta la Fase 6 (HU-05), cuando exista la funcionalidad de comparación | `EstandaresdeCodigo.md` prohíbe adelantar fases; un botón sin destino funcional confundiría al estudiante |
 | 30 | Enlace "Comparar" en la nav (HU-05, frontend) | Se agrega junto a "Carreras" en la nav simple existente (logo + enlaces + avatar), **no** la tab bar móvil completa de 4 destinos que describe DESIGN.md §5 | Sigue el mismo patrón mínimo con el que se agregó "Carreras" en la Fase 5 (decisión #28); la tab bar móvil queda pendiente para cuando el resto de destinos (Cuestionario, Mi huella) la necesiten |
 | 31 | Recomparar al cambiar una carrera (HU-05, frontend) | La comparación inicial requiere el botón "Comparar" (habilitado solo con dos carreras distintas); una vez mostrada, cambiar cualquiera de los dos selects vuelve a consultar `GET /careers/compare` de inmediato, sin nuevo clic | El criterio de HU-05 pide la acción explícita "elige Comparar" para la primera comparación (escenario 1) pero actualización inmediata al cambiar una carrera ya comparada (escenario 4); un único flag `intentado` distingue ambos casos sin duplicar lógica |
 | 32 | `GET /profile/report` sin perfil (HU-06) | Responde **404 `PROFILE_NOT_FOUND`** (igual que `GET /profile`), no un 200 con bandera como `/recommendations` | El botón de descarga ya está deshabilitado en el frontend sin perfil (criterio de HU-06); a diferencia de `/recommendations`, esta ruta no alimenta un estado vacío de la UI, así que llegar sin perfil es un caso anómalo y no uno esperado |
@@ -49,7 +49,7 @@
 | 37 | Ruta de admin en el cliente (HU-07) | `AdminRoute` anidado dentro de `ProtectedRoute`: sin sesión redirige a login (como cualquier ruta protegida); con sesión pero sin rol admin muestra "Acceso denegado" con enlace a inicio, en vez de redirigir | DESIGN.md §7.8 pide ese mensaje específico para un estudiante que entra por URL directa; redirigir silenciosamente ocultaría por qué no puede entrar |
 | 38 | Fixes P0/P1 del critique de diseño (post-Fase 8) | Se construye la **tab bar móvil** de DESIGN.md §5 (supersede la "nav simple" de la decisión #30; el admin suma un 5.º destino "Reactivos"), HomePage pasa a consultar `hasProfile` (reusa `GET /recommendations`), el modal recupera `margin: auto` (el reset global lo pisaba) + `aria-labelledby`, y la tabla admin se apila <720px con tipo "letra · nombre" y chip "Activo" | `/impeccable critique` (snapshot `.impeccable/critique/2026-07-04...client-src.md`, 28/40) encontró 2 P0 (header desbordado a 360px, home negando un perfil existente) y 2 P1 (modal en la esquina, tabla admin inusable en móvil); extensiones registradas en DESIGN.md §10 |
 
-(Claude Code: si tomás una decisión nueva, agregala a esta tabla.)
+(Si alguien toma una decisión nueva, agregala a esta tabla.)
 
 ---
 
@@ -74,7 +74,7 @@ Tablas (snake_case, plural). Ajustar tipos según la migración, pero respetar l
 
 **Seeds obligatorios:** ≥ **30 reactivos** (5 por cada tipo RIASEC), 5–6 **áreas** con su
 vector de pesos, ≥ **20 carreras** repartidas entre las áreas, y **1 usuario admin** de
-prueba. El contenido lo puede redactar Claude Code.
+prueba. El contenido lo redacta el equipo.
 
 ## B. Motor RIASEC (especificación)
 
@@ -134,7 +134,7 @@ Objetivo: esquema + seeds. (EDT 1.2.2.1 · cronograma: diseño de modelo 19–20
 
 ## FASE 1.5 — Dirección visual del frontend
 Objetivo: identidad y prototipo aprobados antes de escribir React. (EDT 1.2.2.2)
-Regido por **DESIGN_BRIEF.md**. Cargar la skill `frontend-design` antes de empezar.
+Regido por **DESIGN_BRIEF.md**: leerlo completo antes de empezar.
 
 - [x] Proponer **2–3 direcciones de arte** (concepto, paleta, tipografías, elemento
       firma) con una preview HTML de la pantalla de resultados en cada una.
@@ -302,8 +302,8 @@ Objetivo: cerrar el aseguramiento de calidad. (EDT 1.4 / 1.5 · cronograma: 6/8 
       tareas guiadas por HU + cuestionario de satisfacción (escala 1–5).
 - [ ] **Protocolo de validación con usuarios**: plantilla para registrar las sesiones con
       **≥ 15 usuarios de prueba** del cuestionario (objetivo SMART 2) y medir la
-      **satisfacción ≥ 80 %** (objetivo SMART 3). *La ejecución con personas la hace el
-      equipo; Claude Code prepara el protocolo, la hoja de registro y el cálculo.*
+      **satisfacción ≥ 80 %** (objetivo SMART 3). *El protocolo, la hoja de registro y el
+      cálculo se preparan antes; la ejecución con personas la hace el equipo.*
 - [ ] **Matriz de trazabilidad** caso ↔ criterio de aceptación ↔ HU en
       `/docs/trazabilidad.md`.
 - [ ] Reporte de **métricas de calidad** en `/docs/metricas.md` (cobertura, % de casos

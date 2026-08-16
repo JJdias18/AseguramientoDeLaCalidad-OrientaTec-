@@ -1,8 +1,8 @@
-# CLAUDE.md — Brújula Vocacional
+# EstandaresdeCodigo — Brújula Vocacional
 
-> Este archivo es el contexto permanente del proyecto. Claude Code lo lee en cada
-> sesión. **Leé también `PLAN.md`** antes de escribir código: ahí está el plan
-> lineal por fases, el modelo de datos y el contrato de API. No adelantes fases.
+> Este documento es el contexto permanente del proyecto y la referencia obligatoria para
+> todo el equipo de desarrollo. **Leé también `PLAN.md`** antes de escribir código: ahí está
+> el plan lineal por fases, el modelo de datos y el contrato de API. No adelantes fases.
 
 ---
 
@@ -91,13 +91,13 @@ Una historia se considera terminada cuando:
 
 ## 8. Frontend — importante
 
-- **El diseño visual lo generás vos**, siguiendo **`DESIGN_BRIEF.md`** y la skill
-  **frontend-design**. Los mockups del PDF de historias son referencia funcional,
-  no visual: su estética fue rechazada y está prohibida.
+- **El diseño visual lo define el equipo**, siguiendo **`DESIGN_BRIEF.md`**. Los mockups
+  del PDF de historias son referencia funcional, no visual: su estética fue rechazada y
+  está prohibida.
 - La dirección de arte se decide en la **Fase 1.5** de `PLAN.md` (propuestas →
   elección del equipo → entregables → aprobación). No implementes pantallas React
   antes de que exista un `DESIGN.md` aprobado.
-- Después de la aprobación, `DESIGN.md` (escrito por vos) es la fuente de verdad.
+- Después de la aprobación, `DESIGN.md` es la fuente de verdad.
   Tokens en `client/src/styles/tokens.css`; ningún color ni tamaño hardcodeado
   fuera de ese archivo.
 - **Mobile-first y responsive.** Accesibilidad **WCAG AA** (contraste, foco visible,
@@ -111,16 +111,16 @@ Una historia se considera terminada cuando:
   rutas de admin.
 - **Validación de input** en todos los endpoints (formato de correo, longitud de
   contraseña ≥ 8 con letras y números, tipos de datos).
-- **Login con mensaje genérico**: “Correo o contraseña incorrectos”, sin revelar cuál
+- **Login con mensaje genérico**: "Correo o contraseña incorrectos", sin revelar cuál
   de los dos falló (criterio de HU-01).
 - Secretos en `.env` (no se commitea). Incluir `.env.example`.
 
-## 10. Cómo trabajás en este repo
+## 10. Cómo trabajamos en este repo
 
-- Seguí **`PLAN.md`** en orden. Una fase a la vez. No mezcles fases.
+- Seguí **`PLAN.md`** en orden. Una fase a la vez. No mezclés fases.
 - Al terminar una fase: corré lint + pruebas, marcá el checklist de esa fase en
-  `PLAN.md`, dejá un resumen corto de lo hecho, y **detenete para revisión** antes de
-  empezar la siguiente.
-- Si una decisión no está en `CLAUDE.md` ni en `PLAN.md`, proponé la opción más simple
-  y consistente con el stack, dejala anotada en `PLAN.md` bajo “Decisiones tomadas”,
+  `PLAN.md`, dejá un resumen corto de lo hecho, y **detenete para revisión** del equipo
+  antes de empezar la siguiente.
+- Si una decisión no está en este documento ni en `PLAN.md`, proponé la opción más simple
+  y consistente con el stack, dejala anotada en `PLAN.md` bajo "Decisiones tomadas",
   y seguí.
