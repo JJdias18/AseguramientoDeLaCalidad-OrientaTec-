@@ -1,9 +1,8 @@
 # DESIGN_BRIEF.md — Brief de diseño · Brújula Vocacional
 
-> Vos (Claude Code) sos el diseñador del frontend. Las ideas visuales son tuyas.
+> El diseño del frontend queda a cargo del equipo. Las ideas visuales son nuestras.
 > Este brief define el problema, la audiencia y las restricciones que no se pueden
-> romper — no el resultado. Antes de diseñar cualquier cosa, **cargá y aplicá la
-> skill `frontend-design`**.
+> romper — no el resultado.
 
 ---
 
@@ -32,17 +31,16 @@ mockups originales por genéricos. Se espera un punto de vista propio.
 
 ## 3. Restricciones duras (no negociables)
 
-**Proceso.** No empieces a codificar pantallas. Primero: (a) cargá la skill
-`frontend-design`; (b) proponé **2–3 direcciones de arte** distintas — cada una con
-concepto en una frase, paleta, par tipográfico y elemento firma, más una preview
-HTML pequeña de una misma pantalla (la de resultados) en cada dirección para poder
-compararlas; (c) **detenete** y esperá a que el equipo elija; (d) con la dirección
-elegida, produci los entregables de la sección 4; (e) **detenete otra vez** para
-aprobación antes de tocar React.
+**Proceso.** No empieces a codificar pantallas. Primero: (a) proponé **2–3 direcciones
+de arte** distintas — cada una con concepto en una frase, paleta, par tipográfico y
+elemento firma, más una preview HTML pequeña de una misma pantalla (la de resultados)
+en cada dirección para poder compararlas; (b) **detenete** y esperá a que el equipo
+elija; (c) con la dirección elegida, produci los entregables de la sección 4;
+(d) **detenete otra vez** para aprobación antes de tocar React.
 
 **Anti-genérico.** Prohibido reproducir la estética de los mockups del PDF
 (fondo crema, display serif, verde oliva/oscuro) — fue rechazada. Evitá también los
-defaults reconocibles de diseño generado por IA que la skill describe; si una
+defaults reconocibles de diseño generado por IA listados en `client/PRODUCT.md`; si una
 dirección tuya se parece a lo que propondrías para cualquier otra app, descartala
 y explicá qué cambiaste.
 

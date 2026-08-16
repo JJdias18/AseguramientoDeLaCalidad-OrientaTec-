@@ -17,7 +17,7 @@ const toPublicUser = (row) => ({
 
 /**
  * Registra un usuario nuevo. Asume que el formato de correo/contraseña ya fue
- * validado por la capa de controlador (sección 9 de CLAUDE.md).
+ * validado por la capa de controlador (sección 9 de EstandaresdeCodigo.md).
  */
 const register = async ({ fullName, email, password }) => {
   const existing = await userRepository.findByEmail(email);
