@@ -4,6 +4,11 @@
 > y una pausa para revisión. Referencias `HU-0X` = historias del documento de historias.
 > Fechas = cronograma del primer entregable (referencia de plazos del curso).
 
+> **Uso de este plan.** Es la especificación por fases que guió el desarrollo asistido
+> por Claude Code: el asistente lo lee en cada sesión a través de [`CLAUDE.md`](CLAUDE.md),
+> y cada **PAUSA** marca un punto de revisión y aprobación humana antes de avanzar de
+> fase. Ver también la sección "Cómo se construyó" del [`README.md`](README.md).
+
 ---
 
 ## Decisiones tomadas (registro)
