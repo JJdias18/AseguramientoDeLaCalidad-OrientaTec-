@@ -40,7 +40,7 @@ docker compose up -d db
 # instalá docker-compose o usá un PostgreSQL local con las credenciales
 # de .env.example.
 
-# 4. Migraciones y seeds (disponibles a partir de la Fase 1)
+# 4. Migraciones y seeds
 npm run migrate --workspace server
 npm run db:seed --workspace server
 
@@ -66,12 +66,37 @@ npm run dev:client   # Frontend en http://localhost:5173
   historia de usuario). PR hacia `develop`.
 - Commits estilo Conventional Commits (`feat:`, `fix:`, `test:`, `chore:`, `docs:`).
 - El plan de construcción por fases vive en `PLAN.md`; el contexto permanente en
-  `EstandaresdeCodigo.md`; el brief de diseño en `DESIGN_BRIEF.md`.
+  `EstandaresdeCodigo.md`; el brief de diseño en `DESIGN_BRIEF.md`. `CLAUDE.md` carga
+  esos mismos documentos para el asistente de programación (ver
+  [Cómo se construyó](#cómo-se-construyó)).
 
 ## Pruebas y calidad
 
-- Unitarias y de API con Jest + Supertest (`npm test`).
-- Colección Postman versionada en `docs/postman_collection.json`, actualizada en cada
-  fase de backend.
-- Meta del proyecto: ≥ 25 casos de prueba documentados y trazados
-  (`docs/trazabilidad.md`, a partir de la Fase 9).
+- 214 pruebas automatizadas en verde: 108 en `server` (Jest + Supertest) y 106 en
+  `client` (Jest + Testing Library). Cobertura de líneas cercana al 90 % en ambos
+  paquetes (`npm run test:cobertura`).
+- 64 casos de prueba documentados y trazados a las historias de usuario (CP-001 a
+  CP-064) en `docs/trazabilidad.md`.
+- Colección Postman versionada en `docs/postman_collection.json`, con 36 peticiones
+  con aserciones.
+- Evidencia de verificación y validación bajo ISO/IEC 25010 en
+  `docs/verificacion-y-validacion.md`.
+
+## Cómo se construyó
+
+Desarrollé el código de este repositorio con **Claude Code** como asistente de
+programación, dentro de un proceso controlado:
+
+- **Especificación primero.** A partir de las historias de usuario (HU-01 a HU-07)
+  definí un plan lineal por fases en [`PLAN.md`](PLAN.md): modelo de datos, contrato de
+  la API, especificación del motor RIASEC y un registro de 38 decisiones técnicas con
+  su justificación.
+- **Un solo estándar para personas y asistente.** [`CLAUDE.md`](CLAUDE.md) carga
+  [`EstandaresdeCodigo.md`](EstandaresdeCodigo.md) y `PLAN.md`, así que cada sesión
+  respeta el mismo stack, las mismas convenciones y la misma Definition of Done que el
+  resto del equipo.
+- **Puertas de calidad.** Cada fase terminaba con lint y pruebas en verde, su checklist
+  marcado y una pausa de revisión antes de avanzar a la siguiente.
+- **Mi rol.** Definí el alcance y la arquitectura, tomé las decisiones técnicas, revisé
+  cada cambio antes de integrarlo y validé el resultado con la batería de pruebas
+  descrita arriba.
